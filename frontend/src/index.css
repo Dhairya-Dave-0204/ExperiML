@@ -5,6 +5,8 @@
 ========================================================== */
 
 :root {
+  color-scheme: light;
+
   /* Brand */
   --color-primary: #2563eb;
   --color-primary-dark: #1d4ed8;
@@ -54,23 +56,6 @@
 
   /* Max Width */
   --container-width: 1280px;
-
-  /* Gradients 2-tone */
-  --gradient-primary: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
-
-  /* Secondary 2-tone */
-  --gradient-secondary: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
-
-  /* Accent 2-tone */
-  --gradient-accent: linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%);
-
-  /* Hero 3-tone */
-  --gradient-hero: linear-gradient(
-    135deg,
-    #4f46e5 0%,
-    #2563eb 45%,
-    #06b6d4 100%
-  );
 
   /* Surface */
   --gradient-surface: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
@@ -123,39 +108,64 @@
    Global Base
 ========================================================== */
 
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
 html {
   scroll-behavior: smooth;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   font-family: "Inter", sans-serif;
-
   background-color: var(--color-background);
-
   color: var(--color-text);
-
   text-rendering: optimizeLegibility;
-
   -webkit-font-smoothing: antialiased;
-
   -moz-osx-font-smoothing: grayscale;
-
   overflow-x: hidden;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 img,
 picture,
-svg,
 video,
 canvas {
   display: block;
   max-width: 100%;
+  height: auto;
+  image-rendering: auto;
+}
+
+svg {
+  display: block;
+  flex-shrink: 0;
 }
 
 button,
@@ -169,6 +179,22 @@ button {
   cursor: pointer;
   border: none;
   background: transparent;
+  padding: 0;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+input,
+textarea,
+select {
+  outline: none;
+}
+
+::placeholder {
+  color: var(--color-text-secondary);
 }
 
 a {
@@ -179,6 +205,16 @@ a {
 ul,
 ol {
   list-style: none;
+}
+
+button,
+a {
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 /* ==========================================================
@@ -203,6 +239,7 @@ h6 {
 code,
 pre {
   font-family: "JetBrains Mono", monospace;
+  font-size: 0.95em;
 }
 
 /* ==========================================================
@@ -211,7 +248,7 @@ pre {
 
 ::selection {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-surface);
 }
 
 /* ==========================================================
@@ -240,8 +277,8 @@ pre {
 ========================================================== */
 
 .container-custom {
-  width: min(var(--container-width), calc(100% - 2rem));
-
+  width: min(var(--container-width), 100%);
+  padding-inline: 1rem;
   margin-inline: auto;
 }
 
@@ -250,16 +287,9 @@ pre {
 }
 
 .text-gradient {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary),
-    var(--color-accent)
-  );
-
   -webkit-background-clip: text;
-
   background-clip: text;
-
+  -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
@@ -299,62 +329,32 @@ pre {
 /* --- Gradient Text Utilities --- */
 .text-gradient-two-tone-1 {
   background: var(--gradient-two-tone-1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 .text-gradient-two-tone-2 {
   background: var(--gradient-two-tone-2);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 .text-gradient-two-tone-3 {
   background: var(--gradient-two-tone-3);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 .text-gradient-two-tone-4 {
   background: var(--gradient-two-tone-4);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 .text-gradient-two-tone-5 {
   background: var(--gradient-two-tone-5);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 
 .text-gradient-three-tone-1 {
   background: var(--gradient-three-tone-1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 .text-gradient-three-tone-2 {
   background: var(--gradient-three-tone-2);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 .text-gradient-three-tone-3 {
   background: var(--gradient-three-tone-3);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 .text-gradient-three-tone-4 {
   background: var(--gradient-three-tone-4);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 .text-gradient-three-tone-5 {
   background: var(--gradient-three-tone-5);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
