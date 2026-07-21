@@ -1,5 +1,1 @@
-import LandingPage from "./shared/Landing/LandingPage";
-
-export {
-    LandingPage
-}
+export { default as LandingPage } from './shared/Landing/LandingPage';
