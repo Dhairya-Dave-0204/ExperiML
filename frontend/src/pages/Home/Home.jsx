@@ -1,5 +1,5 @@
 import React from 'react'
-import { LandingPage } from "../../components/components.index"
+import { LandingPage } from "@/components/components.index"
 
 function Home() {
   return (
