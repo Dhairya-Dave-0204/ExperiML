@@ -1,10 +1,11 @@
 import './App.css'
+import { AppRoutes } from "./routes/routes.index"
 
 function App() {
 
   return (
     <>
-      <h1 className='text-5xl text-blue-800'>Hello !!!!!!</h1>
+      <AppRoutes />
     </>
   )
 }
