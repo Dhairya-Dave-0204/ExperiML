@@ -1,8 +1,14 @@
 import React from 'react'
 
+import { NavbarDesktop, NavbarMobile } from "@/components/common/Navbar/navbar.index"
+
 function Navbar() {
   return (
-    <div>Navbar</div>
+    <>
+      <NavbarDesktop />
+
+      <NavbarMobile />
+    </>
   )
 }
 

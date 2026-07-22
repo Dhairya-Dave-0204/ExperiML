@@ -10,7 +10,7 @@ import { ROUTES } from "@/constants/routes";
 
 function NavbarDesktop() {
   return (
-    <nav className="sticky top-0 z-50 border-b border-slate-200/80 bg-[#FAFAFA]/85 backdrop-blur-xl">
+    <nav className="hidden lg:block sticky top-0 z-50 border-b border-slate-200/80 bg-[#FAFAFA]/85 backdrop-blur-xl">
       <div className="flex items-center justify-between px-6 mx-auto h-17 max-w-300">
         {/* Logo */}
         <Link
