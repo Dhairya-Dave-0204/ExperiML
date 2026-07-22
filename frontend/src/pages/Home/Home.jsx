@@ -1,9 +1,8 @@
 import React from 'react'
-import { LandingPage } from "@/components/components.index"
 
 function Home() {
   return (
-    <LandingPage />
+    <div>Home</div>
   )
 }
 
