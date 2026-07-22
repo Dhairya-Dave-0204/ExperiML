@@ -26,7 +26,7 @@ function NavbarMobile() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-xl md:hidden">
+      <nav className="fixed top-0 left-0 right-0 border-b z-100 border-border bg-background/85 backdrop-blur-xl md:hidden">
         <div className="flex items-center justify-between container-custom h-17">
           <Logo />
 
@@ -47,7 +47,7 @@ function NavbarMobile() {
         className={`
           fixed
           inset-0
-          z-40
+          z-105
           bg-black/60
           transition-opacity
           duration-300
@@ -63,7 +63,7 @@ function NavbarMobile() {
           fixed
           top-0
           right-0
-          z-50
+          z-110
           flex
           h-screen
           w-full

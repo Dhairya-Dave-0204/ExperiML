@@ -11,7 +11,7 @@ import { ROUTES } from "@/constants/routes";
 
 function DesktopNavbar() {
   return (
-    <nav className="sticky top-0 z-50 hidden border-b border-border bg-background/85 backdrop-blur-xl md:block">
+    <nav className="fixed top-0 left-0 right-0 hidden border-b z-100 border-border bg-background/85 backdrop-blur-xl md:block">
       <div className="flex items-center justify-between px-6 mx-auto h-17 max-w-300">
         {/* ================= Logo ================= */}
         <Logo />
