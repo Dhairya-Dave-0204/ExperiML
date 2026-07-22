@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Hero, Narrative, Capabilities } from "@/components/components.index"
+import { Hero, Narrative, Capabilities, Reproducibility } from "@/components/components.index"
 
 function Home() {
   return (
@@ -8,6 +8,7 @@ function Home() {
       <Hero />
       <Narrative />
       <Capabilities />
+      <Reproducibility />
     </>
   )
 }

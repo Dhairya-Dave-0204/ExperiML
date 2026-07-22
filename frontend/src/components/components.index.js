@@ -6,3 +6,4 @@ export { default as SecondaryButton } from "./common/SecondaryButton/SecondaryBu
 export { default as Hero } from "./shared/Home/Hero/Hero"
 export { default as Narrative } from "./shared/Home/Narrative/Narrative"
 export { default as Capabilities } from "./shared/Home/Capabilities/Capabilities"
+export { default as Reproducibility } from "./shared/Home/Reproducibility/Reproducibility"
