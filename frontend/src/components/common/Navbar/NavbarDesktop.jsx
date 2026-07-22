@@ -1,7 +1,10 @@
 import { NavLink } from "react-router-dom";
-import { Network } from "lucide-react";
 
-import { PrimaryButton, SecondaryButton } from "@/components/components.index";
+import {
+  PrimaryButton,
+  SecondaryButton,
+  Logo,
+} from "@/components/components.index";
 
 import { NAV_LINKS } from "./navLinks";
 import { ROUTES } from "@/constants/routes";
@@ -9,30 +12,9 @@ import { ROUTES } from "@/constants/routes";
 function DesktopNavbar() {
   return (
     <nav className="sticky top-0 z-50 hidden border-b border-border bg-background/85 backdrop-blur-xl md:block">
-      <div
-        className="flex items-center justify-between px-6 mx-auto h-17 max-w-300"
-      >
+      <div className="flex items-center justify-between px-6 mx-auto h-17 max-w-300">
         {/* ================= Logo ================= */}
-        <NavLink
-          to={ROUTES.HOME}
-          aria-label="ExperiML Home"
-          className="
-            flex
-            items-center
-            gap-2
-            text-[19px]
-            font-extrabold
-            tracking-tight
-            text-text
-            transition-colors
-            duration-300
-            hover:text-primary
-          "
-        >
-          <Network size={24} strokeWidth={2.5} className="text-primary" />
-
-          <span>ExperiML</span>
-        </NavLink>
+        <Logo />
 
         {/* ================= Navigation ================= */}
         <div className="items-center hidden gap-9 md:flex">
