@@ -9,7 +9,7 @@ import LiveHeroWidget from "./LiveHeroWidget";
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden border-b border-border bg-linear-to-b from-white to-background">
+    <section className="relative pb-10 overflow-hidden border-b mt-14 border-border bg-linear-to-b from-white to-background md:pt-14">
       <div
         className="
           container-custom
