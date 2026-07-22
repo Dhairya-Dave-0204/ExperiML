@@ -59,7 +59,7 @@ function DesktopNavbar() {
         </div>
 
         {/* ================= Actions ================= */}
-        <div className="items-center hidden gap-4 md:flex">
+        <div className="items-center hidden gap-6 md:flex">
           <SecondaryButton
             Element={NavLink}
             to={ROUTES.SIGN_IN}
