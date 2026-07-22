@@ -100,12 +100,11 @@ function CapabilityCard({ capability }) {
         rounded-xl
         border
         border-border
-        bg-surface
         p-8
         transition-all
         duration-300
         hover:-translate-y-1
-        hover:border-primary
+        hover:border-primary/40
         hover:shadow-md
 
         ${wide ? "lg:col-span-2" : ""}

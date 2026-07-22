@@ -1,6 +1,6 @@
 import React from "react";
 
-import { CapabilityCard } from "./CapabilityCard";
+import CapabilityCard  from "./CapabilityCard";
 
 import { CAPABILITIES } from "./capabilitiesData";
 
