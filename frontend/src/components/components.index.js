@@ -4,3 +4,4 @@ export { default as Footer } from "./common/Footer/Footer";
 export { default as PrimaryButton } from "./common/PrimaryButton/PrimaryButton";
 export { default as SecondaryButton } from "./common/SecondaryButton/SecondaryButton";
 export { default as Hero } from "./shared/Home/Hero/Hero"
+export { default as Narrative } from "./shared/Home/Narrative/Narrative"
