@@ -103,6 +103,7 @@ function CapabilityCard({ capability }) {
         p-8
         transition-all
         duration-300
+        hover:bg-surface
         hover:-translate-y-1
         hover:border-primary/40
         hover:shadow-md

@@ -2,9 +2,9 @@ import { Database, GitPullRequest } from "lucide-react";
 
 function Narrative() {
   return (
-    <section id="product" className=" py-18 lg:py-28">
+    <section id="product" className="bg-surface py-18 lg:py-28">
       <div className="container-custom">
-        <div className="grid grid-cols-1 overflow-hidden border rounded-3xl border-border bg-border lg:grid-cols-2">
+        <div className="grid grid-cols-1 overflow-hidden border rounded-3xl border-border lg:grid-cols-2">
           {/* ================= Left Pane ================= */}
 
           <div className="px-6 py-10 bg-surface-soft sm:px-8 lg:px-14 lg:py-14">
