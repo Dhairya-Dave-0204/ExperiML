@@ -1,4 +1,3 @@
-export { default as LandingPage } from "./shared/Landing/LandingPage";
 export { default as Logo } from "./common/Logo/Logo";
 export { default as Navbar } from "./common/Navbar/Navbar";
 export { default as Footer } from "./common/Footer/Footer";
