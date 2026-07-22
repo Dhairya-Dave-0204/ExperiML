@@ -1,21 +1,20 @@
 import { Routes, Route } from "react-router-dom";
 
-import { Home }  from "@/pages/page.index";
+import { PublicLayout } from "@/layout/layout.index";
 
+import { Home, About, Contact, FAQ, Documentation } from "@/pages/page.index";
+import { ROUTES } from "@/constants/routes"
 
-export default function AppRoutes(){
-
-    return (
-
-        <Routes>
-
-            <Route 
-                path="/"
-                element={<Home />}
-            />
-
-        </Routes>
-
-    );
-
+export default function AppRoutes() {
+  return (
+    <Routes>
+      <Route element={<PublicLayout />}>
+        <Route path={ROUTES.HOME} element={<Home />} />
+        <Route path={ROUTES.ABOUT} element={<About />} />
+        <Route path={ROUTES.CONTACT} element={<Contact />} />
+        <Route path={ROUTES.FAQ} element={<FAQ />} />
+        <Route path={ROUTES.DOCS} element={<Documentation />} />
+      </Route>
+    </Routes>
+  );
 }
