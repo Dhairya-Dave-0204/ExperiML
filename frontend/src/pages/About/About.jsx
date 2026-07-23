@@ -1,8 +1,12 @@
 import React from 'react'
 
+import { AboutHero } from "@/components/components.index"
+
 function About() {
   return (
-    <div>About</div>
+    <>
+      <AboutHero />
+    </>
   )
 }
 
