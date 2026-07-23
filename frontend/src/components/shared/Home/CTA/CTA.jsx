@@ -11,7 +11,7 @@ function CTA() {
       className="border-t section-padding border-border bg-background"
     >
       <div className="container-custom">
-        <div className="relative px-6 py-16 overflow-hidden text-center border shadow-lg rounded-3xl border-border bg-gradient-to-br from-surface via-surface to-primary-soft/40 sm:px-10 lg:px-16 lg:py-24">
+        <div className="relative px-6 py-16 overflow-hidden text-center border shadow-lg rounded-3xl border-border bg-linear-to-br from-surface via-surface to-primary-soft/40 sm:px-10 lg:px-16 lg:py-24">
           {/* Background Decoration */}
           <div
             className="

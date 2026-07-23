@@ -92,7 +92,7 @@ function NavbarMobile() {
         <nav className="flex flex-col gap-2 p-6">
           {NAV_LINKS.map((link) => (
             <NavLink
-              key={link.label}
+              key={link.id}
               to={link.path}
               onClick={closeMenu}
               className={({ isActive }) =>

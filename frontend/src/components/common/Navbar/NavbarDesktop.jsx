@@ -20,7 +20,7 @@ function DesktopNavbar() {
         <div className="items-center hidden gap-9 md:flex">
           {NAV_LINKS.map((link) => (
             <NavLink
-              key={link.label}
+              key={link.id}
               to={link.path}
               className={({ isActive }) =>
                 `
