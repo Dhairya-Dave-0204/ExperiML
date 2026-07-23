@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import { GitGraph, Link, Mail } from "lucide-react";
 
 function MeetDeveloper() {
@@ -10,7 +11,7 @@ function MeetDeveloper() {
       <div className="container-custom">
         <div className="flex flex-col items-center max-w-2xl gap-6 p-8 mx-auto text-center border shadow-sm rounded-xl border-border bg-surface md:p-10">
           <div className="flex items-center justify-center w-16 h-16 text-xl font-bold text-white rounded-full bg-gradient-two-tone-2 font-heading">
-            EM
+            DD
           </div>
 
           <div>
@@ -24,7 +25,7 @@ function MeetDeveloper() {
           </div>
 
           <p className="max-w-xl text-[15px] leading-relaxed text-text-secondary">
-            ExperiML started as a final-year project and grew into something
+            ExperiML started as a internship project and grew into something
             closer to a real product — a production-grade machine learning
             platform built to solve a workflow problem I ran into constantly:
             too many notebooks, not enough memory of what actually worked. It's
@@ -33,27 +34,27 @@ function MeetDeveloper() {
           </p>
 
           <div className="flex items-center gap-3">
-            <a
-              href="#"
+            <NavLink
+              to="https://github.com/Dhairya-Dave-0204"
               aria-label="GitHub"
               className="flex items-center justify-center w-10 h-10 transition-colors duration-150 border rounded-lg border-border text-text-secondary hover:border-border-hover hover:text-text"
             >
               <GitGraph size={18} strokeWidth={1.75} />
-            </a>
-            <a
-              href="#"
+            </NavLink>
+            <NavLink
+              to="https://github.com/Dhairya-Dave-0204"
               aria-label="LinkedIn"
               className="flex items-center justify-center w-10 h-10 transition-colors duration-150 border rounded-lg border-border text-text-secondary hover:border-border-hover hover:text-text"
             >
               <Link size={18} strokeWidth={1.75} />
-            </a>
-            <a
-              href="#"
+            </NavLink>
+            <NavLink
+              to="dhairyadave.work@gmail.com"
               aria-label="Email"
               className="flex items-center justify-center w-10 h-10 transition-colors duration-150 border rounded-lg border-border text-text-secondary hover:border-border-hover hover:text-text"
             >
               <Mail size={18} strokeWidth={1.75} />
-            </a>
+            </NavLink>
           </div>
         </div>
       </div>

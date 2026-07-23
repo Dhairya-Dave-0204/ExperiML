@@ -8,7 +8,8 @@ import {
   CoreCapabilities,
   WhoCanUse,
   DesignPhilosophy,
-  TechStack
+  TechStack,
+  MeetDeveloper
 } from "@/components/components.index";
 
 function About() {
@@ -22,6 +23,7 @@ function About() {
       <DesignPhilosophy />
       <WhoCanUse />
       <TechStack />
+      <MeetDeveloper />
     </>
   );
 }
