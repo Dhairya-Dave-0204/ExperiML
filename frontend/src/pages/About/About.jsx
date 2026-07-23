@@ -7,7 +7,8 @@ import {
   WorkflowFit,
   CoreCapabilities,
   WhoCanUse,
-  DesignPhilosophy
+  DesignPhilosophy,
+  TechStack
 } from "@/components/components.index";
 
 function About() {
@@ -20,6 +21,7 @@ function About() {
       <CoreCapabilities />
       <DesignPhilosophy />
       <WhoCanUse />
+      <TechStack />
     </>
   );
 }
