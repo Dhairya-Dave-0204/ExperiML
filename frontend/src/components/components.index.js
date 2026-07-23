@@ -24,3 +24,4 @@ export { default as CoreCapabilities } from "./shared/About/CoreCapabilities/Cor
 export { default as WhoCanUse } from "./shared/About/WhoCanUse/WhoCanUse"
 export { default as DesignPhilosophy } from "./shared/About/DesignPhilosophy/DesignPhilosophy"
 export { default as TechStack } from "./shared/About/TechStack/TechStack"
+export { default as MeetDeveloper } from "./shared/About/MeetDeveloper/MeetDeveloper"
