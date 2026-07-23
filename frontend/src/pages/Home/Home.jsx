@@ -7,6 +7,7 @@ import {
   Reproducibility,
   ExperimentLineage,
   Workspace,
+  CTA
 } from "@/components/components.index";
 
 function Home() {
@@ -18,6 +19,7 @@ function Home() {
       <Reproducibility />
       <ExperimentLineage />
       <Workspace />
+      <CTA />
     </>
   );
 }

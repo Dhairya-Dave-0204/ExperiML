@@ -9,3 +9,4 @@ export { default as Capabilities } from "./shared/Home/Capabilities/Capabilities
 export { default as Reproducibility } from "./shared/Home/Reproducibility/Reproducibility"
 export { default as ExperimentLineage } from "./shared/Home/ExperimentLineage/ExperimentLineage"
 export { default as Workspace } from "./shared/Home/Workspace/Workspace"
+export { default as CTA } from "./shared/Home/CTA/CTA"
