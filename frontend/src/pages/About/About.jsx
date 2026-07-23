@@ -18,8 +18,8 @@ function About() {
       <WhyExperimlExists />
       <WorkflowFit />
       <CoreCapabilities />
-      <WhoCanUse />
       <DesignPhilosophy />
+      <WhoCanUse />
     </>
   );
 }

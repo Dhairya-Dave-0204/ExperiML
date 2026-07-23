@@ -6,7 +6,7 @@ function DesignPhilosophy() {
   return (
     <section
       id="philosophy"
-      className="py-16 border-t border-border bg-surface-soft md:py-24"
+      className="py-16 border-t border-border bg-surface md:py-24"
     >
       <div className="container-custom grid grid-cols-1 gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
         <div>
@@ -14,7 +14,7 @@ function DesignPhilosophy() {
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
             Design philosophy
           </div>
-          <h2 className="mb-3 text-2xl font-extrabold tracking-tight font-heading text-text md:text-3xl">
+          <h2 className="mb-3 text-3xl font-extrabold tracking-tight font-heading text-text md:text-4xl">
             The principles behind every decision
           </h2>
           <p className="text-[15px] leading-relaxed text-text-secondary">
