@@ -9,12 +9,12 @@ function CoreCapabilities() {
       className="py-16 border-t border-border bg-surface-soft md:py-24"
     >
       <div className="container-custom">
-        <div className="max-w-xl mb-10">
+        <div className="max-w-full mb-10">
           <div className="inline-flex items-center gap-2 mb-4 text-xs font-semibold tracking-wider uppercase text-primary">
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
             Core capabilities
           </div>
-          <h2 className="mb-3 text-2xl font-extrabold tracking-tight font-heading text-text md:text-3xl">
+          <h2 className="mb-3 text-4xl tracking-tight font-heading text-text md:text-5xl md:font-extrabold">
             Everything an experiment needs, in one place
           </h2>
           <p className="text-[15px] leading-relaxed text-text-secondary">
@@ -27,7 +27,7 @@ function CoreCapabilities() {
           {CAPABILITIES.map(({ icon: Icon, title, desc, planned, id }) => (
             <div
               key={id}
-              className="p-5 transition-colors duration-150 border shadow-sm rounded-xl border-border bg-surface hover:border-primary-light"
+              className="p-5 transition-all duration-300 border shadow-sm cursor-pointer rounded-xl border-border bg-surface hover:border-primary-light hover:scale-105"
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary-light">
