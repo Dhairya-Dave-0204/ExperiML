@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 
-import { SecondaryButton } from "@/components/components.index";
+import { CTAButton } from "@/components/components.index";
 import { CTA_CONTENT } from "./ctaData";
 
 function CTA() {
@@ -23,7 +23,11 @@ function CTA() {
           />
 
           <div
-            className="absolute right-0 rounded-full -top-32 h-80 w-80 bg-primary/10 blur-3xl"
+            className="absolute right-0 rounded-full -top-32 h-90 w-90 bg-primary/10 blur-3xl"
+            aria-hidden="true"
+          />
+          <div
+            className="absolute left-0 rounded-full -bottom-32 h-90 w-90 bg-primary/10 blur-3xl"
             aria-hidden="true"
           />
 
@@ -38,9 +42,9 @@ function CTA() {
             </p>
 
             <div className="flex justify-center mt-10">
-              <SecondaryButton to={CTA_CONTENT.button.href} icon={ArrowRight}>
+              <CTAButton to={CTA_CONTENT.button.href} icon={ArrowRight}>
                 {CTA_CONTENT.button.label}
-              </SecondaryButton>
+              </CTAButton>
             </div>
 
             <p className="mt-6 font-mono text-sm text-text-secondary">
