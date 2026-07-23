@@ -5,7 +5,7 @@ export default function WhatIsExperiml() {
   return (
     <section
       id="what-is-experiml"
-      className="py-16 border-t border-border md:py-24"
+      className="py-16 border-t border-border md:py-24 bg-surface"
     >
       <div className="container-custom grid grid-cols-1 gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
         <div>
@@ -33,14 +33,14 @@ export default function WhatIsExperiml() {
           </div>
         </div>
 
-        <div className="self-start p-6 border shadow-sm rounded-xl border-border bg-surface">
+        <div className="self-start p-6 border shadow-sm rounded-xl border-border bg-surface-soft">
           <div className="mb-4 font-mono text-xs font-semibold tracking-wider uppercase text-text-secondary">
             Platform overview
           </div>
           <dl className="divide-y divide-border">
             {SPEC.map((row) => (
               <div
-                key={row.label}
+                key={row.id}
                 className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
               >
                 <dt className="text-sm text-text-secondary">{row.label}</dt>
