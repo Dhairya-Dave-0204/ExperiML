@@ -5,7 +5,7 @@ function DagNode({ icon: Icon, title, meta, active = false, success = false }) {
     <div
       className={`
         flex min-w-55 items-start gap-3 rounded-xl border p-4 shadow-sm
-        transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-md
+        transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-md hover:bg-surface-soft
         ${
           active
             ? "border-accent bg-cyan-50"
