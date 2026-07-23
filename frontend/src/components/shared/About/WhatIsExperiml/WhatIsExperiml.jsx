@@ -1,6 +1,7 @@
-import { SPEC } from "./whatisExperiml";
+import React from "react";
+import { SPEC } from "./whatIsExperimlData";
 
-function WhatIsExperiml() {
+export default function WhatIsExperiml() {
   return (
     <section
       id="what-is-experiml"
@@ -29,11 +30,6 @@ function WhatIsExperiml() {
               iterating on production models, and researchers who need their
               results to hold up under scrutiny.
             </p>
-            <p>
-              The philosophy behind it is simple: organization and
-              reproducibility shouldn't be something you bolt on after the fact.
-              They should be the default.
-            </p>
           </div>
         </div>
 
@@ -59,5 +55,3 @@ function WhatIsExperiml() {
     </section>
   );
 }
-
-export default WhatIsExperiml;

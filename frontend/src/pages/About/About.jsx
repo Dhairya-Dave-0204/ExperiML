@@ -1,13 +1,14 @@
-import React from 'react'
+import React from "react";
 
-import { AboutHero } from "@/components/components.index"
+import { AboutHero, WhatIsExperiml } from "@/components/components.index";
 
 function About() {
   return (
     <>
       <AboutHero />
+      <WhatIsExperiml />
     </>
-  )
+  );
 }
 
-export default About
+export default About;
