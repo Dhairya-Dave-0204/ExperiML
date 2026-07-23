@@ -5,5 +5,7 @@ export const ROUTES = {
   DOCS: "/docs",
   SIGN_IN: "/signin",
   SIGN_UP: "/signup",
-  FAQ: "/faq"
+  FAQ: "/faq",
+  DATA_POLICY: "/data-policy",
+  PRIVACY_POLICY: "/privacy-policy",
 };
