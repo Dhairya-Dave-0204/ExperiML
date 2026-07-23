@@ -1,6 +1,11 @@
 import React from "react";
 
-import { AboutHero, WhatIsExperiml, WhyExperimlExists } from "@/components/components.index";
+import {
+  AboutHero,
+  WhatIsExperiml,
+  WhyExperimlExists,
+  WorkflowFit,
+} from "@/components/components.index";
 
 function About() {
   return (
@@ -8,6 +13,7 @@ function About() {
       <AboutHero />
       <WhatIsExperiml />
       <WhyExperimlExists />
+      <WorkflowFit />
     </>
   );
 }
