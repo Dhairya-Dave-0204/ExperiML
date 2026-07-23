@@ -3,6 +3,7 @@ export { default as Navbar } from "./common/Navbar/Navbar";
 export { default as Footer } from "./common/Footer/Footer";
 export { default as PrimaryButton } from "./common/PrimaryButton/PrimaryButton";
 export { default as SecondaryButton } from "./common/SecondaryButton/SecondaryButton";
+export { default as CTAButton } from "./common/CTAButton/CTAButton";
 export { default as Hero } from "./shared/Home/Hero/Hero"
 export { default as Narrative } from "./shared/Home/Narrative/Narrative"
 export { default as Capabilities } from "./shared/Home/Capabilities/Capabilities"
