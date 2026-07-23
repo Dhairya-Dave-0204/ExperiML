@@ -21,3 +21,4 @@ export { default as WhatIsExperiml } from "./shared/About/WhatIsExperiml/WhatIsE
 export { default as WhyExperimlExists } from "./shared/About/WhyExperimlExists/WhyExperimlExists"
 export { default as WorkflowFit } from "./shared/About/WorkflowFit/WorkflowFit"
 export { default as CoreCapabilities } from "./shared/About/CoreCapabilities/CoreCapabilities"
+export { default as WhoCanUse } from "./shared/About/WhoCanUse/WhoCanUse"

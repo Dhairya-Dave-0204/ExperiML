@@ -6,6 +6,7 @@ import {
   WhyExperimlExists,
   WorkflowFit,
   CoreCapabilities,
+  WhoCanUse
 } from "@/components/components.index";
 
 function About() {
@@ -16,6 +17,7 @@ function About() {
       <WhyExperimlExists />
       <WorkflowFit />
       <CoreCapabilities />
+      <WhoCanUse />
     </>
   );
 }
