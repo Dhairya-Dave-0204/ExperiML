@@ -18,3 +18,4 @@ export { default as CTA } from "./shared/Home/CTA/CTA"
 // About page components
 export { default as AboutHero } from "./shared/About/AboutHero/AboutHero"
 export { default as WhatIsExperiml } from "./shared/About/WhatIsExperiml/WhatIsExperiml"
+export { default as WhyExperimlExists } from "./shared/About/WhyExperimlExists/WhyExperimlExists"

@@ -1,6 +1,6 @@
 import { X, Check } from "lucide-react";
 
-import { PAIRS } from "./whyExperimlExists";
+import { PAIRS } from "./whyExperimlExistsData";
 
 function WhyExperimlExists() {
   return (
@@ -9,10 +9,10 @@ function WhyExperimlExists() {
       className="py-16 border-t border-border bg-surface-soft md:py-24"
     >
       <div className="container-custom">
-        <div className="max-w-xl mb-10">
-          <div className="inline-flex items-center gap-2 mb-4 text-xs font-semibold tracking-wider uppercase text-primary">
+        <div className="max-w-3xl mx-auto text-center mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1 mb-5 font-mono text-xs font-semibold tracking-wider uppercase rounded-full bg-primary-soft text-primary">
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            Why ExperiML exists
+            Why ExperiML Exists
           </div>
           <h2 className="mb-3 text-2xl font-extrabold tracking-tight font-heading text-text md:text-3xl">
             Machine learning work breaks down in familiar ways
