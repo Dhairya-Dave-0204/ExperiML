@@ -9,7 +9,8 @@ import {
   WhoCanUse,
   DesignPhilosophy,
   TechStack,
-  MeetDeveloper
+  MeetDeveloper,
+  ClosingCta
 } from "@/components/components.index";
 
 function About() {
@@ -24,6 +25,7 @@ function About() {
       <WhoCanUse />
       <TechStack />
       <MeetDeveloper />
+      <ClosingCta />
     </>
   );
 }
