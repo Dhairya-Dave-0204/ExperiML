@@ -29,3 +29,4 @@ export { default as ClosingCta } from "./shared/About/ClosingCta/ClosingCta"
 
 // Legal page components
 export { default as LegalHero } from "./legal/LegalHero/LegalHero"
+export { default as LegalSection } from "./legal/LegalSection/LegalSection"
