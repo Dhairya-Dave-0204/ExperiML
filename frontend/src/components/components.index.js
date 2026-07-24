@@ -28,4 +28,4 @@ export { default as MeetDeveloper } from "./shared/About/MeetDeveloper/MeetDevel
 export { default as ClosingCta } from "./shared/About/ClosingCta/ClosingCta"
 
 // Contact page components
-export { default as ContactOrchestrator } from "./shared/Contact/ContactOrchestrator"
+export { default as ContactOrchestrator } from "./shared/Contact/ContactOrchestrator/ContactOrchestrator"
