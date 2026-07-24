@@ -29,6 +29,11 @@ export const FOOTER_LINK_GROUPS = [
         label: "Contact",
         href: ROUTES.CONTACT,
       },
+      {
+        id: "FAQ",
+        label: "FAQ",
+        href: ROUTES.FAQ,
+      },
     ],
   },
 
@@ -50,6 +55,11 @@ export const FOOTER_LINK_GROUPS = [
         id: "Privacy",
         label: "Privacy Policies",
         href: ROUTES.PRIVACY_POLICY,
+      },
+      {
+        id: "Cookie",
+        label: "Cookies Policies",
+        href: ROUTES.COOKIE_POLICY,
       },
     ],
   },

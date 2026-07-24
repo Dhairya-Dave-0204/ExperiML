@@ -8,4 +8,5 @@ export const ROUTES = {
   FAQ: "/faq",
   DATA_POLICY: "/data-policy",
   PRIVACY_POLICY: "/privacy-policy",
+  COOKIE_POLICY: "/cookie-policy",
 };
