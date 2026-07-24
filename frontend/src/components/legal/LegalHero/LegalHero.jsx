@@ -2,7 +2,7 @@ import React from "react";
 
 function LegalHero({ badge, title, description, lastUpdated }) {
   return (
-    <section className="border-b border-border bg-background">
+    <section className="mt-10 border-b border-border bg-background">
       <div className="py-16 container-custom md:py-24">
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 mb-5 font-mono text-xs font-semibold tracking-wider uppercase rounded-full bg-primary-soft text-primary">
