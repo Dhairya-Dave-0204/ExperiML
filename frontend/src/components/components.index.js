@@ -30,6 +30,7 @@ export { default as ClosingCta } from "./shared/About/ClosingCta/ClosingCta"
 // Contact page components
 export { default as ContactHero } from "./shared/Contact/ContactHero/ContactHero"
 export { default as ContactInfo } from "./shared/Contact/ContactInfo/ContactInfo"
+export { default as ContactForm } from "./shared/Contact/ContactForm/ContactForm"
 
 // Legal page components
 export { default as LegalHero } from "./legal/LegalHero/LegalHero"
