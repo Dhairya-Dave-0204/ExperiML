@@ -4,3 +4,4 @@ export { default as Contact } from './Contact/Contact';
 export { default as FAQ } from './FAQ/FAQ';
 export { default as Documentation } from './Documentation/Documentation';
 export { default as PrivacyPolicy } from "./PrivacyPolicy/PrivacyPolicy"
+export { default as DataPolicy } from "./DataPolicy/DataPolicy"
