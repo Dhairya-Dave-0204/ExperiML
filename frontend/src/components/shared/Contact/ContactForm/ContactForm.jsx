@@ -90,10 +90,10 @@ function ContactForm() {
       <section className="py-16 border-t border-border md:py-24">
         <div className="container-custom">
           <div
-            className="flex flex-col items-center max-w-xl p-8 mx-auto text-center border shadow-sm  rounded-xl border-border bg-surface md:p-10"
+            className="flex flex-col items-center max-w-xl p-8 mx-auto text-center border shadow-sm rounded-xl border-border bg-surface md:p-10"
           >
             <div
-              className="flex items-center justify-center w-12 h-12 mb-4 rounded-full  bg-success/10"
+              className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-success/10"
             >
               <CheckCircle2
                 size={24}
@@ -103,13 +103,13 @@ function ContactForm() {
             </div>
 
             <h2
-              className="mb-2 text-xl font-extrabold  font-heading text-text"
+              className="mb-2 text-xl font-extrabold font-heading text-text"
             >
               {CONTACT_FORM_COPY.successTitle}
             </h2>
 
             <p
-              className="max-w-sm text-sm leading-relaxed  text-text-secondary"
+              className="max-w-sm text-sm leading-relaxed text-text-secondary"
             >
               {CONTACT_FORM_COPY.successDescription}
             </p>
@@ -144,13 +144,13 @@ function ContactForm() {
   }
 
   return (
-    <section className="py-16 border-t border-border bg-surface-soft md:py-24">
+    <section className="py-16 border-t border-border bg-primary-light/30 md:py-24">
       <div className="container-custom">
         {/* Header */}
 
         <div className="max-w-xl mb-10">
           <div
-            className="inline-flex items-center gap-2 mb-4 text-xs font-semibold tracking-wider uppercase  text-primary"
+            className="inline-flex items-center gap-2 mb-4 text-xs font-semibold tracking-wider uppercase text-primary"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
 
@@ -158,7 +158,7 @@ function ContactForm() {
           </div>
 
           <h2
-            className="mb-3 text-2xl font-extrabold tracking-tight  font-heading text-text md:text-3xl"
+            className="mb-3 text-2xl font-extrabold tracking-tight font-heading text-text md:text-3xl"
           >
             {CONTACT_FORM_COPY.title}
           </h2>
@@ -179,7 +179,7 @@ function ContactForm() {
         <form
           onSubmit={handleSubmit}
           noValidate
-          className="max-w-2xl p-6 mx-auto border shadow-sm  rounded-xl border-border bg-surface md:p-8"
+          className="max-w-4xl p-6 mx-auto border shadow-sm rounded-xl border-border bg-surface md:p-8"
         >
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             {CONTACT_FIELDS.filter(
