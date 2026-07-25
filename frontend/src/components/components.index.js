@@ -27,6 +27,9 @@ export { default as TechStack } from "./shared/About/TechStack/TechStack"
 export { default as MeetDeveloper } from "./shared/About/MeetDeveloper/MeetDeveloper"
 export { default as ClosingCta } from "./shared/About/ClosingCta/ClosingCta"
 
+// Contact page components
+export { default as ContactHero } from "./shared/Contact/ContactHero/ContactHero"
+
 // Legal page components
 export { default as LegalHero } from "./legal/LegalHero/LegalHero"
 export { default as LegalSection } from "./legal/LegalSection/LegalSection"
