@@ -1,5 +1,9 @@
 import React from "react";
 
+import ContactCard from "./ContactCard";
+
+import { CONTACT_ITEMS } from "./contactInfoData";
+
 function ContactInfo() {
   return (
     <section className="py-16 border-t border-border md:py-24">
@@ -19,7 +23,7 @@ function ContactInfo() {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {CONTACT_ITEMS.map((item) => (
-            <ContactCard key={item.title} {...item} />
+            <ContactCard key={item.id} {...item} />
           ))}
         </div>
       </div>
