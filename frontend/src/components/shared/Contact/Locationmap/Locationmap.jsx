@@ -2,6 +2,8 @@ import React from "react";
 
 import { MapPin, Globe } from "lucide-react";
 
+import { MAPS_EMBED_SRC } from "./mapData"
+
 function Locationmap() {
   return (
     <section className="py-16 border-t border-border md:py-24">
