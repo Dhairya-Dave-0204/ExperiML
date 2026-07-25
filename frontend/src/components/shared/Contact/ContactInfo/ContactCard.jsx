@@ -2,7 +2,7 @@ import React from "react";
 
 function ContactCard({ icon: Icon, title, value, description }) {
   return (
-    <div className="p-6 transition-colors duration-150 border shadow-sm rounded-xl border-border bg-surface hover:border-primary-light">
+    <div className="p-6 transition-all duration-300 border shadow-sm rounded-xl border-border bg-surface hover:border-primary-light hover:bg-surface-soft hover:scale-105">
       <div className="flex items-center justify-center w-10 h-10 mb-4 rounded-lg bg-primary-light">
         <Icon size={20} strokeWidth={1.75} className="text-primary" />
       </div>

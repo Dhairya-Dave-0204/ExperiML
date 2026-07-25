@@ -1,12 +1,13 @@
-import React from 'react'
-import { ContactHero } from "@/components/components.index"
+import React from "react";
+import { ContactHero, ContactInfo } from "@/components/components.index";
 
 function Contact() {
   return (
     <>
       <ContactHero />
+      <ContactInfo />
     </>
-  )
+  );
 }
 
-export default Contact
+export default Contact;
