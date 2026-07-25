@@ -2,7 +2,7 @@ import React from "react";
 
 function ContactHero() {
   return (
-    <section className="py-16 mt-10 md:py-24">
+    <section className="py-16 mt-10 md:py-24 bg-surface">
       <div className="flex flex-col items-center text-center container-custom">
         <div className="inline-flex items-center gap-2 mb-4 text-xs font-semibold tracking-wider uppercase text-primary">
           <span className="h-1.5 w-1.5 rounded-full bg-primary" />
