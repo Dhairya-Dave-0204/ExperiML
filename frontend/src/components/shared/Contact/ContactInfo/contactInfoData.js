@@ -5,7 +5,7 @@ export const CONTACT_ITEMS = [
     id: 1,
     icon: Mail,
     title: "Email",
-    value: "contact@experiml.dev",
+    value: "dhairyadave.work@gmail.com",
     description:
       "Best for detailed questions, bug reports, or collaboration ideas.",
   },
@@ -13,7 +13,7 @@ export const CONTACT_ITEMS = [
     id: 2,
     icon: Phone,
     title: "Phone",
-    value: "+91 00000 00000",
+    value: "+91 75670 39503",
     description:
       "Available for calls on request — mention it in your message first.",
   },
