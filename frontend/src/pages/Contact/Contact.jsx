@@ -1,5 +1,5 @@
 import React from "react";
-import { ContactHero, ContactInfo, ContactForm } from "@/components/components.index";
+import { ContactHero, ContactInfo, ContactForm, Locationmap } from "@/components/components.index";
 
 function Contact() {
   return (
@@ -7,6 +7,7 @@ function Contact() {
       <ContactHero />
       <ContactInfo />
       <ContactForm />
+      <Locationmap />
     </>
   );
 }
