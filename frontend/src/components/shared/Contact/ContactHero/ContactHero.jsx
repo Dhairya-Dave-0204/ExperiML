@@ -3,11 +3,8 @@ import { MessageCircle } from "lucide-react";
 
 function ContactHero() {
     return (
-    <section className="py-16 md:py-24">
+    <section className="py-16 mt-10 md:py-24">
       <div className="flex flex-col items-center text-center container-custom">
-        <div className="flex items-center justify-center w-12 h-12 mb-5 rounded-xl bg-primary-light">
-          <MessageCircle size={22} strokeWidth={1.75} className="text-primary" />
-        </div>
  
         <div className="inline-flex items-center gap-2 mb-4 text-xs font-semibold tracking-wider uppercase text-primary">
           <span className="h-1.5 w-1.5 rounded-full bg-primary" />
