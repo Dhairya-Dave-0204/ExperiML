@@ -24,13 +24,13 @@ function Locationmap() {
           </p>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <div className="flex items-center gap-2.5 rounded-lg border border-border bg-surface px-4 py-2.5 shadow-sm">
+            <div className="flex items-center gap-2.5 rounded-lg border border-border bg-surface px-4 py-2.5 shadow-sm transition-all duration-300 hover:border-primary/40">
               <MapPin size={16} strokeWidth={1.75} className="text-primary" />
               <span className="text-sm font-medium text-text">
                 Bhavnagar, Gujarat, India
               </span>
             </div>
-            <div className="flex items-center gap-2.5 rounded-lg border border-border bg-surface px-4 py-2.5 shadow-sm">
+            <div className="flex items-center gap-2.5 rounded-lg border border-border bg-surface px-4 py-2.5 shadow-sm transition-all duration-300 hover:border-primary/40">
               <Globe size={16} strokeWidth={1.75} className="text-primary" />
               <span className="text-sm font-medium text-text">
                 Open to remote collaboration
