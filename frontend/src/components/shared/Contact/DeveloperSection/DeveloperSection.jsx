@@ -10,7 +10,7 @@ function DeveloperSection() {
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
             The person behind ExperiML
           </div>
-          <h2 className="mb-4 text-2xl font-extrabold tracking-tight font-heading text-text md:text-3xl">
+          <h2 className="mb-4 text-3xl font-extrabold tracking-tight font-heading text-text md:text-4xl">
             Hi — thanks for stopping by
           </h2>
           <p className="max-w-md text-[15px] leading-relaxed text-text-secondary">
