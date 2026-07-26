@@ -32,6 +32,7 @@ export { default as ContactHero } from "./shared/Contact/ContactHero/ContactHero
 export { default as ContactInfo } from "./shared/Contact/ContactInfo/ContactInfo"
 export { default as ContactForm } from "./shared/Contact/ContactForm/ContactForm"
 export { default as Locationmap } from "./shared/Contact/Locationmap/Locationmap"
+export { default as DeveloperSection } from "./shared/Contact/DeveloperSection/DeveloperSection"
 
 // Legal page components
 export { default as LegalHero } from "./legal/LegalHero/LegalHero"
