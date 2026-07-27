@@ -35,6 +35,7 @@ export { default as Locationmap } from "./shared/Contact/Locationmap/Locationmap
 export { default as DeveloperSection } from "./shared/Contact/DeveloperSection/DeveloperSection"
 export { default as ContactReasons } from "./shared/Contact/ContactReasons/ContactReasons"
 export { default as ContactCTA } from "./shared/Contact/ContactCTA/ContactCTA"
+export { default as FaqAccordion } from "./shared/FAQ/FAQAccordion/FaqAccordion"
 
 // FAQ page components
 export { default as FaqMainLayout } from "./shared/FAQ/FaqMainLayout/FaqMainLayout"
