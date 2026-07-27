@@ -1,5 +1,13 @@
 import React from "react";
-import { ContactHero, ContactInfo, ContactForm, Locationmap, DeveloperSection } from "@/components/components.index";
+import {
+  ContactHero,
+  ContactInfo,
+  ContactForm,
+  Locationmap,
+  DeveloperSection,
+  ContactReasons,
+  ContactCTA,
+} from "@/components/components.index";
 
 function Contact() {
   return (
@@ -9,6 +17,8 @@ function Contact() {
       <ContactForm />
       <Locationmap />
       <DeveloperSection />
+      <ContactReasons />
+      <ContactCTA />
     </>
   );
 }
