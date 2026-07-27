@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import { PublicLayout } from "@/layout/layout.index";
 
-import { Home, About, Contact, FAQ, Documentation, PrivacyPolicy, DataPolicy } from "@/pages/page.index";
+import { Home, About, Contact, FAQ, Documentation, PrivacyPolicy, DataPolicy, CookiePolicy } from "@/pages/page.index";
 import { ROUTES } from "@/constants/routes"
 
 export default function AppRoutes() {
@@ -16,6 +16,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.DOCS} element={<Documentation />} />
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicy />} />
         <Route path={ROUTES.DATA_POLICY} element={<DataPolicy />} />
+        <Route path={ROUTES.COOKIE_POLICY} element={<CookiePolicy />} />
       </Route>
     </Routes>
   );
