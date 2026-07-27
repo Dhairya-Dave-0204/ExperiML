@@ -1,5 +1,5 @@
 import { useState } from "react";
-import FAQItem from "./FAQItem";
+import { FAQItem } from "@/components/components.index";
 
 function FaqAccordion({ groups }) {
   const [openKey, setOpenKey] = useState(null);
