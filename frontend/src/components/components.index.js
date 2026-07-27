@@ -36,6 +36,8 @@ export { default as DeveloperSection } from "./shared/Contact/DeveloperSection/D
 export { default as ContactReasons } from "./shared/Contact/ContactReasons/ContactReasons"
 export { default as ContactCTA } from "./shared/Contact/ContactCTA/ContactCTA"
 
+// FAQ page components
+
 // Legal page components
 export { default as LegalHero } from "./legal/LegalHero/LegalHero"
 export { default as LegalSection } from "./legal/LegalSection/LegalSection"
