@@ -1,5 +1,7 @@
 import React from "react";
 
+import { REASONS } from "./contactReasonsData"
+
 function ContactReasons() {
   return (
     <section className="py-16 border-t border-border md:py-24">
