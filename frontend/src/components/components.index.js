@@ -40,9 +40,12 @@ export { default as FaqItem } from "./shared/FAQ/FAQItem/FaqItem"
 
 // FAQ page components
 export { default as FaqMainLayout } from "./shared/FAQ/FaqMainLayout/FaqMainLayout"
+export { default as FaqAccordion } from "./shared/FAQ/FAQAccordion/FaqAccordion"
 export { default as FaqHero } from "./shared/FAQ/FAQHero/FaqHero"
 export { default as FaqSearch } from "./shared/FAQ/FAQSearch/FaqSearch"
+export { default as FaqItem } from "./shared/FAQ/FAQItem/FaqItem"
 export { default as FaqCategoryTabs } from "./shared/FAQ/FAQCategoryTabs/FaqCategoryTabs"
+export { default as FaqCta } from "./shared/FAQ/FAQCTA/FaqCta"
 
 
 // Legal page components
