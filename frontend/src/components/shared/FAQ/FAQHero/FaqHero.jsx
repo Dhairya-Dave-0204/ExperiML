@@ -1,8 +1,11 @@
 import React from "react";
 
-import { stats } from "./FaqHeroData";
+import { getFaqHeroStats } from "./FaqHeroData";
 
 function FaqHero({ questionCount, categoryCount }) {
+
+  const stats = getFaqHeroStats(questionCount, categoryCount);
+  
   return (
     <section className="py-16 md:py-24">
       <div className="flex flex-col items-center text-center container-custom">

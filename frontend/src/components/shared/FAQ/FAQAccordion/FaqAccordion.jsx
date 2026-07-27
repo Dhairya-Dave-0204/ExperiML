@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FAQItem } from "@/components/components.index";
+import { FaqItem } from "@/components/components.index";
 
 function FaqAccordion({ groups }) {
   const [openKey, setOpenKey] = useState(null);
@@ -29,7 +29,7 @@ function FaqAccordion({ groups }) {
             {group.questions.map((item, i) => {
               const key = `${group.id}-${i}`;
               return (
-                <FAQItem
+                <FaqItem
                   key={key}
                   question={item.q}
                   answer={item.a}

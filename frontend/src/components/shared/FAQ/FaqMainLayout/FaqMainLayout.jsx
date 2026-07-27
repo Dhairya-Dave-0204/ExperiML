@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 
 import {
-  FAQHero,
-  FAQSearch,
-  FAQCategoryTabs,
-  FAQAccordion,
-  FAQCTA,
+  FaqHero,
+  FaqSearch,
+  FaqCategoryTabs,
+  FaqAccordion,
+  FaqCta,
 } from "@/components/components.index";
 
 import FAQ_DATA from "./faqMainLayoutData";
@@ -43,7 +43,7 @@ function FaqMainLayout() {
 
   return (
     <>
-      <FAQHero
+      <FaqHero
         questionCount={TOTAL_QUESTIONS}
         categoryCount={FAQ_DATA.length}
       />
@@ -51,12 +51,12 @@ function FaqMainLayout() {
       <section className="py-16 border-t border-border md:py-24">
         <div className="container-custom">
           <div className="mb-8">
-            <FAQSearch value={searchQuery} onChange={setSearchQuery} />
+            <FaqSearch value={searchQuery} onChange={setSearchQuery} />
           </div>
 
           {!isSearching && (
             <div className="flex justify-center mb-8">
-              <FAQCategoryTabs
+              <FaqCategoryTabs
                 categories={FAQ_DATA}
                 activeId={activeCategory}
                 onSelect={setActiveCategory}
@@ -65,12 +65,12 @@ function FaqMainLayout() {
           )}
 
           <div className="max-w-3xl mx-auto">
-            <FAQAccordion groups={groups} />
+            <FaqAccordion groups={groups} />
           </div>
         </div>
       </section>
 
-      <FAQCTA />
+      <FaqCta />
     </>
   );
 }
