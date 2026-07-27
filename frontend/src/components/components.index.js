@@ -40,6 +40,7 @@ export { default as ContactCTA } from "./shared/Contact/ContactCTA/ContactCTA"
 export { default as FaqMainLayout } from "./shared/FAQ/FaqMainLayout/FaqMainLayout"
 export { default as FaqHero } from "./shared/FAQ/FAQHero/FaqHero"
 export { default as FaqSearch } from "./shared/FAQ/FAQSearch/FaqSearch"
+export { default as FaqCategoryTabs } from "./shared/FAQ/FAQCategoryTabs/FaqCategoryTabs"
 
 
 // Legal page components
