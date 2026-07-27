@@ -37,6 +37,10 @@ export { default as ContactReasons } from "./shared/Contact/ContactReasons/Conta
 export { default as ContactCTA } from "./shared/Contact/ContactCTA/ContactCTA"
 
 // FAQ page components
+export { default as FaqMainLayout } from "./shared/FAQ/FaqMainLayout/FaqMainLayout"
+export { default as FaqHero } from "./shared/FAQ/FAQHero/FaqHero"
+export { default as FaqSearch } from "./shared/FAQ/FAQSearch/FaqSearch"
+
 
 // Legal page components
 export { default as LegalHero } from "./legal/LegalHero/LegalHero"
