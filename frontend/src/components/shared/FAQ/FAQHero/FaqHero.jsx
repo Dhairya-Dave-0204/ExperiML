@@ -27,7 +27,7 @@ function FaqHero({ questionCount, categoryCount }) {
           {stats.map(({ icon: Icon, label, value }) => (
             <div
               key={label}
-              className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3.5 shadow-sm"
+              className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3.5 shadow-sm transition-all duration-300 hover:border-primary/30 hover:bg-surface-soft"
             >
               <div className="flex items-center justify-center rounded-lg h-9 w-9 shrink-0 bg-primary-light">
                 <Icon size={17} strokeWidth={1.75} className="text-primary" />
