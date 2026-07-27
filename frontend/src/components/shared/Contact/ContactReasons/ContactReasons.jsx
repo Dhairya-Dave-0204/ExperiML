@@ -24,7 +24,7 @@ function ContactReasons() {
           {REASONS.map(({ icon: Icon, title, desc }) => (
             <div
               key={title}
-              className="flex gap-3.5 rounded-xl border border-border bg-surface p-5 shadow-sm transition-colors duration-150 hover:border-primary-light"
+              className="flex gap-3.5 rounded-xl border border-border bg-surface p-5 shadow-sm transition-all duration-300 hover:border-primary/30 hover:bg-surface-soft"
             >
               <div className="flex items-center justify-center rounded-lg h-9 w-9 shrink-0 bg-primary-light">
                 <Icon size={17} strokeWidth={1.75} className="text-primary" />
