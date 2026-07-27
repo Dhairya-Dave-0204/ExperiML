@@ -9,7 +9,7 @@ function ContactCTA() {
   return (
     <section className="py-16 border-t border-border md:py-24">
       <div className="container-custom">
-        <div className="relative px-6 overflow-hidden border shadow-md rounded-3xl border-border bg-surface py-14 md:px-10 md:py-16">
+        <div className="relative px-6 overflow-hidden border shadow-md rounded-3xl border-border bg-surface-soft py-14 md:px-10 md:py-16">
           {/* Background */}
           <div className="absolute inset-0">
             {/* Soft corner highlights */}
