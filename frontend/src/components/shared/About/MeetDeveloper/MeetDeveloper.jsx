@@ -1,5 +1,4 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
 import { GitGraph, Link, Mail } from "lucide-react";
 
 function MeetDeveloper() {
@@ -34,27 +33,38 @@ function MeetDeveloper() {
           </p>
 
           <div className="flex items-center gap-3">
-            <NavLink
-              to="https://github.com/Dhairya-Dave-0204"
+            {/* GitHub */}
+            <a
+              href="https://github.com/Dhairya-Dave-0204"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="GitHub"
               className="flex items-center justify-center w-10 h-10 transition-colors duration-150 border rounded-lg border-border text-text-secondary hover:border-border-hover hover:text-text"
             >
               <GitGraph size={18} strokeWidth={1.75} />
-            </NavLink>
-            <NavLink
-              to="https://github.com/Dhairya-Dave-0204"
+            </a>
+
+            {/* LinkedIn */}
+            <a
+              href="https://www.linkedin.com/in/davedhairya"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="LinkedIn"
               className="flex items-center justify-center w-10 h-10 transition-colors duration-150 border rounded-lg border-border text-text-secondary hover:border-border-hover hover:text-text"
             >
               <Link size={18} strokeWidth={1.75} />
-            </NavLink>
-            <NavLink
-              to="dhairyadave.work@gmail.com"
-              aria-label="Email"
+            </a>
+
+            {/* Gmail Compose */}
+            <a
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=dhairyadave.work@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Send Email"
               className="flex items-center justify-center w-10 h-10 transition-colors duration-150 border rounded-lg border-border text-text-secondary hover:border-border-hover hover:text-text"
             >
               <Mail size={18} strokeWidth={1.75} />
-            </NavLink>
+            </a>
           </div>
         </div>
       </div>
