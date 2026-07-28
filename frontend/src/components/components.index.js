@@ -55,3 +55,6 @@ export { default as FormDivider } from "./auth/SignIn/FormDivider/FormDivider";
 export { default as AuthFooter } from "./auth/SignIn/AuthFooter/AuthFooter";
 export { default as SignInForm } from "./auth/SignIn/SignInForm/SignInForm";
 export { default as SignInMainLayout } from "./auth/SignIn/SignInMainLayout/SignInMainLayout";
+
+// Sign Up page components
+export { default as AuthHeader } from "./auth/SignUp/AuthHeader/AuthHeader";
