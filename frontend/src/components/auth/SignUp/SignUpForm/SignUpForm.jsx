@@ -4,7 +4,7 @@ import { User, Mail, ArrowRight } from "lucide-react";
 import {
   AuthHeader,
   PasswordInput,
-  FormDivider,
+  FormDividerUp,
 } from "@/components/components.index";
 
 function SignUpForm() {
@@ -124,7 +124,7 @@ function SignUpForm() {
       </form>
 
       <div className="my-6">
-        <FormDivider label="already have an account" />
+        <FormDividerUp label="already have an account" />
       </div>
 
       <a

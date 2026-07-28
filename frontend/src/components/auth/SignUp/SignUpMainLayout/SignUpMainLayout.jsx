@@ -4,8 +4,7 @@ import {
   AuthLayout,
   AuthCard,
   SignUpForm,
-  AuthCard,
-  AuthFooter,
+  AuthFooterUp,
 } from "@/components/components.index";
 
 function SignUpMainLayout() {
@@ -14,7 +13,7 @@ function SignUpMainLayout() {
       <AuthCard>
         <SignUpForm />
       </AuthCard>
-      <AuthFooter actionLabel="creating an account" />
+      <AuthFooterUp actionLabel="creating an account" />
     </AuthLayout>
   );
 }

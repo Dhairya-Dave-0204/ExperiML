@@ -1,8 +1,12 @@
 import React from 'react'
 
+import { SignUpMainLayout } from "@/components/components.index"
+
 function SignUp() {
   return (
-    <div>SignUp</div>
+    <>
+      <SignUpMainLayout />
+    </>
   )
 }
 

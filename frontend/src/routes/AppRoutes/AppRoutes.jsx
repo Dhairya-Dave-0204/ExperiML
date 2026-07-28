@@ -12,6 +12,7 @@ import {
   DataPolicy,
   CookiePolicy,
   SignIn,
+  SignUp
 } from "@/pages/page.index";
 import { ROUTES } from "@/constants/routes";
 
@@ -32,6 +33,7 @@ export default function AppRoutes() {
 
       <Route element={<AuthLayout />}>
         <Route path={ROUTES.SIGN_IN} element={<SignIn />} />
+        <Route path={ROUTES.SIGN_UP} element={<SignUp />} />
       </Route>
     </Routes>
   );
