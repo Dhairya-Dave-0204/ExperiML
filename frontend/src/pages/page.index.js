@@ -6,3 +6,4 @@ export { default as Documentation } from './Documentation/Documentation';
 export { default as PrivacyPolicy } from "./PrivacyPolicy/PrivacyPolicy"
 export { default as DataPolicy } from "./DataPolicy/DataPolicy"
 export { default as CookiePolicy } from "./CookiePolicy/CookiePolicy"
+export { default as SignIn } from "./SignIn/SignIn"
