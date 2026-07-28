@@ -91,9 +91,9 @@ function PasswordField({
           className="absolute p-1 transition-colors duration-200 -translate-y-1/2 rounded-md right-3 top-1/2 text-text-secondary hover:text-text focus:outline-none focus:ring-2 focus:ring-primary-light disabled:pointer-events-none disabled:opacity-50"
         >
           {showPassword ? (
-            <EyeOff size={16} strokeWidth={1.75} />
+            <EyeOff size={20} strokeWidth={1.75} />
           ) : (
-            <Eye size={16} strokeWidth={1.75} />
+            <Eye size={20} strokeWidth={1.75} />
           )}
         </button>
       </div>
