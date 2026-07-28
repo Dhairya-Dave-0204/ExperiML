@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { AuthHero } from "@/components/components.index"
+import { SignInMainLayout } from "@/components/components.index"
 
 function SignIn() {
   return (
     <>
-        <AuthHero />
+        <SignInMainLayout />
     </>
   )
 }
