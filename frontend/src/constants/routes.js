@@ -9,4 +9,5 @@ export const ROUTES = {
   DATA_POLICY: "/data-policy",
   PRIVACY_POLICY: "/privacy-policy",
   COOKIE_POLICY: "/cookie-policy",
+  FORGOT_PASS: "/forgot-password",
 };

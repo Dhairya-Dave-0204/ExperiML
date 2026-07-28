@@ -1,6 +1,8 @@
 import { Eye, EyeOff, Lock } from "lucide-react";
 
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+
+import { ROUTES } from "@/constants/routes"
 
 import ValidationMessage from "../ValidationMessage";
 
@@ -52,11 +54,11 @@ function PasswordField({
         </label>
 
         <Link
-              to="/forgot-password"
-              className="text-xs font-medium transition-colors duration-150 text-primary hover:text-primary-dark hover:underline"
-            >
-              Forgot password?
-            </Link>
+          to={ROUTES.FORGOT_PASS}
+          className="text-xs font-medium transition-colors duration-150 text-primary hover:text-primary-dark hover:underline"
+        >
+          Forgot password?
+        </Link>
       </div>
 
       <div className="relative">
