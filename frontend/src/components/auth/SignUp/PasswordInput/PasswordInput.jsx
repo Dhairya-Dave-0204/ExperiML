@@ -1,51 +1,95 @@
 import { useState } from "react";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Lock } from "lucide-react";
+
+import ValidationMessage from "../SignUpForm/Components/ValidationMessage";
 
 function PasswordInput({
   id,
   name,
   label,
+  value,
   placeholder,
   autoComplete,
-  rightSlot,
+  error,
+  touched,
+  onChange,
+  onBlur,
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
+  const hasError = touched && Boolean(error);
+
+  function togglePasswordVisibility() {
+    setShowPassword((prev) => !prev);
+  }
+
   return (
     <div>
-      <div className="mb-1.5 flex items-center justify-between">
-        <label htmlFor={id} className="block text-sm font-semibold text-text">
-          {label}
-        </label>
-        {rightSlot}
-      </div>
+      <label
+        htmlFor={id}
+        className="mb-1.5 block text-sm font-semibold text-text"
+      >
+        {label}
+      </label>
+
       <div className="relative">
         <Lock
           size={16}
           strokeWidth={1.75}
           className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary"
         />
+
         <input
           id={id}
           name={name}
           type={showPassword ? "text" : "password"}
-          autoComplete={autoComplete}
+          value={value}
           placeholder={placeholder}
-          className="w-full rounded-lg border border-border bg-surface py-2.5 pl-10 pr-11 text-sm text-text placeholder:text-text-secondary/70 transition-colors duration-150 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-light"
+          autoComplete={autoComplete}
+          onChange={onChange}
+          onBlur={onBlur}
+          aria-invalid={hasError}
+          aria-describedby={hasError ? `${id}-error` : undefined}
+          className={`
+            w-full
+            rounded-lg
+            border
+            bg-surface
+            py-2.5
+            pl-10
+            pr-11
+            text-sm
+            text-text
+            placeholder:text-text-secondary/70
+            transition-colors
+            duration-150
+            focus:outline-none
+            focus:ring-2
+            ${
+              hasError
+                ? "border-danger focus:border-danger focus:ring-danger/20"
+                : "border-border focus:border-primary focus:ring-primary-light"
+            }
+          `}
         />
+
         <button
           type="button"
-          onClick={() => setShowPassword((prev) => !prev)}
+          onClick={togglePasswordVisibility}
           aria-label={showPassword ? "Hide password" : "Show password"}
-          className="absolute transition-colors duration-150 -translate-y-1/2 right-3 top-1/2 text-text-secondary hover:text-text"
+          className="absolute transition-colors -translate-y-1/2  right-3 top-1/2 text-text-secondary hover:text-text focus:outline-none"
         >
           {showPassword ? (
-            <EyeOff size={16} strokeWidth={1.75} />
+            <EyeOff size={18} strokeWidth={1.8} />
           ) : (
-            <Eye size={16} strokeWidth={1.75} />
+            <Eye size={18} strokeWidth={1.8} />
           )}
         </button>
       </div>
+
+      {touched && (
+        <ValidationMessage message={error} variant="error" className="mt-1" />
+      )}
     </div>
   );
 }
