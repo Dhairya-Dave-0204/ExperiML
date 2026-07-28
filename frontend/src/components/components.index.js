@@ -60,3 +60,4 @@ export { default as SignInMainLayout } from "./auth/SignIn/SignInMainLayout/Sign
 export { default as AuthHeader } from "./auth/SignUp/AuthHeader/AuthHeader";
 export { default as AuthFooter } from "./auth/SignUp/AuthFooter/AuthFooter";
 export { default as FormDivider } from "./auth/SignUp/FormDivider/FormDivider";
+export { default as AuthLayout } from "./auth/SignUp/AuthLayout/AuthLayout";
