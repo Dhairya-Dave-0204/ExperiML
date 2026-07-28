@@ -15,5 +15,3 @@ function App() {
 }
 
 export default App
-
-// TODO: Developer section links in the about page
