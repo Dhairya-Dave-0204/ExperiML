@@ -244,28 +244,7 @@ function ContactForm() {
           <button
             type="submit"
             disabled={!isValid}
-            className="
-              mt-6
-              inline-flex
-              w-full
-              items-center
-              justify-center
-              gap-2
-              rounded-lg
-              bg-primary
-              px-5
-              py-2.5
-              text-sm
-              font-semibold
-              text-white
-              transition-colors
-              duration-150
-              hover:bg-primary-dark
-              disabled:cursor-not-allowed
-              disabled:bg-border
-              disabled:text-text-secondary
-              sm:w-auto
-            "
+            className="inline-flex items-center px-5 py-2.5 justify-center w-full gap-2 mt-6 text-sm font-semibold text-white transition-colors duration-300 rounded-lg bg-primary hover:bg-primary-dark disabled:cursor-not-allowed disabled:bg-border disabled:text-text-secondary sm:w-auto"
           >
             {CONTACT_FORM_COPY.submitButton}
 
