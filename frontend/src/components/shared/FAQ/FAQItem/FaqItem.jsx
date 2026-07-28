@@ -2,63 +2,58 @@ import { ChevronDown } from "lucide-react";
 
 function FaqItem({ question, answer, isOpen, onToggle }) {
   return (
-    <article className="border-b border-border/60 last:border-b-0">
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-expanded={isOpen}
-        className="flex items-start justify-between w-full gap-5 px-6 text-left transition-colors duration-200 group py-7 hover:bg-surface-soft/50 md:px-8"
-      >
-        <div className="flex-1 pr-2">
-          <h3
+    <article className="p-5 border-b border-border/60 last:border-b-0">
+      <h3>
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={isOpen}
+          className="flex items-start justify-between w-full gap-4 px-5 py-5 text-left transition-colors duration-200 group hover:bg-surface-soft/60 sm:px-6"
+        >
+          <span
             className={`
-              text-[16px]
-              font-semibold
-              leading-7
-              transition-colors
-              duration-200
+              flex-1 min-w-0 text-[15px] font-semibold leading-6 transition-colors duration-200
               ${isOpen ? "text-primary" : "text-text group-hover:text-primary"}
             `}
           >
             {question}
-          </h3>
-        </div>
+          </span>
 
-        <div
-          className={`
-            mt-0.5
-            flex
-            h-8
-            w-8
-            shrink-0
-            items-center
-            justify-center
-            rounded-full
-            transition-all
-            duration-300
-            ${
-              isOpen
-                ? "rotate-180 bg-primary-light text-primary"
-                : "bg-surface-soft text-text-secondary group-hover:bg-primary-light group-hover:text-primary"
-            }
-          `}
-        >
-          <ChevronDown size={16} strokeWidth={2} />
-        </div>
-      </button>
+          <span
+            className={`
+              mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full
+              transition-all duration-300
+              ${
+                isOpen
+                  ? "rotate-180 bg-primary-light text-primary"
+                  : "bg-surface-soft text-text-secondary group-hover:bg-primary-light group-hover:text-primary"
+              }
+            `}
+          >
+            <ChevronDown size={15} strokeWidth={2} />
+          </span>
+        </button>
+      </h3>
 
+      {/*
+        Expand/collapse via grid-template-rows (0fr -> 1fr) rather than a
+        fixed max-height, so the answer is never clipped regardless of how
+        long it is or how narrow the content pane gets.
+      */}
       <div
         className={`
-          overflow-hidden
-          transition-all
-          duration-300
-          ease-in-out
-          ${isOpen ? "max-h-150 opacity-100" : "max-h-0 opacity-0"}
+          grid overflow-hidden transition-[grid-template-rows] duration-300 ease-in-out
+          ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}
         `}
       >
-        <div className="px-6 pb-7 md:px-8">
-          <div className="max-w-3xl">
-            <p className="text-[15px] leading-8 text-text-secondary">
+        <div
+          className={`
+            min-h-0 overflow-hidden transition-opacity duration-200
+            ${isOpen ? "opacity-100 delay-100" : "opacity-0"}
+          `}
+        >
+          <div className="px-5 pb-5 sm:px-6">
+            <p className="max-w-2xl text-sm leading-7 text-text-secondary">
               {answer}
             </p>
           </div>

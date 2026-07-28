@@ -1,120 +1,53 @@
 function FaqCategoryTabs({ categories, activeId, onSelect }) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {categories.map(({ id, label, icon: Icon, questions }) => {
-        const isActive = id === activeId;
+    <nav aria-label="FAQ categories">
+      <div className="flex gap-2 pb-1 overflow-x-auto lg:flex-col lg:overflow-visible lg:pb-0">
+        {categories.map(({ id, label, icon: Icon, questions }) => {
+          const isActive = id === activeId;
 
-        return (
-          <button
-            key={id}
-            type="button"
-            onClick={() => onSelect(id)}
-            className={`
-              group
-              relative
-              flex
-              min-h-[148px]
-              flex-col
-              rounded-2xl
-              border
-              p-6
-              text-left
-              transition-all
-              duration-200
-              ${
-                isActive
-                  ? "border-primary bg-primary/5 shadow-sm"
-                  : "border-border bg-background hover:border-primary/40 hover:bg-surface"
-              }
-            `}
-          >
-            {/* Left Accent */}
-
-            <span
+          return (
+            <button
+              key={id}
+              type="button"
+              onClick={() => onSelect(id)}
+              aria-current={isActive ? "true" : undefined}
               className={`
-                absolute
-                left-0
-                top-6
-                bottom-6
-                w-1
-                rounded-r-full
-                transition-colors
-                duration-200
+                group flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full
+                border px-3.5 py-2 text-sm font-medium transition-colors duration-150
+
+                lg:w-full lg:shrink lg:justify-between lg:whitespace-normal
+                lg:rounded-lg lg:border-0 lg:px-3 lg:py-2.5
+
                 ${
                   isActive
-                    ? "bg-primary"
-                    : "bg-transparent group-hover:bg-primary/30"
-                }
-              `}
-            />
-
-            {/* Icon */}
-
-            <div
-              className={`
-                flex
-                h-10
-                w-10
-                items-center
-                justify-center
-                rounded-xl
-                transition-colors
-                duration-200
-                ${
-                  isActive
-                    ? "bg-primary-light text-primary"
-                    : "bg-surface-soft text-text-secondary group-hover:text-primary"
+                    ? "border-primary bg-primary-light text-primary lg:bg-primary-light"
+                    : "border-border bg-surface text-text-secondary hover:border-border-hover hover:text-text lg:border-transparent lg:bg-transparent lg:hover:bg-surface-soft lg:hover:text-text"
                 }
               `}
             >
-              <Icon size={18} strokeWidth={1.8} />
-            </div>
+              <span className="flex min-w-0 items-center gap-2.5">
+                <Icon size={16} strokeWidth={1.75} className="shrink-0" />
+                <span className="truncate">{label}</span>
+              </span>
 
-            {/* Content */}
+              <span
+                className={`
+                  shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold leading-none
 
-            <div className="flex flex-col justify-end flex-1 mt-5">
-              <div className="flex items-center justify-between gap-3">
-                <h3
-                  className={`
-                    text-base
-                    font-semibold
-                    leading-6
-                    transition-colors
-                    duration-200
-                    ${isActive ? "text-primary" : "text-text"}
-                  `}
-                >
-                  {label}
-                </h3>
-
-                <span
-                  className={`
-                    shrink-0
-                    rounded-full
-                    px-2.5
-                    py-1
-                    text-xs
-                    font-semibold
-                    ${
-                      isActive
-                        ? "bg-primary-light text-primary"
-                        : "bg-surface-soft text-text-secondary"
-                    }
-                  `}
-                >
-                  {questions.length}
-                </span>
-              </div>
-
-              <p className="mt-2 text-sm leading-6 text-text-secondary">
-                {questions.length}{" "}
-                {questions.length === 1 ? "question" : "questions"}
-              </p>
-            </div>
-          </button>
-        );
-      })}
-    </div>
+                  ${
+                    isActive
+                      ? "bg-primary/15 text-primary"
+                      : "bg-surface-soft text-text-secondary lg:bg-border/50"
+                  }
+                `}
+              >
+                {questions.length}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </nav>
   );
 }
 

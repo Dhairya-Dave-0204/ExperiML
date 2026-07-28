@@ -1,57 +1,60 @@
 import { useState } from "react";
+import { SearchX } from "lucide-react";
 
 import { FaqItem } from "@/components/components.index";
 
-function FaqAccordion({ groups }) {
+function FaqAccordion({ groups, isSearching, searchQuery }) {
   const [openKey, setOpenKey] = useState(null);
 
   if (groups.length === 0) {
     return (
-      <div className="px-8 py-16 text-center border rounded-3xl border-border bg-surface">
-        <div className="max-w-md mx-auto">
-          <h3 className="text-2xl font-bold font-heading text-text">
-            No results found
-          </h3>
-
-          <p className="mt-3 text-[15px] leading-7 text-text-secondary">
-            We couldn't find any questions matching your search.
-            Try another keyword or browse one of the categories above.
-          </p>
+      <div className="flex flex-col items-center px-8 py-20 text-center border border-dashed rounded-2xl border-border">
+        <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-surface-soft">
+          <SearchX
+            size={20}
+            strokeWidth={1.75}
+            className="text-text-secondary"
+          />
         </div>
+
+        <h3 className="text-lg font-bold font-heading text-text">
+          No results found
+        </h3>
+
+        <p className="max-w-sm mt-2 text-sm leading-relaxed text-text-secondary">
+          {isSearching
+            ? `Nothing matched "${searchQuery}". Try a different term, or pick a category from the list.`
+            : "This category doesn't have any questions yet."}
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-10">
       {groups.map((group) => (
         <section key={group.id}>
           {group.showLabel && (
-            <header className="mb-6">
-              <div className="flex flex-wrap items-center gap-3">
-                <h2 className="text-3xl font-bold tracking-tight font-heading text-text">
+            <header className="flex items-center justify-between gap-4 pb-4 mb-4 border-b border-border">
+              <div className="flex items-center min-w-0 gap-4">
+                {group.icon && (
+                  <div className="flex items-center justify-center rounded-lg h-9 w-9 shrink-0 bg-primary-light text-primary">
+                    <group.icon size={17} strokeWidth={1.75} />
+                  </div>
+                )}
+                <h2 className="text-xl font-bold tracking-tight truncate font-heading text-text sm:text-2xl">
                   {group.label}
                 </h2>
-
-                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-primary-light text-primary">
-                  {group.questions.length}{" "}
-                  {group.questions.length === 1
-                    ? "Question"
-                    : "Questions"}
-                </span>
               </div>
 
-              <p className="mt-3 max-w-2xl text-[15px] leading-7 text-text-secondary">
-                Browse the most frequently asked questions related to{" "}
-                <span className="font-medium text-text">
-                  {group.label}
-                </span>
-                .
-              </p>
+              <span className="text-xs font-semibold shrink-0 text-text-secondary">
+                {group.questions.length}{" "}
+                {group.questions.length === 1 ? "question" : "questions"}
+              </span>
             </header>
           )}
 
-          <div className="border rounded-3xl border-border bg-surface">
+          <div className="border rounded-2xl border-border bg-surface">
             {group.questions.map((item, index) => {
               const key = `${group.id}-${index}`;
 
@@ -61,11 +64,7 @@ function FaqAccordion({ groups }) {
                   question={item.q}
                   answer={item.a}
                   isOpen={openKey === key}
-                  onToggle={() =>
-                    setOpenKey(
-                      openKey === key ? null : key
-                    )
-                  }
+                  onToggle={() => setOpenKey(openKey === key ? null : key)}
                 />
               );
             })}

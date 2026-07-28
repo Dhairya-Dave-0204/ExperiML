@@ -48,6 +48,18 @@ function FaqMainLayout() {
     ];
   }, [searchQuery, activeCategory, isSearching]);
 
+  const resultCount = useMemo(
+    () => groups.reduce((sum, group) => sum + group.questions.length, 0),
+    [groups],
+  );
+
+  // Picking a category always exits search mode, so the sidebar selection
+  // and the content pane never disagree about what's being shown.
+  function handleSelectCategory(id) {
+    setActiveCategory(id);
+    setSearchQuery("");
+  }
+
   return (
     <>
       <FaqHero
@@ -57,50 +69,45 @@ function FaqMainLayout() {
 
       <section className="border-t border-border py-14 md:py-20">
         <div className="container-custom">
-          {/* Search */}
-          <div className="max-w-6xl mx-auto">
-            <div className="p-6 border rounded-3xl border-border bg-surface md:p-8">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold font-heading text-text">
-                  Browse Questions
-                </h2>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr] lg:gap-10 xl:grid-cols-[320px_1fr]">
+            {/* Sidebar: search + category navigation, sticky on desktop */}
+            <aside className="lg:sticky lg:top-24 lg:self-start">
+              <div className="p-4 border rounded-2xl border-border bg-surface sm:p-5">
+                <FaqSearch value={searchQuery} onChange={setSearchQuery} />
 
-                <p className="mt-2 max-w-2xl text-[15px] leading-7 text-text-secondary">
-                  Search the documentation or browse questions by category.
-                  Everything is organized to help you find answers quickly.
+                <div className="hidden h-px mt-4 mb-3 bg-border lg:block" />
+
+                <p className="hidden mb-3 text-xs font-semibold tracking-wider uppercase text-text-secondary lg:block">
+                  Categories
                 </p>
-              </div>
 
-              <FaqSearch value={searchQuery} onChange={setSearchQuery} />
-            </div>
-          </div>
-
-          {/* Categories */}
-          {!isSearching && (
-            <div className="max-w-6xl mx-auto mt-10">
-              <div className="flex items-center justify-between mb-5">
-                <div>
-                  <h3 className="text-xl font-semibold font-heading text-text">
-                    Browse by Category
-                  </h3>
-
-                  <p className="mt-1 text-sm text-text-secondary">
-                    Select a category to view its frequently asked questions.
-                  </p>
+                <div className="mt-3 lg:mt-0">
+                  <FaqCategoryTabs
+                    categories={FAQ_DATA}
+                    activeId={isSearching ? null : activeCategory}
+                    onSelect={handleSelectCategory}
+                  />
                 </div>
               </div>
+            </aside>
 
-              <FaqCategoryTabs
-                categories={FAQ_DATA}
-                activeId={activeCategory}
-                onSelect={setActiveCategory}
+            {/* Content pane */}
+            <div className="min-w-0">
+              {isSearching && (
+                <p className="mb-6 text-sm text-text-secondary">
+                  {resultCount} {resultCount === 1 ? "result" : "results"} for{" "}
+                  <span className="font-semibold text-text">
+                    &ldquo;{searchQuery}&rdquo;
+                  </span>
+                </p>
+              )}
+
+              <FaqAccordion
+                groups={groups}
+                isSearching={isSearching}
+                searchQuery={searchQuery}
               />
             </div>
-          )}
-
-          {/* Accordion */}
-          <div className="max-w-6xl mx-auto mt-12">
-            <FaqAccordion groups={groups} />
           </div>
         </div>
       </section>
