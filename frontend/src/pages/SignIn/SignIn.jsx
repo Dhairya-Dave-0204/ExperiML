@@ -1,8 +1,12 @@
 import React from 'react'
 
+import { AuthHero } from "@/components/components.index"
+
 function SignIn() {
   return (
-    <div>SignIn</div>
+    <>
+        <AuthHero />
+    </>
   )
 }
 
