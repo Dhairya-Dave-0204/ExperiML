@@ -5,6 +5,7 @@ export { default as Footer } from "./common/Footer/Footer";
 export { default as PrimaryButton } from "./common/PrimaryButton/PrimaryButton";
 export { default as SecondaryButton } from "./common/SecondaryButton/SecondaryButton";
 export { default as CTAButton } from "./common/CTAButton/CTAButton";
+export { default as ScrollToTop } from "./common/ScrollToTop/ScrollToTop";
 
 // Home page components
 export { default as Hero } from "./shared/Home/Hero/Hero";
