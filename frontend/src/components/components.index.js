@@ -6,57 +6,52 @@ export { default as PrimaryButton } from "./common/PrimaryButton/PrimaryButton";
 export { default as SecondaryButton } from "./common/SecondaryButton/SecondaryButton";
 export { default as CTAButton } from "./common/CTAButton/CTAButton";
 
-
 // Home page components
-export { default as Hero } from "./shared/Home/Hero/Hero"
-export { default as Narrative } from "./shared/Home/Narrative/Narrative"
-export { default as Capabilities } from "./shared/Home/Capabilities/Capabilities"
-export { default as Reproducibility } from "./shared/Home/Reproducibility/Reproducibility"
-export { default as ExperimentLineage } from "./shared/Home/ExperimentLineage/ExperimentLineage"
-export { default as Workspace } from "./shared/Home/Workspace/Workspace"
-export { default as CTA } from "./shared/Home/CTA/CTA"
-
+export { default as Hero } from "./shared/Home/Hero/Hero";
+export { default as Narrative } from "./shared/Home/Narrative/Narrative";
+export { default as Capabilities } from "./shared/Home/Capabilities/Capabilities";
+export { default as Reproducibility } from "./shared/Home/Reproducibility/Reproducibility";
+export { default as ExperimentLineage } from "./shared/Home/ExperimentLineage/ExperimentLineage";
+export { default as Workspace } from "./shared/Home/Workspace/Workspace";
+export { default as CTA } from "./shared/Home/CTA/CTA";
 
 // About page components
-export { default as AboutHero } from "./shared/About/AboutHero/AboutHero"
-export { default as WhatIsExperiml } from "./shared/About/WhatIsExperiml/WhatIsExperiml"
-export { default as WhyExperimlExists } from "./shared/About/WhyExperimlExists/WhyExperimlExists"
-export { default as WorkflowFit } from "./shared/About/WorkflowFit/WorkflowFit"
-export { default as CoreCapabilities } from "./shared/About/CoreCapabilities/CoreCapabilities"
-export { default as WhoCanUse } from "./shared/About/WhoCanUse/WhoCanUse"
-export { default as DesignPhilosophy } from "./shared/About/DesignPhilosophy/DesignPhilosophy"
-export { default as TechStack } from "./shared/About/TechStack/TechStack"
-export { default as MeetDeveloper } from "./shared/About/MeetDeveloper/MeetDeveloper"
-export { default as ClosingCta } from "./shared/About/ClosingCta/ClosingCta"
-
+export { default as AboutHero } from "./shared/About/AboutHero/AboutHero";
+export { default as WhatIsExperiml } from "./shared/About/WhatIsExperiml/WhatIsExperiml";
+export { default as WhyExperimlExists } from "./shared/About/WhyExperimlExists/WhyExperimlExists";
+export { default as WorkflowFit } from "./shared/About/WorkflowFit/WorkflowFit";
+export { default as CoreCapabilities } from "./shared/About/CoreCapabilities/CoreCapabilities";
+export { default as WhoCanUse } from "./shared/About/WhoCanUse/WhoCanUse";
+export { default as DesignPhilosophy } from "./shared/About/DesignPhilosophy/DesignPhilosophy";
+export { default as TechStack } from "./shared/About/TechStack/TechStack";
+export { default as MeetDeveloper } from "./shared/About/MeetDeveloper/MeetDeveloper";
+export { default as ClosingCta } from "./shared/About/ClosingCta/ClosingCta";
 
 // Contact page components
-export { default as ContactHero } from "./shared/Contact/ContactHero/ContactHero"
-export { default as ContactInfo } from "./shared/Contact/ContactInfo/ContactInfo"
-export { default as ContactForm } from "./shared/Contact/ContactForm/ContactForm"
-export { default as Locationmap } from "./shared/Contact/Locationmap/Locationmap"
-export { default as DeveloperSection } from "./shared/Contact/DeveloperSection/DeveloperSection"
-export { default as ContactReasons } from "./shared/Contact/ContactReasons/ContactReasons"
-export { default as ContactCTA } from "./shared/Contact/ContactCTA/ContactCTA"
-
+export { default as ContactHero } from "./shared/Contact/ContactHero/ContactHero";
+export { default as ContactInfo } from "./shared/Contact/ContactInfo/ContactInfo";
+export { default as ContactForm } from "./shared/Contact/ContactForm/ContactForm";
+export { default as Locationmap } from "./shared/Contact/Locationmap/Locationmap";
+export { default as DeveloperSection } from "./shared/Contact/DeveloperSection/DeveloperSection";
+export { default as ContactReasons } from "./shared/Contact/ContactReasons/ContactReasons";
+export { default as ContactCTA } from "./shared/Contact/ContactCTA/ContactCTA";
 
 // FAQ page components
-export { default as FaqMainLayout } from "./shared/FAQ/FaqMainLayout/FaqMainLayout"
-export { default as FaqAccordion } from "./shared/FAQ/FAQAccordion/FaqAccordion"
-export { default as FaqHero } from "./shared/FAQ/FAQHero/FaqHero"
-export { default as FaqSearch } from "./shared/FAQ/FAQSearch/FaqSearch"
-export { default as FaqItem } from "./shared/FAQ/FAQItem/FaqItem"
-export { default as FaqCategoryTabs } from "./shared/FAQ/FAQCategoryTabs/FaqCategoryTabs"
-export { default as FaqCta } from "./shared/FAQ/FAQCTA/FaqCta"
-
+export { default as FaqMainLayout } from "./shared/FAQ/FaqMainLayout/FaqMainLayout";
+export { default as FaqAccordion } from "./shared/FAQ/FAQAccordion/FaqAccordion";
+export { default as FaqHero } from "./shared/FAQ/FAQHero/FaqHero";
+export { default as FaqSearch } from "./shared/FAQ/FAQSearch/FaqSearch";
+export { default as FaqItem } from "./shared/FAQ/FAQItem/FaqItem";
+export { default as FaqCategoryTabs } from "./shared/FAQ/FAQCategoryTabs/FaqCategoryTabs";
+export { default as FaqCta } from "./shared/FAQ/FAQCTA/FaqCta";
 
 // Legal page components
-export { default as LegalHero } from "./legal/LegalHero/LegalHero"
-export { default as LegalSection } from "./legal/LegalSection/LegalSection"
-
+export { default as LegalHero } from "./legal/LegalHero/LegalHero";
+export { default as LegalSection } from "./legal/LegalSection/LegalSection";
 
 // Sign In page components
-export { default as SignInMainLayout } from "./auth/SignIn/SignInMainLayout/SignInMainLayout"
-export { default as AuthHero } from "./auth/SignIn/AuthHero/AuthHero"
-export { default as FormDivider } from "./auth/SignIn/FormDivider/FormDivider"
-export { default as AuthFooter } from "./auth/SignIn/AuthFooter/AuthFooter"
+export { default as SignInMainLayout } from "./auth/SignIn/SignInMainLayout/SignInMainLayout";
+export { default as AuthHero } from "./auth/SignIn/AuthHero/AuthHero";
+export { default as FormDivider } from "./auth/SignIn/FormDivider/FormDivider";
+export { default as AuthFooter } from "./auth/SignIn/AuthFooter/AuthFooter";
+export { default as SignInForm } from "./auth/SignIn/SignInForm/SignInForm";

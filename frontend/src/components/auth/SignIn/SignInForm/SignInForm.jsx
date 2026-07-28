@@ -2,8 +2,8 @@ import { ArrowRight, FlaskConical } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import FormDivider from "../FormDivider/FormDivider";
-import FormField from "./FormField";
-import PasswordField from "./PasswordField";
+import FormField from "./components/FormField";
+import PasswordField from "./components/PasswordField";
 
 import useSignInForm from "./hooks/useSignInForm";
 
