@@ -56,4 +56,5 @@ export { default as LegalSection } from "./legal/LegalSection/LegalSection"
 
 
 // Sign In page components
+export { default as SignInMainLayout } from "./auth/SignIn/SignInMainLayout/SignInMainLayout"
 export { default as AuthHero } from "./auth/SignIn/AuthHero/AuthHero"
