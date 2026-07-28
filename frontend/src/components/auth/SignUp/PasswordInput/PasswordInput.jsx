@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, Lock } from "lucide-react";
 
-import ValidationMessage from "../SignUpForm/Components/ValidationMessage";
+import { ValidationMessage } from "../SignUpForm/components/signup.index";
 
 function PasswordInput({
   id,
@@ -77,7 +77,7 @@ function PasswordInput({
           type="button"
           onClick={togglePasswordVisibility}
           aria-label={showPassword ? "Hide password" : "Show password"}
-          className="absolute transition-colors -translate-y-1/2  right-3 top-1/2 text-text-secondary hover:text-text focus:outline-none"
+          className="absolute transition-colors -translate-y-1/2 right-3 top-1/2 text-text-secondary hover:text-text focus:outline-none"
         >
           {showPassword ? (
             <EyeOff size={18} strokeWidth={1.8} />
