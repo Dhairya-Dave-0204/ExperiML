@@ -28,7 +28,6 @@ export default function AppRoutes() {
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicy />} />
         <Route path={ROUTES.DATA_POLICY} element={<DataPolicy />} />
         <Route path={ROUTES.COOKIE_POLICY} element={<CookiePolicy />} />
-        <Route path={ROUTES.SIGN_IN} element={<SignIn />} />
       </Route>
 
       <Route element={<AuthLayout />}>
