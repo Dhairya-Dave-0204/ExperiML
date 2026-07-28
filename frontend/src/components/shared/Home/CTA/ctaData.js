@@ -1,3 +1,5 @@
+import { ROUTES } from "@/constants/routes"
+
 export const CTA_CONTENT = {
   title: "Engineering discipline for your ML lifecycle.",
 
@@ -6,7 +8,7 @@ export const CTA_CONTENT = {
 
   button: {
     label: "Create Free Workspace",
-    href: "/signup",
+    href: ROUTES.SIGN_UP,
   },
 
   note: "Free for individuals and students. No credit card required.",
