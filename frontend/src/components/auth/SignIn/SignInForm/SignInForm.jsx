@@ -1,6 +1,8 @@
 import { ArrowRight, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { ROUTES } from "@/constants/routes"
+
 import FormDivider from "../FormDivider/FormDivider";
 import FormField from "./components/FormField";
 import PasswordField from "./components/PasswordField";
@@ -109,7 +111,7 @@ function SignInForm() {
       {/* Footer */}
 
       <Link
-        to="/signup"
+        to={ROUTES.SIGN_UP}
         className="
           inline-flex
           w-full
