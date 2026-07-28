@@ -58,3 +58,4 @@ export { default as SignInMainLayout } from "./auth/SignIn/SignInMainLayout/Sign
 
 // Sign Up page components
 export { default as AuthHeader } from "./auth/SignUp/AuthHeader/AuthHeader";
+export { default as AuthFooter } from "./auth/SignUp/AuthFooter/AuthFooter";
