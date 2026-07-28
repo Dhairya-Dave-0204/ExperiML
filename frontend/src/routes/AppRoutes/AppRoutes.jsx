@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
-import { PublicLayout } from "@/layout/layout.index";
+import { PublicLayout, AuthLayout } from "@/layout/layout.index";
 
 import {
   Home,
@@ -18,6 +18,7 @@ import { ROUTES } from "@/constants/routes";
 export default function AppRoutes() {
   return (
     <Routes>
+      
       <Route element={<PublicLayout />}>
         <Route path={ROUTES.HOME} element={<Home />} />
         <Route path={ROUTES.ABOUT} element={<About />} />
@@ -27,6 +28,10 @@ export default function AppRoutes() {
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicy />} />
         <Route path={ROUTES.DATA_POLICY} element={<DataPolicy />} />
         <Route path={ROUTES.COOKIE_POLICY} element={<CookiePolicy />} />
+        <Route path={ROUTES.SIGN_IN} element={<SignIn />} />
+      </Route>
+
+      <Route element={<AuthLayout />}>
         <Route path={ROUTES.SIGN_IN} element={<SignIn />} />
       </Route>
     </Routes>
