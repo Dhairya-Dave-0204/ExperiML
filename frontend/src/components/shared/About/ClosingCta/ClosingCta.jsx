@@ -49,7 +49,7 @@ function ClosingCta() {
 
             <div className="flex flex-col justify-center gap-4 mt-10 sm:flex-row">
               <CTAButton
-                to={ROUTES.SIGN_IN}
+                to={ROUTES.SIGN_UP}
                 icon={ArrowRight}
                 className="min-w-55 px-6 py-3.5"
               >
