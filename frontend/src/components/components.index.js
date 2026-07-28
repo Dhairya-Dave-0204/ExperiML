@@ -50,8 +50,7 @@ export { default as LegalHero } from "./legal/LegalHero/LegalHero";
 export { default as LegalSection } from "./legal/LegalSection/LegalSection";
 
 // Sign In page components
-export { default as SignInMainLayout } from "./auth/SignIn/SignInMainLayout/SignInMainLayout";
-export { default as AuthHero } from "./auth/SignIn/AuthHero/AuthHero";
 export { default as FormDivider } from "./auth/SignIn/FormDivider/FormDivider";
 export { default as AuthFooter } from "./auth/SignIn/AuthFooter/AuthFooter";
 export { default as SignInForm } from "./auth/SignIn/SignInForm/SignInForm";
+export { default as SignInMainLayout } from "./auth/SignIn/SignInMainLayout/SignInMainLayout";

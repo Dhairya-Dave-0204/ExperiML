@@ -1,4 +1,4 @@
-import ValidationMessage from "./ValidationMessage";
+import ValidationMessage from "../ValidationMessage";
 
 function FormField({
   id,

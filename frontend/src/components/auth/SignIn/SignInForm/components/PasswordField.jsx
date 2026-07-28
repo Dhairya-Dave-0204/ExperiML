@@ -1,6 +1,6 @@
 import { Eye, EyeOff, Lock } from "lucide-react";
 
-import ValidationMessage from "./ValidationMessage";
+import ValidationMessage from "../ValidationMessage";
 
 function PasswordField({
   id = "password",

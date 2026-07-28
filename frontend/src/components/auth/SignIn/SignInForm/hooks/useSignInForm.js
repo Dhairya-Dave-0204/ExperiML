@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-import { validateField, validateSignInForm } from "../utils/signInValidation";
+import { validateField, validateSignInForm } from "../signInValidation";
 
 const INITIAL_VALUES = {
   email: "",
