@@ -24,7 +24,7 @@ function SignInForm() {
   } = useSignInForm();
 
   return (
-    <div className="w-full p-8 mt-20 border shadow-sm rounded-3xl border-border bg-surface lg:p-10">
+    <div className="w-full p-8 border shadow-sm rounded-3xl border-border bg-surface">
       {/* Header */}
       <h1 className="mb-1.5 font-heading text-3xl font-extrabold tracking-tight text-text">
         Sign In
