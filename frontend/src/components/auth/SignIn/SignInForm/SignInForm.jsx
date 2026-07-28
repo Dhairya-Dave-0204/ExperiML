@@ -37,11 +37,7 @@ function SignInForm() {
 
       {/* Form */}
 
-      <form
-        noValidate
-        onSubmit={handleSubmit}
-        className="space-y-5"
-      >
+      <form noValidate onSubmit={handleSubmit} className="space-y-5">
         {/* Email */}
 
         <FormField
@@ -62,22 +58,6 @@ function SignInForm() {
         {/* Password */}
 
         <div>
-          <div className="mb-1.5 flex items-center justify-between">
-            <label
-              htmlFor="password"
-              className="text-sm font-semibold text-text"
-            >
-              Password
-            </label>
-
-            <Link
-              to="/forgot-password"
-              className="text-xs font-medium transition-colors duration-150 text-primary hover:text-primary-dark hover:underline"
-            >
-              Forgot password?
-            </Link>
-          </div>
-
           <PasswordField
             value={values.password}
             error={errors.password}
@@ -99,9 +79,7 @@ function SignInForm() {
             className="w-4 h-4 rounded border-border text-primary accent-primary focus:ring-2 focus:ring-primary-light"
           />
 
-          <span className="text-sm text-text-secondary">
-            Remember me
-          </span>
+          <span className="text-sm text-text-secondary">Remember me</span>
         </label>
 
         {/* Submit */}
@@ -109,26 +87,7 @@ function SignInForm() {
         <button
           type="submit"
           disabled={!isFormValid || isSubmitting}
-          className="
-            inline-flex
-            w-full
-            items-center
-            justify-center
-            gap-2
-            rounded-lg
-            bg-primary
-            px-5
-            py-2.5
-            text-sm
-            font-semibold
-            text-white
-            transition-all
-            duration-200
-            hover:bg-primary-dark
-            disabled:cursor-not-allowed
-            disabled:opacity-50
-            disabled:hover:bg-primary
-          "
+          className="inline-flex items-center justify-center w-full gap-2 px-5 h-10 py-2.5 text-sm font-semibold text-white transition-all duration-300 rounded-lg bg-primary hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-primary"
         >
           {isSubmitting ? (
             "Signing In..."
@@ -148,10 +107,6 @@ function SignInForm() {
       </div>
 
       {/* Footer */}
-
-      <p className="mb-3 text-sm text-center text-text-secondary">
-        Don't have an account?
-      </p>
 
       <Link
         to="/signup"

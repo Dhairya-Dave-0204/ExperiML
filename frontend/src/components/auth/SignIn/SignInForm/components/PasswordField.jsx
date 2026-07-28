@@ -1,5 +1,7 @@
 import { Eye, EyeOff, Lock } from "lucide-react";
 
+import { Link } from "react-router-dom"
+
 import ValidationMessage from "../ValidationMessage";
 
 function PasswordField({
@@ -48,6 +50,13 @@ function PasswordField({
         <label htmlFor={id} className="block text-sm font-semibold text-text">
           {label}
         </label>
+
+        <Link
+              to="/forgot-password"
+              className="text-xs font-medium transition-colors duration-150 text-primary hover:text-primary-dark hover:underline"
+            >
+              Forgot password?
+            </Link>
       </div>
 
       <div className="relative">
@@ -77,7 +86,7 @@ function PasswordField({
           onClick={onToggleVisibility}
           disabled={disabled}
           aria-label={showPassword ? "Hide password" : "Show password"}
-          className="absolute p-1 transition-colors duration-200 -translate-y-1/2 rounded-md  right-3 top-1/2 text-text-secondary hover:text-text focus:outline-none focus:ring-2 focus:ring-primary-light disabled:pointer-events-none disabled:opacity-50"
+          className="absolute p-1 transition-colors duration-200 -translate-y-1/2 rounded-md right-3 top-1/2 text-text-secondary hover:text-text focus:outline-none focus:ring-2 focus:ring-primary-light disabled:pointer-events-none disabled:opacity-50"
         >
           {showPassword ? (
             <EyeOff size={16} strokeWidth={1.75} />
