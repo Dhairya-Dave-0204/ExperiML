@@ -72,7 +72,7 @@ function Hero() {
 
             <SecondaryButton
               Element={NavLink}
-              to={ROUTES.DOCUMENTATION}
+              to={ROUTES.DOCS}
               text="Documentation"
             />
           </div>
