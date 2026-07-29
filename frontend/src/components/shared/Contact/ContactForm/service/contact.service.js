@@ -1,7 +1,9 @@
+import { ENV } from "@/config/env"
+
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 
 export async function submitContactForm(formData) {
-  const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+  const accessKey = ENV.WEB3FORMS_KEY;
 
   if (!accessKey) {
     throw new Error("Contact service is not configured properly.");
