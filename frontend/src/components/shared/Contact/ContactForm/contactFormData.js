@@ -54,7 +54,7 @@ export const CONTACT_FORM_COPY = {
 
   submitButton: "Send Message",
 
-  successTitle: "Message ready to send",
+  successTitle: "Message sent!",
 
   successDescription:
     "Thanks for reaching out. This form isn't connected to a backend just yet — in the meantime, feel free to reach out directly by email.",
