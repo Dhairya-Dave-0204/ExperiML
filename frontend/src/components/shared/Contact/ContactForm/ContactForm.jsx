@@ -1,26 +1,26 @@
-import { useState } from "react";
 import { Send, CheckCircle2 } from "lucide-react";
 
 import ContactField from "./ContactField";
 
-import {
-  INITIAL_VALUES,
-  CONTACT_FIELDS,
-  CONTACT_FORM_COPY,
-} from "./contactFormData";
+import { CONTACT_FIELDS, CONTACT_FORM_COPY } from "./contactFormData";
 
-import { validateContactForm } from "./contactFormValidation";
+import useContactForm from "./hooks/useContactForm";
 
 function ContactForm() {
-  const [values, setValues] = useState(INITIAL_VALUES);
+  const {
+    values,
+    errors,
+    touched,
 
-  const [touched, setTouched] = useState({});
+    submitted,
+    isSubmitting,
+    isValid,
 
-  const [submitted, setSubmitted] = useState(false);
-
-  const errors = validateContactForm(values);
-
-  const isValid = Object.keys(errors).length === 0;
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    resetForm,
+  } = useContactForm();
 
   const inputClasses = `
     w-full
@@ -41,60 +41,12 @@ function ContactForm() {
     focus:ring-primary-light
   `;
 
-  function handleChange(event) {
-    const { name, value } = event.target;
-
-    setValues((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
-  }
-
-  function handleBlur(event) {
-    const { name } = event.target;
-
-    setTouched((previous) => ({
-      ...previous,
-      [name]: true,
-    }));
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    setTouched({
-      fullName: true,
-      email: true,
-      subject: true,
-      message: true,
-    });
-
-    if (!isValid) return;
-
-    /*
-      Frontend only for now.
-      API integration will be added later.
-    */
-
-    setSubmitted(true);
-  }
-
-  function resetForm() {
-    setValues(INITIAL_VALUES);
-    setTouched({});
-    setSubmitted(false);
-  }
-
   if (submitted) {
     return (
       <section className="py-16 border-t border-border md:py-24">
         <div className="container-custom">
-          <div
-            className="flex flex-col items-center max-w-xl p-8 mx-auto text-center border shadow-sm rounded-xl border-border bg-surface md:p-10"
-          >
-            <div
-              className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-success/10"
-            >
+          <div className="flex flex-col items-center max-w-xl p-8 mx-auto text-center border shadow-sm rounded-xl border-border bg-surface md:p-10">
+            <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-success/10">
               <CheckCircle2
                 size={24}
                 strokeWidth={1.75}
@@ -102,15 +54,11 @@ function ContactForm() {
               />
             </div>
 
-            <h2
-              className="mb-2 text-xl font-extrabold font-heading text-text"
-            >
+            <h2 className="mb-2 text-xl font-extrabold font-heading text-text">
               {CONTACT_FORM_COPY.successTitle}
             </h2>
 
-            <p
-              className="max-w-sm text-sm leading-relaxed text-text-secondary"
-            >
+            <p className="max-w-sm text-sm leading-relaxed text-text-secondary">
               {CONTACT_FORM_COPY.successDescription}
             </p>
 
@@ -149,27 +97,17 @@ function ContactForm() {
         {/* Header */}
 
         <div className="max-w-xl mb-10">
-          <div
-            className="inline-flex items-center gap-2 mb-4 text-xs font-semibold tracking-wider uppercase text-primary"
-          >
+          <div className="inline-flex items-center gap-2 mb-4 text-xs font-semibold tracking-wider uppercase text-primary">
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
 
             {CONTACT_FORM_COPY.badge}
           </div>
 
-          <h2
-            className="mb-3 text-2xl font-extrabold tracking-tight font-heading text-text md:text-3xl"
-          >
+          <h2 className="mb-3 text-2xl font-extrabold tracking-tight font-heading text-text md:text-3xl">
             {CONTACT_FORM_COPY.title}
           </h2>
 
-          <p
-            className="
-              text-[15px]
-              leading-relaxed
-              text-text-secondary
-            "
-          >
+          <p className="text-[15px] leading-relaxed text-text-secondary">
             {CONTACT_FORM_COPY.description}
           </p>
         </div>
@@ -243,10 +181,30 @@ function ContactForm() {
 
           <button
             type="submit"
-            disabled={!isValid}
-            className="inline-flex items-center px-5 py-2.5 justify-center w-full gap-2 mt-6 text-sm font-semibold text-white transition-colors duration-300 rounded-lg bg-primary hover:bg-primary-dark disabled:cursor-not-allowed disabled:bg-border disabled:text-text-secondary sm:w-auto"
+            disabled={!isValid || isSubmitting}
+            className="
+              inline-flex
+              items-center
+              justify-center
+              w-full
+              gap-2
+              mt-6
+              rounded-lg
+              bg-primary
+              px-5
+              py-2.5
+              text-sm
+              font-semibold
+              text-white
+              transition-colors
+              duration-300
+              hover:bg-primary-dark
+              disabled:cursor-not-allowed
+              disabled:opacity-50
+              sm:w-auto
+            "
           >
-            {CONTACT_FORM_COPY.submitButton}
+            {isSubmitting ? "Sending..." : CONTACT_FORM_COPY.submitButton}
 
             <Send size={16} />
           </button>
