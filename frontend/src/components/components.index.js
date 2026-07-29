@@ -67,4 +67,4 @@ export { default as SignUpForm } from "./auth/SignUp/SignUpForm/SignUpForm";
 export { default as SignUpMainLayout } from "./auth/SignUp/SignUpMainLayout/SignUpMainLayout";
 
 // Forgot Password page components
-export { default as Forgotpasswordform } from "./auth/ForgotPassword/Forgotpasswordform/Forgotpasswordform";
+export { default as Forgotpasswordform } from "./auth/ForgotPassword/ForgotPasswordForm/Forgotpasswordform";
