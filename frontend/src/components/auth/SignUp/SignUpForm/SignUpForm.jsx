@@ -101,7 +101,7 @@ function SignUpForm() {
         >
           I agree to the{" "}
           <Link
-            to={ROUTES.DATA_POLICY}
+            to={ROUTES.TERM_SERVICE}
             className="font-medium text-primary hover:underline"
           >
             Terms of Service
