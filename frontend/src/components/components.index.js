@@ -65,3 +65,6 @@ export { default as AuthCard } from "./auth/SignUp/AuthCard/AuthCard";
 export { default as PasswordInput } from "./auth/SignUp/PasswordInput/PasswordInput";
 export { default as SignUpForm } from "./auth/SignUp/SignUpForm/SignUpForm";
 export { default as SignUpMainLayout } from "./auth/SignUp/SignUpMainLayout/SignUpMainLayout";
+
+// Forgot Password page components
+export { default as Forgotpasswordform } from "./auth/ForgotPassword/Forgotpasswordform/Forgotpasswordform";
