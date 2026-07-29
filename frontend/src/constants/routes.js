@@ -10,4 +10,5 @@ export const ROUTES = {
   PRIVACY_POLICY: "/privacy-policy",
   COOKIE_POLICY: "/cookie-policy",
   FORGOT_PASS: "/forgot-password",
+  TERM_SERVICE: "/term-service",
 };

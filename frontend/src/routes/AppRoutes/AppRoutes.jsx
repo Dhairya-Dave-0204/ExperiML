@@ -12,7 +12,8 @@ import {
   DataPolicy,
   CookiePolicy,
   SignIn,
-  SignUp
+  SignUp,
+  TermsOfService
 } from "@/pages/page.index";
 import { ROUTES } from "@/constants/routes";
 
@@ -29,6 +30,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicy />} />
         <Route path={ROUTES.DATA_POLICY} element={<DataPolicy />} />
         <Route path={ROUTES.COOKIE_POLICY} element={<CookiePolicy />} />
+        <Route path={ROUTES.TERM_SERVICE} element={<TermsOfService />} />
       </Route>
 
       <Route element={<AuthLayout />}>
