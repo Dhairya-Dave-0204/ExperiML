@@ -5,7 +5,7 @@ import { INITIAL_VALUES, CONTACT_FORM_COPY } from "../contactFormData";
 
 import { validateContactForm } from "../contactFormValidation";
 
-import { submitContactForm } from "../Services/contact.service";
+import { submitContactForm } from "../service/contact.service";
 
 function useContactForm() {
   /* ==========================================================
