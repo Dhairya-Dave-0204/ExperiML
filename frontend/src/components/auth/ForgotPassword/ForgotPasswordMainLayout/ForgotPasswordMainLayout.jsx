@@ -4,7 +4,7 @@ import {
   AuthFooter,
 } from "@/components/components.index";
 
-import ForgotPasswordForm from "./ForgotPasswordForm";
+import { ForgotPasswordForm } from "@/components/components.index";
 
 function ForgotPasswordMainLayout() {
   return (

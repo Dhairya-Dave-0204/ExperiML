@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 
-import { submitForgotPassword } from "../Services/forgotPassword.service";
+import { submitForgotPassword } from "../services/forgotPassword.service";
 
 import {
   validateField,
   validateForgotPasswordForm,
-} from "../Utils/forgotPasswordValidation";
+} from "../utils/forgotPasswordValidation";
 
 const INITIAL_VALUES = {
   email: "",

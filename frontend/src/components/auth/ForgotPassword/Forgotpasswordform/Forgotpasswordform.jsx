@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
 import { Mail, ArrowRight } from "lucide-react";
 
-import { AuthHeader, FormDivider } from "@/components/components.index";
+import { AuthHeader, FormDivider, ValidationMessage } from "@/components/components.index";
 
 import { ROUTES } from "@/constants/routes";
-
-import { ValidationMessage } from "@/components/components.index";
 
 import useForgotPasswordForm from "./hooks/useForgotPasswordForm";
 
