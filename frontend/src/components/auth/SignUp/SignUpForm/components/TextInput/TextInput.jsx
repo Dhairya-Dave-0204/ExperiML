@@ -1,4 +1,4 @@
-import { ValidationMessage } from "../signup.index";
+import { ValidationMessage } from "@/components/components.index";
 
 function TextInput({
   id,
