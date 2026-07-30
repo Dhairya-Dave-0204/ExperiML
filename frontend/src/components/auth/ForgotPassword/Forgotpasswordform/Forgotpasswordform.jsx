@@ -1,43 +1,93 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Mail, ArrowRight, AlertCircle } from "lucide-react";
+import { Mail, ArrowRight } from "lucide-react";
 
 import { AuthHeader, FormDivider } from "@/components/components.index";
 
-// ASSUMPTION: adjust this import path/key to match your project's real
-// centralized route constants (mentioned in the brief but not provided).
 import { ROUTES } from "@/constants/routes";
 
-function validateEmail(value) {
-  const trimmed = value.trim();
-  if (!trimmed) return "Email address is required.";
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-    return "Enter a valid email address.";
-  }
-  return "";
-}
+import { ValidationMessage } from "@/components/components.index";
+
+import useForgotPasswordForm from "./hooks/useForgotPasswordForm";
 
 function ForgotPasswordForm() {
-  const [email, setEmail] = useState("");
-  const [touched, setTouched] = useState(false);
+  const {
+    values,
+    errors,
+    touched,
 
-  const error = validateEmail(email);
-  const isValid = error === "";
-  const showError = touched && !isValid;
+    submitted,
+    isSubmitting,
+    isValid,
 
-  function handleChange(e) {
-    setEmail(e.target.value);
-  }
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    resetForm,
+  } = useForgotPasswordForm();
 
-  function handleBlur() {
-    setTouched(true);
-  }
+  if (submitted) {
+    return (
+      <>
+        <AuthHeader
+          title="Check Your Email"
+          subtitle={`If an account exists for "${values.email}", we've sent a password reset link. Please check your inbox and follow the instructions.`}
+        />
 
-  // UI only — no submission logic. Backend/auth to be wired up separately.
-  function handleSubmit(e) {
-    e.preventDefault();
-    setTouched(true);
-    if (!isValid) return;
+        <button
+          type="button"
+          onClick={resetForm}
+          className="
+            inline-flex
+            w-full
+            items-center
+            justify-center
+            rounded-lg
+            border
+            border-border
+            px-5
+            py-2.5
+            text-sm
+            font-semibold
+            text-text
+            transition-colors
+            duration-150
+            hover:border-border-hover
+            hover:bg-surface-soft
+          "
+        >
+          Send Another Link
+        </button>
+
+        <div className="my-6">
+          <FormDivider label="remember your password" />
+        </div>
+
+        <Link
+          to={ROUTES.SIGN_IN}
+          className="
+            inline-flex
+            w-full
+            items-center
+            justify-center
+            gap-2
+            rounded-lg
+            border
+            border-border
+            px-5
+            py-2.5
+            text-sm
+            font-semibold
+            text-text
+            transition-colors
+            duration-150
+            hover:border-border-hover
+            hover:bg-surface-soft
+          "
+        >
+          Back to Sign In
+        </Link>
+      </>
+    );
   }
 
   return (
@@ -55,47 +105,90 @@ function ForgotPasswordForm() {
           >
             Email Address
           </label>
+
           <div className="relative">
             <Mail
               size={16}
               strokeWidth={1.75}
               className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary"
             />
+
             <input
               id="email"
               name="email"
               type="email"
               autoComplete="email"
               placeholder="you@example.com"
-              value={email}
+              value={values.email}
               onChange={handleChange}
               onBlur={handleBlur}
-              aria-invalid={showError}
-              aria-describedby={showError ? "email-error" : undefined}
-              className={`w-full rounded-lg border bg-surface py-2.5 pl-10 pr-4 text-sm text-text placeholder:text-text-secondary/70 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-light ${
-                showError
-                  ? "border-danger focus:border-danger"
-                  : "border-border focus:border-primary"
-              }`}
+              aria-required="true"
+              aria-invalid={Boolean(touched.email && errors.email)}
+              aria-describedby={
+                touched.email && errors.email ? "email-error" : undefined
+              }
+              className={`
+                w-full
+                rounded-lg
+                border
+                bg-surface
+                py-2.5
+                pl-10
+                pr-4
+                text-sm
+                text-text
+                placeholder:text-text-secondary/70
+                transition-colors
+                duration-150
+                focus:outline-none
+                focus:ring-2
+                focus:ring-primary-light
+                ${
+                  touched.email && errors.email
+                    ? "border-danger focus:border-danger"
+                    : "border-border focus:border-primary"
+                }
+              `}
             />
           </div>
-          {showError && (
-            <p
-              id="email-error"
-              className="mt-1.5 flex items-center gap-1.5 text-xs text-danger"
-            >
-              <AlertCircle size={13} strokeWidth={2} />
-              {error}
-            </p>
-          )}
+
+          <ValidationMessage
+            id="email-error"
+            error={errors.email}
+            touched={touched.email}
+          />
         </div>
 
         <button
           type="submit"
-          disabled={!isValid}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-primary-dark disabled:cursor-not-allowed disabled:bg-border disabled:text-text-secondary"
+          disabled={!isValid || isSubmitting}
+          className="
+            inline-flex
+            w-full
+            items-center
+            justify-center
+            gap-2
+            rounded-lg
+            bg-primary
+            px-5
+            py-2.5
+            text-sm
+            font-semibold
+            text-white
+            transition-colors
+            duration-150
+            hover:bg-primary-dark
+            disabled:cursor-not-allowed
+            disabled:opacity-50
+          "
         >
-          Send Reset Link <ArrowRight size={16} />
+          {isSubmitting ? "Sending..." : "Send Reset Link"}
+
+          {isSubmitting ? (
+            <div className="w-4 h-4 border-2 rounded-full animate-spin border-white/30 border-t-white" />
+          ) : (
+            <ArrowRight size={16} />
+          )}
         </button>
       </form>
 
@@ -105,7 +198,25 @@ function ForgotPasswordForm() {
 
       <Link
         to={ROUTES.SIGN_IN}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-text transition-colors duration-150 hover:border-border-hover hover:bg-surface-soft"
+        className="
+          inline-flex
+          w-full
+          items-center
+          justify-center
+          gap-2
+          rounded-lg
+          border
+          border-border
+          px-5
+          py-2.5
+          text-sm
+          font-semibold
+          text-text
+          transition-colors
+          duration-150
+          hover:border-border-hover
+          hover:bg-surface-soft
+        "
       >
         Back to Sign In
       </Link>
