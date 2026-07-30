@@ -2,6 +2,8 @@ import { Routes, Route } from "react-router-dom";
 
 import { PublicLayout, AuthLayout } from "@/layout/layout.index";
 
+import { NotFound } from "@/pages/page.index"
+
 import {
   Home,
   About,
@@ -38,6 +40,8 @@ export default function AppRoutes() {
         <Route path={ROUTES.SIGN_UP} element={<SignUp />} />
         <Route path={ROUTES.FORGOT_PASS} element={<ForgotPassword />} />
       </Route>
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
