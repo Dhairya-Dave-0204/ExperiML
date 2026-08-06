@@ -157,3 +157,21 @@ export const badgeHover = {
     ease: "easeOut",
   },
 };
+
+/* ============================================================
+   Custom hovers
+============================================================ */
+
+export const ctaHover = {
+  y: -2,
+  scale: 1.015,
+
+  transition: {
+    duration: 0.2,
+    ease: "easeOut",
+  },
+};
+
+export const ctaTap = {
+  scale: 0.985,
+};

@@ -1,15 +1,27 @@
 import { ArrowRight } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { motion } from "framer-motion";
 
 import { PrimaryButton, SecondaryButton } from "@/components/components.index";
 
 import { ROUTES } from "@/constants/routes";
+import {
+  fade,
+  fadeUp,
+  heroContent,
+  widgetReveal,
+} from "@/animations/animations.index";
 
 import LiveHeroWidget from "./LiveHeroWidget";
 
 function Hero() {
   return (
-    <section className="relative pb-10 overflow-hidden border-b mt-14 border-border bg-linear-to-b from-white to-background md:pt-14">
+    <motion.section
+      initial="hidden"
+      animate="visible"
+      variants={fade}
+      className="relative pb-10 overflow-hidden border-b mt-14 border-border bg-linear-to-b from-white to-background md:pt-14"
+    >
       <div
         className="
           container-custom
@@ -17,17 +29,20 @@ function Hero() {
           items-center
           gap-16
           py-20
-
           lg:grid-cols-[1.1fr_0.9fr]
           lg:py-28
         "
       >
         {/* ================= Left Content ================= */}
 
-        <div className="order-1 text-center lg:text-left">
+        <motion.div
+          variants={heroContent}
+          className="order-1 text-center lg:text-left"
+        >
           {/* Badge */}
 
-          <div
+          <motion.div
+            variants={fadeUp}
             className="
               mb-5
               inline-flex
@@ -43,26 +58,35 @@ function Hero() {
             "
           >
             ML Experiment Management
-          </div>
+          </motion.div>
 
           {/* Heading */}
 
-          <h1 className="text-4xl font-extrabold leading-tight tracking-tight font-heading text-text sm:text-5xl lg:text-6xl">
+          <motion.h1
+            variants={fadeUp}
+            className="text-4xl font-extrabold leading-tight tracking-tight font-heading text-text sm:text-5xl lg:text-6xl"
+          >
             Engineering discipline
             <br className="hidden sm:block" /> for Machine Learning.
-          </h1>
+          </motion.h1>
 
           {/* Description */}
 
-          <p className="max-w-xl mx-auto mt-6 text-base leading-8 text-text-secondary lg:mx-0 lg:text-lg">
+          <motion.p
+            variants={fadeUp}
+            className="max-w-xl mx-auto mt-6 text-base leading-8 text-text-secondary lg:mx-0 lg:text-lg"
+          >
             Stop treating ML experiments like throwaway scripts. ExperiML
             provides a structured workspace for datasets, hyperparameter
             tracking, model lineage, and absolute reproducibility.
-          </p>
+          </motion.p>
 
           {/* CTA */}
 
-          <div className="flex flex-wrap justify-center gap-4 mt-10 lg:justify-start">
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-wrap justify-center gap-4 mt-10 lg:justify-start"
+          >
             <PrimaryButton
               Element={NavLink}
               to={ROUTES.SIGN_UP}
@@ -75,16 +99,16 @@ function Hero() {
               to={ROUTES.DOCS}
               text="Documentation"
             />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        {/* ================= Widget ================= */}
+        {/* ================= Right Widget ================= */}
 
-        <div className="order-2 w-full">
+        <motion.div variants={widgetReveal} className="order-2 w-full">
           <LiveHeroWidget />
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 

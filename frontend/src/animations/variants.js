@@ -343,3 +343,18 @@ export const modalReveal = {
     },
   },
 };
+
+/* ============================================================
+   Custom variants
+============================================================ */
+
+export const heroContent = {
+  hidden: {},
+
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.2,
+    },
+  },
+};
