@@ -1,4 +1,11 @@
 import { Database, GitPullRequest } from "lucide-react";
+import { motion } from "framer-motion"
+
+import {
+  fadeLeft,
+  fadeRight,
+  defaultViewport,
+} from "@/animations/animations.index";
 
 function Narrative() {
   return (
@@ -7,7 +14,13 @@ function Narrative() {
         <div className="grid grid-cols-1 overflow-hidden border rounded-3xl border-border lg:grid-cols-2">
           {/* ================= Left Pane ================= */}
 
-          <div className="px-6 py-10 bg-surface-soft sm:px-8 lg:px-14 lg:py-14">
+          <motion.div
+            variants={fadeRight}
+            initial="hidden"
+            whileInView="visible"
+            viewport={defaultViewport}
+            className="px-6 py-10 bg-surface-soft sm:px-8 lg:px-14 lg:py-14"
+          >
             <GitPullRequest size={32} className="mb-6 text-warning" />
 
             <h3
@@ -17,7 +30,6 @@ function Narrative() {
                 font-extrabold
                 tracking-tight
                 text-text
-
                 lg:text-[26px]
               "
             >
@@ -30,11 +42,17 @@ function Narrative() {
               hyperparameters are forgotten, and reproducing last week's "best
               model" relies heavily on guesswork.
             </p>
-          </div>
+          </motion.div>
 
           {/* ================= Right Pane ================= */}
 
-          <div className="px-6 py-10 bg-surface sm:px-8 lg:px-14 lg:py-14">
+          <motion.div
+            variants={fadeLeft}
+            initial="hidden"
+            whileInView="visible"
+            viewport={defaultViewport}
+            className="px-6 py-10 bg-surface sm:px-8 lg:px-14 lg:py-14"
+          >
             <Database size={32} className="mb-6 text-primary" />
 
             <h3
@@ -44,7 +62,6 @@ function Narrative() {
                 font-extrabold
                 tracking-tight
                 text-text
-
                 lg:text-[26px]
               "
             >
@@ -57,7 +74,7 @@ function Narrative() {
               directly to their generating parameters, ExperiML ensures
               bit-for-bit reproducibility.
             </p>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
