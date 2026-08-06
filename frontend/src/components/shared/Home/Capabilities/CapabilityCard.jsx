@@ -1,4 +1,6 @@
-import React from "react";
+import { motion } from "framer-motion";
+
+import { cardHover, cardTap, iconHover } from "@/animations/animations.index";
 
 function CapabilityCard({ capability }) {
   const { title, description, icon: Icon, wide, ui } = capability;
@@ -75,7 +77,8 @@ function CapabilityCard({ capability }) {
         return (
           <div className="p-3 font-mono text-xs border rounded-md border-border bg-background text-text-secondary">
             <div className="mb-2">
-              job_status: <span className="text-primary">{ui.status}</span>
+              job_status:
+              <span className="text-primary"> {ui.status}</span>
             </div>
 
             <div className="mb-2">rows_processed: {ui.rowsProcessed}</div>
@@ -92,7 +95,9 @@ function CapabilityCard({ capability }) {
   };
 
   return (
-    <article
+    <motion.article
+      whileHover={cardHover}
+      whileTap={cardTap}
       className={`
         flex
         h-full
@@ -100,27 +105,39 @@ function CapabilityCard({ capability }) {
         rounded-xl
         border
         border-border
+        bg-surface
         p-8
-        transition-all
+        transition-colors
         duration-300
-        hover:bg-surface
-        hover:-translate-y-1
         hover:border-primary/40
         hover:shadow-md
 
         ${wide ? "lg:col-span-2" : ""}
       `}
     >
-      <div className="flex items-center justify-center mb-5 rounded-lg h-11 w-11 bg-primary-light text-primary">
+      {/* Icon */}
+
+      <motion.div
+        whileHover={iconHover}
+        className="flex items-center justify-center mb-5 rounded-lg h-11 w-11 bg-primary-light text-primary"
+      >
         <Icon size={22} />
-      </div>
+      </motion.div>
+
+      {/* Title */}
 
       <h3 className="mb-3 text-xl font-bold font-heading text-text">{title}</h3>
 
+      {/* Description */}
+
       <p className="text-[15px] leading-7 text-text-secondary">{description}</p>
 
-      <div className="pt-6 mt-auto">{renderMiniUI()}</div>
-    </article>
+      {/* Mini UI */}
+
+      <motion.div layout className="pt-6 mt-auto">
+        {renderMiniUI()}
+      </motion.div>
+    </motion.article>
   );
 }
 
