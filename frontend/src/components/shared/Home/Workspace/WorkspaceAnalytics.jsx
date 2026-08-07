@@ -1,13 +1,35 @@
 import React from "react";
+import { motion } from "framer-motion";
+
+import {
+  fadeUp,
+  heroContent,
+  listItemReveal,
+  cardHover,
+  cardTap,
+  defaultViewport,
+} from "@/animations/animations.index";
+
 import { BarChart4, Settings2 } from "lucide-react";
 
 import { FEATURE_IMPORTANCE, HYPERPARAMETERS } from "./workspaceData";
 
 function WorkspaceAnalytics() {
   return (
-    <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.5fr_1fr]">
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={defaultViewport}
+      variants={heroContent}
+      className="grid grid-cols-1 gap-6 xl:grid-cols-[1.5fr_1fr]"
+    >
       {/* Feature Importance */}
-      <section className="p-6 border rounded-xl border-border bg-surface">
+      <motion.section
+        variants={fadeUp}
+        whileHover={cardHover}
+        whileTap={cardTap}
+        className="p-6 border rounded-xl border-border bg-surface"
+      >
         <div className="flex items-center gap-3 mb-6">
           <BarChart4 size={18} className="text-text-secondary" />
 
@@ -18,37 +40,40 @@ function WorkspaceAnalytics() {
 
         <div>
           {FEATURE_IMPORTANCE.map((feature) => (
-            <div
+            <motion.div
               key={feature.id}
+              variants={listItemReveal}
               className="flex items-center gap-3 mb-3 last:mb-0"
             >
-              <div
-                className="w-40 font-mono text-xs truncate shrink-0 text-text-secondary"
-              >
+              <div className="w-40 font-mono text-xs truncate shrink-0 text-text-secondary">
                 {feature.feature}
               </div>
 
               <div className="flex-1 h-2 overflow-hidden rounded-full bg-surface-soft">
-                <div
+                <motion.div
                   className="h-full rounded-full bg-primary"
-                  style={{
-                    width: `${feature.value}%`,
-                  }}
+                  initial={{ width: 0 }}
+                  whileInView={{ width: `${feature.value}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: feature.id * 0.08 }}
                 />
               </div>
 
-              <div
-                className="w-8 font-mono text-xs text-right shrink-0 text-text-secondary"
-              >
+              <div className="w-8 font-mono text-xs text-right shrink-0 text-text-secondary">
                 {feature.value}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Hyperparameters */}
-      <section className="flex flex-col p-6 border rounded-xl border-border bg-surface">
+      <motion.section
+        variants={fadeUp}
+        whileHover={cardHover}
+        whileTap={cardTap}
+        className="flex flex-col p-6 border rounded-xl border-border bg-surface"
+      >
         <div className="flex items-center gap-3 mb-5">
           <Settings2 size={18} className="text-text-secondary" />
 
@@ -59,8 +84,9 @@ function WorkspaceAnalytics() {
 
         <div className="flex flex-col justify-center flex-1 gap-2">
           {HYPERPARAMETERS.map((parameter) => (
-            <div
+            <motion.div
               key={parameter.id}
+              variants={listItemReveal}
               className="
                 flex
                 items-center
@@ -78,11 +104,11 @@ function WorkspaceAnalytics() {
               <span className="font-mono text-xs font-semibold text-text">
                 {parameter.value}
               </span>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 }
 

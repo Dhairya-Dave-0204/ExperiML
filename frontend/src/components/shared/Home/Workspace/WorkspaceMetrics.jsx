@@ -1,13 +1,29 @@
 import React from "react";
+import { motion } from "framer-motion";
+
+import {
+  fadeUp,
+  fadeLeft,
+  heroContent,
+  listItemReveal,
+  cardHover,
+  cardTap,
+  defaultViewport,
+} from "@/animations/animations.index";
+
 import { CheckCircle2, GitCommit } from "lucide-react";
 
 import { EXPERIMENT, METRICS, TRAINING_LOSS } from "./workspaceData";
-
 function WorkspaceMetrics() {
   return (
-    <>
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={defaultViewport}
+      variants={heroContent}
+    >
       {/* Experiment Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+      <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
           <h3 className="text-2xl font-bold font-heading text-text">
             {EXPERIMENT.name}
@@ -16,24 +32,27 @@ function WorkspaceMetrics() {
           <div className="flex items-center gap-2 mt-1 font-mono text-xs text-text-secondary">
             <GitCommit size={12} />
 
-            <span>
+            <motion.span>
               {EXPERIMENT.commit.hash} • {EXPERIMENT.commit.runId}
-            </span>
+            </motion.span>
           </div>
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3 py-1 font-mono text-xs font-semibold rounded-full bg-success-soft text-success">
+        <motion.div className="inline-flex items-center gap-2 px-3 py-1 font-mono text-xs font-semibold rounded-full bg-success-soft text-success">
           <CheckCircle2 size={14} />
 
           <span>{EXPERIMENT.status.label}</span>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Metrics */}
-      <div className="grid grid-cols-1 gap-4 mb-8 md:grid-cols-2 xl:grid-cols-4">
+      <motion.div variants={heroContent} className="grid grid-cols-1 gap-4 mb-8 md:grid-cols-2 xl:grid-cols-4">
         {METRICS.map((metric) => (
-          <div
+          <motion.div
             key={metric.id}
+            variants={listItemReveal}
+            whileHover={cardHover}
+            whileTap={cardTap}
             className="p-4 border rounded-xl border-border bg-surface"
           >
             <p className="mb-2 font-mono text-xs tracking-wide uppercase text-text-secondary">
@@ -47,19 +66,19 @@ function WorkspaceMetrics() {
             >
               {metric.value}
             </p>
-          </div>
+          </motion.div>
         ))}
 
         {/* Training Loss */}
-        <div className="p-4 border rounded-xl border-border bg-surface md:col-span-2">
+        <motion.div variants={fadeUp} whileHover={cardHover} className="p-4 border rounded-xl border-border bg-surface md:col-span-2">
           <div className="flex items-center justify-between mb-3">
             <span className="font-mono text-xs tracking-wide uppercase text-text-secondary">
               {TRAINING_LOSS.label}
             </span>
 
-            <span className="font-mono text-xs font-medium text-primary">
+            <motion.span variants={fadeLeft} className="font-mono text-xs font-medium text-primary">
               {TRAINING_LOSS.status}
-            </span>
+            </motion.span>
           </div>
 
           <svg
@@ -68,18 +87,29 @@ function WorkspaceMetrics() {
             role="img"
             aria-label="Training Loss Chart"
           >
-            <path className="fill-primary-soft" d={TRAINING_LOSS.areaPath} />
+            <motion.path
+              className="fill-primary-soft"
+              d={TRAINING_LOSS.areaPath}
+              initial={{opacity:0}}
+              whileInView={{opacity:1}}
+              viewport={{once:true}}
+              transition={{delay:0.4,duration:0.5}}
+            />
 
-            <path
+            <motion.path
               className="stroke-2 stroke-primary fill-primary-light"
+              initial={{pathLength:0}}
+              whileInView={{pathLength:1}}
+              viewport={{once:true}}
+              transition={{duration:1,ease:"easeInOut"}}
               strokeLinecap="round"
               strokeLinejoin="round"
               d={TRAINING_LOSS.linePath}
             />
           </svg>
-        </div>
-      </div>
-    </>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }
 
