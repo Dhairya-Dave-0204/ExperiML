@@ -1,5 +1,9 @@
 import React from "react";
 
+import { motion } from "framer-motion";
+
+import { fadeUp, defaultViewport } from "@/animations/animations.index";
+
 import DagNode from "./DagNode";
 import { LINEAGE, LINEAGE_CONTENT } from "./lineageData";
 
@@ -8,7 +12,13 @@ function ExperimentLineage() {
     <section id="signature" className="section-padding bg-surface">
       <div className="container-custom">
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto mb-16 text-center">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={defaultViewport}
+          variants={fadeUp}
+          className="max-w-3xl mx-auto mb-16 text-center"
+        >
           <h2 className="text-4xl font-extrabold leading-tight font-heading text-text lg:text-5xl">
             {LINEAGE_CONTENT.title}
           </h2>
@@ -16,10 +26,16 @@ function ExperimentLineage() {
           <p className="mt-5 text-lg leading-8 text-text-secondary">
             {LINEAGE_CONTENT.description}
           </p>
-        </div>
+        </motion.div>
 
         {/* DAG */}
-        <div className="relative px-4 py-10 overflow-x-auto border shadow-sm rounded-3xl border-border bg-surface md:px-8 md:py-14 lg:px-10 lg:py-20">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={defaultViewport}
+          variants={fadeUp}
+          className="relative px-4 py-10 overflow-x-auto border shadow-sm rounded-3xl border-border bg-surface md:px-8 md:py-14 lg:px-10 lg:py-20"
+        >
           {/* Background Pattern */}
           <div
             className="
@@ -93,7 +109,7 @@ function ExperimentLineage() {
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

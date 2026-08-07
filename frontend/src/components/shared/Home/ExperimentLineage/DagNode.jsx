@@ -1,11 +1,52 @@
-import React from "react";
+import { motion } from "framer-motion";
+
+import {
+  cardHover,
+  cardTap,
+  iconHover,
+  fadeUp,
+} from "@/animations/animations.index";
 
 function DagNode({ icon: Icon, title, meta, active = false, success = false }) {
   return (
-    <div
+    <motion.div
+      variants={fadeUp}
+      whileHover={cardHover}
+      whileTap={cardTap}
+      animate={
+        active
+          ? {
+              boxShadow: [
+                "0 0 0 rgba(6,182,212,0)",
+                "0 0 18px rgba(6,182,212,.18)",
+                "0 0 0 rgba(6,182,212,0)",
+              ],
+            }
+          : {}
+      }
+      transition={
+        active
+          ? {
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }
+          : {}
+      }
       className={`
-        flex min-w-55 items-start gap-3 rounded-xl border p-4 shadow-sm
-        transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-md hover:bg-surface-soft
+        flex
+        min-w-55
+        items-start
+        gap-3
+        rounded-xl
+        border
+        p-4
+        shadow-sm
+        transition-colors
+        duration-300
+        hover:border-primary
+        hover:bg-surface-soft
+
         ${
           active
             ? "border-accent bg-cyan-50"
@@ -16,9 +57,33 @@ function DagNode({ icon: Icon, title, meta, active = false, success = false }) {
       `}
     >
       {/* Icon */}
-      <div
+
+      <motion.div
+        whileHover={iconHover}
+        initial={{
+          opacity: 0,
+          scale: 0.92,
+        }}
+        whileInView={{
+          opacity: 1,
+          scale: 1,
+        }}
+        viewport={{
+          once: true,
+        }}
+        transition={{
+          duration: 0.35,
+          ease: [0.22, 1, 0.36, 1],
+        }}
         className={`
-          flex h-9 w-9 shrink-0 items-center justify-center rounded-lg
+          flex
+          h-9
+          w-9
+          shrink-0
+          items-center
+          justify-center
+          rounded-lg
+
           ${
             active
               ? "bg-cyan-100 text-accent"
@@ -29,17 +94,36 @@ function DagNode({ icon: Icon, title, meta, active = false, success = false }) {
         `}
       >
         <Icon size={18} />
-      </div>
+      </motion.div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
+
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 5,
+        }}
+        whileInView={{
+          opacity: 1,
+          y: 0,
+        }}
+        viewport={{
+          once: true,
+        }}
+        transition={{
+          delay: 0.1,
+          duration: 0.35,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="flex-1 min-w-0"
+      >
         <h3 className="text-sm font-semibold font-heading text-text">
           {title}
         </h3>
 
         <p className="mt-1 font-mono text-xs text-text-secondary">{meta}</p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
