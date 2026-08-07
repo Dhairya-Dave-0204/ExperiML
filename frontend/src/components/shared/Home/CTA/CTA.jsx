@@ -1,4 +1,12 @@
 import React from "react";
+import { motion } from "framer-motion";
+
+import {
+  heroContent,
+  fadeUp,
+  defaultViewport,
+} from "@/animations/animations.index";
+
 import { ArrowRight } from "lucide-react";
 
 import { CTAButton } from "@/components/components.index";
@@ -6,12 +14,24 @@ import { CTA_CONTENT } from "./ctaData";
 
 function CTA() {
   return (
-    <section
+    <motion.section
+      initial="hidden"
+      whileInView="visible"
+      viewport={defaultViewport}
+      variants={heroContent}
       id="cta"
       className="border-t section-padding border-border bg-background"
     >
       <div className="container-custom">
-        <div className="relative px-6 py-16 overflow-hidden text-center border shadow-lg rounded-3xl border-border bg-linear-to-br from-surface via-surface to-primary-soft/40 sm:px-10 lg:px-16 lg:py-24">
+        <motion.div
+          variants={fadeUp}
+          whileHover={{
+            y: -4,
+            boxShadow: "0 24px 48px rgba(15,23,42,0.10)",
+          }}
+          transition={{ duration: 0.35 }}
+          className="relative px-6 py-16 overflow-hidden text-center border shadow-lg rounded-3xl border-border bg-linear-to-br from-surface via-surface to-primary-soft/40 sm:px-10 lg:px-16 lg:py-24"
+        >
           {/* Background Decoration */}
           <div
             className="
@@ -33,27 +53,36 @@ function CTA() {
 
           {/* Content */}
           <div className="relative z-10 max-w-3xl mx-auto">
-            <h2 className="text-4xl font-extrabold tracking-tight font-heading text-text lg:text-5xl">
+            <motion.h2
+              variants={fadeUp}
+              className="text-4xl font-extrabold tracking-tight font-heading text-text lg:text-5xl"
+            >
               {CTA_CONTENT.title}
-            </h2>
+            </motion.h2>
 
-            <p className="mt-6 text-lg leading-8 text-text-secondary">
+            <motion.p
+              variants={fadeUp}
+              className="mt-6 text-lg leading-8 text-text-secondary"
+            >
               {CTA_CONTENT.description}
-            </p>
+            </motion.p>
 
-            <div className="flex justify-center mt-10">
+            <motion.div variants={fadeUp} className="flex justify-center mt-10">
               <CTAButton to={CTA_CONTENT.button.href} icon={ArrowRight}>
                 {CTA_CONTENT.button.label}
               </CTAButton>
-            </div>
+            </motion.div>
 
-            <p className="mt-6 font-mono text-sm text-text-secondary">
+            <motion.p
+              variants={fadeUp}
+              className="mt-6 font-mono text-sm text-text-secondary"
+            >
               {CTA_CONTENT.note}
-            </p>
+            </motion.p>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
