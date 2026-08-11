@@ -51,3 +51,5 @@ const startServer = async () => {
 };
 
 startServer();
+
+// TODO: Implement the graceful shutdown after the database configuration is complete 
