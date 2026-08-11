@@ -4,7 +4,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import helmet from "helmet";
 
-import { env } from "#config/env.config.js"
+import { env } from "#config/env.config"
 
 const app = express()
 

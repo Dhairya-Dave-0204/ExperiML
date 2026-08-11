@@ -1,6 +1,6 @@
-import "dotenv";
+import dotenv from "dotenv";
 import { app } from "./app.js";
-import { env } from "#config/env.config.js";
+import { env } from "#config/env.config";
 
 dotenv.config({
   path: "./.env",
