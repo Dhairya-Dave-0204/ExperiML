@@ -1,7 +1,8 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// ============================================================
+// ExperiML — Prisma Schema
+// Database: PostgreSQL
+// Schema Version: Genesis v1.0.0
+// ============================================================
 
 generator client {
   provider = "prisma-client"
@@ -10,4 +11,333 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// ============================================================
+// USERS
+// ============================================================
+
+model User {
+  id            String        @id @default(uuid()) @db.Uuid
+  firstName     String        @map("first_name") @db.Text
+  lastName      String        @map("last_name") @db.Text
+  email         String        @unique(map: "uq_users_email") @db.Text
+  passwordHash  String        @map("password_hash") @db.Text
+  accountStatus AccountStatus @default(ACTIVE) @map("account_status")
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt     DateTime?     @map("deleted_at") @db.Timestamptz(6)
+
+  sessions Session[]
+  projects Project[]
+
+  @@map("users")
+}
+
+// ============================================================
+// SESSIONS
+// ============================================================
+
+model Session {
+  id              String     @id @default(uuid()) @db.Uuid
+  userId          String     @map("user_id") @db.Uuid
+  refreshTokenHash String     @map("refresh_token_hash") @db.Text
+  browser         String     @db.Text
+  operatingSystem String     @map("operating_system") @db.Text
+  deviceType      DeviceType @map("device_type")
+  ipAddress       String     @map("ip_address") @db.Text
+  userAgent       String     @map("user_agent") @db.Text
+  createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  lastActivityAt  DateTime   @default(now()) @map("last_activity_at") @db.Timestamptz(6)
+  expiresAt       DateTime   @map("expires_at") @db.Timestamptz(6)
+  revokedAt       DateTime?  @map("revoked_at") @db.Timestamptz(6)
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    map: "fk_sessions_user"
+  )
+
+  @@index([userId], map: "idx_sessions_user")
+  @@index([expiresAt], map: "idx_sessions_expires_at")
+  @@map("sessions")
+}
+
+// ============================================================
+// PROJECTS
+// ============================================================
+
+model Project {
+  id            String        @id @default(uuid()) @db.Uuid
+  userId        String        @map("user_id") @db.Uuid
+  name          String        @db.Text
+  description   String?       @db.Text
+  projectStatus ProjectStatus @default(ACTIVE) @map("project_status")
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt     DateTime?     @map("deleted_at") @db.Timestamptz(6)
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    map: "fk_projects_user"
+  )
+  datasets    Dataset[]
+  experiments Experiment[]
+
+  @@unique([userId, name], map: "uq_projects_user_name")
+  @@index([userId], map: "idx_projects_user")
+  @@map("projects")
+}
+
+// ============================================================
+// DATASETS
+// ============================================================
+
+model Dataset {
+  id               String        @id @default(uuid()) @db.Uuid
+  projectId        String        @map("project_id") @db.Uuid
+  name             String        @db.Text
+  datasetVersion   Int           @map("dataset_version")
+  originalFileName String        @map("original_file_name") @db.Text
+  filePath         String        @map("file_path") @db.Text
+  fileSize         BigInt        @map("file_size") @db.BigInt
+  mimeType         String        @map("mime_type") @db.Text
+  checksum         String        @db.Text
+  datasetFormat    DatasetFormat @map("dataset_format")
+  rowCount         Int           @map("row_count")
+  columnCount      Int           @map("column_count")
+  metadata         Json?
+  datasetStatus    DatasetStatus @default(UPLOADING) @map("dataset_status")
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt        DateTime?     @map("deleted_at") @db.Timestamptz(6)
+
+  project     Project     @relation(
+    fields: [projectId],
+    references: [id],
+    map: "fk_datasets_project"
+  )
+  experiments Experiment[]
+
+  @@unique([projectId, name, datasetVersion], map: "uq_datasets_project_name_version")
+  @@index([projectId], map: "idx_datasets_project")
+  @@map("datasets")
+}
+
+// ============================================================
+// EXPERIMENTS
+// ============================================================
+
+model Experiment {
+  id               String           @id @default(uuid()) @db.Uuid
+  projectId        String           @map("project_id") @db.Uuid
+  datasetId        String           @map("dataset_id") @db.Uuid
+  name             String           @db.Text
+  problemType      ProblemType      @map("problem_type")
+  algorithmName    String           @map("algorithm_name") @db.Text
+  configuration    Json
+  hyperparameters  Json
+  metrics          Json?
+  experimentStatus ExperimentStatus @default(CREATED) @map("experiment_status")
+  startedAt        DateTime?        @map("started_at") @db.Timestamptz(6)
+  completedAt      DateTime?        @map("completed_at") @db.Timestamptz(6)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt        DateTime?        @map("deleted_at") @db.Timestamptz(6)
+
+  project    Project    @relation(
+    fields: [projectId],
+    references: [id],
+    map: "fk_experiments_project"
+  )
+  dataset    Dataset    @relation(
+    fields: [datasetId],
+    references: [id],
+    map: "fk_experiments_dataset"
+  )
+  artifacts  Artifact[]
+  predictions Prediction[]
+
+  @@index([projectId], map: "idx_experiments_project")
+  @@index([datasetId], map: "idx_experiments_dataset")
+  @@map("experiments")
+}
+
+// ============================================================
+// ARTIFACTS
+// ============================================================
+
+model Artifact {
+  id               String         @id @default(uuid()) @db.Uuid
+  experimentId     String         @map("experiment_id") @db.Uuid
+  artifactName     String         @map("artifact_name") @db.Text
+  artifactType     ArtifactType   @map("artifact_type")
+  fileFormat       String         @map("file_format") @db.Text
+  originalFileName String         @map("original_file_name") @db.Text
+  filePath         String         @map("file_path") @db.Text
+  fileSize         BigInt         @map("file_size") @db.BigInt
+  mimeType         String         @map("mime_type") @db.Text
+  checksum         String         @db.Text
+  metadata         Json?
+  artifactStatus   ArtifactStatus @default(GENERATING) @map("artifact_status")
+  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt        DateTime?      @map("deleted_at") @db.Timestamptz(6)
+
+  experiment        Experiment  @relation(
+    fields: [experimentId],
+    references: [id],
+    map: "fk_artifacts_experiment"
+  )
+  predictionOutputs Prediction[]
+
+  @@index([experimentId], map: "idx_artifacts_experiment")
+  @@map("artifacts")
+}
+
+// ============================================================
+// PREDICTIONS
+// ============================================================
+
+model Prediction {
+  id               String           @id @default(uuid()) @db.Uuid
+  experimentId     String           @map("experiment_id") @db.Uuid
+  outputArtifactId String?          @map("output_artifact_id") @db.Uuid
+  name             String           @db.Text
+  predictionType   PredictionType   @map("prediction_type")
+  inputFileName    String           @map("input_file_name") @db.Text
+  inputFilePath    String           @map("input_file_path") @db.Text
+  inputFormat      DatasetFormat    @map("input_format")
+  fileSize         BigInt           @map("file_size") @db.BigInt
+  mimeType         String           @map("mime_type") @db.Text
+  checksum         String           @db.Text
+  rowsProcessed    Int              @map("rows_processed")
+  metadata         Json?
+  predictionStatus PredictionStatus @default(CREATED) @map("prediction_status")
+  startedAt        DateTime?        @map("started_at") @db.Timestamptz(6)
+  completedAt      DateTime?        @map("completed_at") @db.Timestamptz(6)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt        DateTime?        @map("deleted_at") @db.Timestamptz(6)
+
+  experiment    Experiment @relation(
+    fields: [experimentId],
+    references: [id],
+    map: "fk_predictions_experiment"
+  )
+  outputArtifact Artifact? @relation(
+    fields: [outputArtifactId],
+    references: [id],
+    onDelete: SetNull,
+    map: "fk_predictions_output_artifact"
+  )
+
+  @@index([experimentId], map: "idx_predictions_experiment")
+  @@index([outputArtifactId], map: "idx_predictions_output_artifact")
+  @@map("predictions")
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum AccountStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+
+  @@map("account_status")
+}
+
+enum DeviceType {
+  DESKTOP
+  LAPTOP
+  MOBILE
+  TABLET
+  UNKNOWN
+
+  @@map("device_type")
+}
+
+enum ProjectStatus {
+  ACTIVE
+  ARCHIVED
+
+  @@map("project_status")
+}
+
+enum DatasetFormat {
+  CSV
+  XLSX
+  PARQUET
+
+  @@map("dataset_format")
+}
+
+enum DatasetStatus {
+  UPLOADING
+  PROCESSING
+  READY
+  FAILED
+
+  @@map("dataset_status")
+}
+
+enum ProblemType {
+  CLASSIFICATION
+  REGRESSION
+  CLUSTERING
+  TIME_SERIES
+  ANOMALY_DETECTION
+
+  @@map("problem_type")
+}
+
+enum ExperimentStatus {
+  CREATED
+  QUEUED
+  TRAINING
+  COMPLETED
+  FAILED
+  CANCELLED
+
+  @@map("experiment_status")
+}
+
+enum ArtifactType {
+  MODEL
+  PREPROCESSING_PIPELINE
+  REPORT
+  PREDICTION_EXPORT
+  FEATURE_IMPORTANCE
+  VISUALIZATION
+  OTHER
+
+  @@map("artifact_type")
+}
+
+enum ArtifactStatus {
+  GENERATING
+  AVAILABLE
+  FAILED
+
+  @@map("artifact_status")
+}
+
+enum PredictionType {
+  SINGLE
+  BATCH
+
+  @@map("prediction_type")
+}
+
+enum PredictionStatus {
+  CREATED
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+
+  @@map("prediction_status")
 }
