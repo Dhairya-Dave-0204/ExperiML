@@ -39,24 +39,20 @@ model User {
 // ============================================================
 
 model Session {
-  id              String     @id @default(uuid()) @db.Uuid
-  userId          String     @map("user_id") @db.Uuid
+  id               String     @id @default(uuid()) @db.Uuid
+  userId           String     @map("user_id") @db.Uuid
   refreshTokenHash String     @map("refresh_token_hash") @db.Text
-  browser         String     @db.Text
-  operatingSystem String     @map("operating_system") @db.Text
-  deviceType      DeviceType @map("device_type")
-  ipAddress       String     @map("ip_address") @db.Text
-  userAgent       String     @map("user_agent") @db.Text
-  createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
-  lastActivityAt  DateTime   @default(now()) @map("last_activity_at") @db.Timestamptz(6)
-  expiresAt       DateTime   @map("expires_at") @db.Timestamptz(6)
-  revokedAt       DateTime?  @map("revoked_at") @db.Timestamptz(6)
+  browser          String     @db.Text
+  operatingSystem  String     @map("operating_system") @db.Text
+  deviceType       DeviceType @map("device_type")
+  ipAddress        String     @map("ip_address") @db.Text
+  userAgent        String     @map("user_agent") @db.Text
+  createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  lastActivityAt   DateTime   @default(now()) @map("last_activity_at") @db.Timestamptz(6)
+  expiresAt        DateTime   @map("expires_at") @db.Timestamptz(6)
+  revokedAt        DateTime?  @map("revoked_at") @db.Timestamptz(6)
 
-  user User @relation(
-    fields: [userId],
-    references: [id],
-    map: "fk_sessions_user"
-  )
+  user User @relation(fields: [userId], references: [id], map: "fk_sessions_user")
 
   @@index([userId], map: "idx_sessions_user")
   @@index([expiresAt], map: "idx_sessions_expires_at")
@@ -77,11 +73,7 @@ model Project {
   updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt     DateTime?     @map("deleted_at") @db.Timestamptz(6)
 
-  user User @relation(
-    fields: [userId],
-    references: [id],
-    map: "fk_projects_user"
-  )
+  user        User         @relation(fields: [userId], references: [id], map: "fk_projects_user")
   datasets    Dataset[]
   experiments Experiment[]
 
@@ -113,11 +105,7 @@ model Dataset {
   updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt        DateTime?     @map("deleted_at") @db.Timestamptz(6)
 
-  project     Project     @relation(
-    fields: [projectId],
-    references: [id],
-    map: "fk_datasets_project"
-  )
+  project     Project      @relation(fields: [projectId], references: [id], map: "fk_datasets_project")
   experiments Experiment[]
 
   @@unique([projectId, name, datasetVersion], map: "uq_datasets_project_name_version")
@@ -146,17 +134,9 @@ model Experiment {
   updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt        DateTime?        @map("deleted_at") @db.Timestamptz(6)
 
-  project    Project    @relation(
-    fields: [projectId],
-    references: [id],
-    map: "fk_experiments_project"
-  )
-  dataset    Dataset    @relation(
-    fields: [datasetId],
-    references: [id],
-    map: "fk_experiments_dataset"
-  )
-  artifacts  Artifact[]
+  project     Project      @relation(fields: [projectId], references: [id], map: "fk_experiments_project")
+  dataset     Dataset      @relation(fields: [datasetId], references: [id], map: "fk_experiments_dataset")
+  artifacts   Artifact[]
   predictions Prediction[]
 
   @@index([projectId], map: "idx_experiments_project")
@@ -185,11 +165,7 @@ model Artifact {
   updatedAt        DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt        DateTime?      @map("deleted_at") @db.Timestamptz(6)
 
-  experiment        Experiment  @relation(
-    fields: [experimentId],
-    references: [id],
-    map: "fk_artifacts_experiment"
-  )
+  experiment        Experiment   @relation(fields: [experimentId], references: [id], map: "fk_artifacts_experiment")
   predictionOutputs Prediction[]
 
   @@index([experimentId], map: "idx_artifacts_experiment")
@@ -221,17 +197,8 @@ model Prediction {
   updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt        DateTime?        @map("deleted_at") @db.Timestamptz(6)
 
-  experiment    Experiment @relation(
-    fields: [experimentId],
-    references: [id],
-    map: "fk_predictions_experiment"
-  )
-  outputArtifact Artifact? @relation(
-    fields: [outputArtifactId],
-    references: [id],
-    onDelete: SetNull,
-    map: "fk_predictions_output_artifact"
-  )
+  experiment     Experiment @relation(fields: [experimentId], references: [id], map: "fk_predictions_experiment")
+  outputArtifact Artifact?  @relation(fields: [outputArtifactId], references: [id], onDelete: SetNull, map: "fk_predictions_output_artifact")
 
   @@index([experimentId], map: "idx_predictions_experiment")
   @@index([outputArtifactId], map: "idx_predictions_output_artifact")
