@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 import helmet from "helmet";
 
 import { env } from "#config/env.config"
+import { errorMiddleware } from "#middleware/error.middleware"
 
 const app = express()
 
@@ -57,5 +58,7 @@ app.use((req, res) => {
     message: "Route not found",
   });
 });
+
+app.use(errorMiddleware);
 
 export { app };
