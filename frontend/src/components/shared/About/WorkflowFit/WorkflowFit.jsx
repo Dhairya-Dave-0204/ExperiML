@@ -1,39 +1,86 @@
-import React from "react";
+import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 import { STAGES } from "./workflowFitData";
+import {
+  sectionReveal,
+  heroContent,
+  fadeUp,
+  widgetReveal,
+  staggerFast,
+  listItemReveal,
+  smallCardHover,
+  fade,
+  defaultViewport,
+  sectionViewport,
+} from "@/animations/animations.index";
 
 function WorkflowFit() {
   return (
-    <section
+    <motion.section
       id="workflow-fit"
       className="py-16 border-t border-border md:py-24 bg-primary-light/30"
+      variants={sectionReveal}
+      initial="hidden"
+      whileInView="visible"
+      viewport={sectionViewport}
     >
       <div className="container-custom">
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto mb-16 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 mb-5 font-mono text-xs font-semibold tracking-wider uppercase rounded-full bg-primary-soft text-primary">
+        <motion.div
+          variants={heroContent}
+          initial="hidden"
+          whileInView="visible"
+          viewport={defaultViewport}
+          className="max-w-3xl mx-auto mb-16 text-center"
+        >
+          <motion.div
+            variants={fadeUp}
+            className="inline-flex items-center gap-2 px-3 py-1 mb-5 font-mono text-xs font-semibold tracking-wider uppercase rounded-full bg-primary-soft text-primary"
+          >
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
             How It Fits Your Workflow
-          </div>
+          </motion.div>
 
-          <h2 className="text-3xl font-extrabold tracking-tight font-heading text-text sm:text-4xl lg:text-5xl">
+          <motion.h2
+            variants={fadeUp}
+            className="text-3xl font-extrabold tracking-tight font-heading text-text sm:text-4xl lg:text-5xl"
+          >
             One continuous path, from raw data to a finished report
-          </h2>
+          </motion.h2>
 
-          <p className="max-w-2xl mx-auto mt-6 text-base leading-8 text-text-secondary lg:text-lg">
+          <motion.p
+            variants={fadeUp}
+            className="max-w-2xl mx-auto mt-6 text-base leading-8 text-text-secondary lg:text-lg"
+          >
             ExperiML doesn't ask you to change how you work—it gives the stages
             you already move through a shared home, making every experiment
             organized, reproducible, and easy to revisit.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Workflow */}
-        <div className="overflow-hidden border shadow-md rounded-2xl border-border bg-surface">
-          <div className="flex flex-wrap items-center justify-center gap-4 p-6 lg:p-8">
+        <motion.div
+          variants={widgetReveal}
+          initial="hidden"
+          whileInView="visible"
+          viewport={defaultViewport}
+          className="overflow-hidden border shadow-md rounded-2xl border-border bg-surface"
+        >
+          <motion.div
+            variants={staggerFast}
+            initial="hidden"
+            whileInView="visible"
+            viewport={defaultViewport}
+            className="flex flex-wrap items-center justify-center gap-4 p-6 lg:p-8"
+          >
             {STAGES.map(({ icon: Icon, label, id }, index) => (
-              <React.Fragment key={id} >
-                <div className="flex items-center gap-3 px-5 py-4 transition-all duration-300 border shadow-sm cursor-pointer group rounded-xl border-border bg-surface hover:-translate-y-1 hover:border-primary hover:shadow-md hover:bg-primary-light/30">
+              <motion.div key={id} className="flex items-center gap-4">
+                <motion.div
+                  variants={listItemReveal}
+                  whileHover={smallCardHover}
+                  className="flex items-center gap-3 px-5 py-4 border shadow-sm cursor-pointer group rounded-xl border-border bg-surface"
+                >
                   <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-primary-soft text-primary">
                     <Icon size={18} strokeWidth={1.8} />
                   </div>
@@ -41,21 +88,23 @@ function WorkflowFit() {
                   <span className="text-sm font-semibold text-text md:text-base">
                     {label}
                   </span>
-                </div>
+                </motion.div>
 
                 {index < STAGES.length - 1 && (
-                  <ArrowRight
-                    size={18}
-                    strokeWidth={2}
-                    className="hidden text-text-secondary/40 lg:block"
-                  />
+                  <motion.div variants={fade} className="hidden lg:block">
+                    <ArrowRight
+                      size={18}
+                      strokeWidth={2}
+                      className="text-text-secondary/40"
+                    />
+                  </motion.div>
                 )}
-              </React.Fragment>
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
