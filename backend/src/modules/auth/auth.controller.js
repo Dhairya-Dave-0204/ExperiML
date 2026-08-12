@@ -3,6 +3,7 @@ import {
   loginUser,
   refreshTokens,
   logoutUser,
+  getCurrentUser
 } from "./auth.service.js";
 
 import { env } from "#config/env.config";
@@ -181,6 +182,35 @@ const refresh = asyncHandler(async (req, res) => {
 
 /*
  * ===============================================
+ * Get Current User
+ * ===============================================
+ */
+
+/**
+ * Returns the currently authenticated user's
+ * public information.
+ *
+ * Authentication middleware must run before
+ * this controller so that req.user exists.
+ */
+const getMe = asyncHandler(async (req, res) => {
+  const user = await getCurrentUser(
+    req.user.id,
+  );
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        user,
+        "Current user retrieved successfully.",
+      ),
+    );
+});
+
+/*
+ * ===============================================
  * Logout
  * ===============================================
  */
@@ -205,4 +235,4 @@ const logout = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, null, "Logout successful."));
 });
 
-export { register, login, refresh, logout };
+export { register, login, refresh, getMe, logout };

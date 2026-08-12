@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { register, login, refresh, logout } from "./auth.controller.js";
+import { register, login, refresh, logout, getMe } from "./auth.controller.js";
 
 import { registerSchema, loginSchema } from "./auth.validation.js";
 
@@ -38,6 +38,22 @@ router.post("/login", validate(loginSchema), login);
  * cookie, so no request-body validation is needed.
  */
 router.post("/refresh", refresh);
+
+/*
+ * ===============================================
+ * Current User * GET /api/v1/auth/me
+ * ===============================================
+ *
+ * Returns the currently authenticated user's
+ * public information.
+ *
+ * Requires a valid access token.
+ */
+router.get(
+  "/me",
+  authenticate,
+  getMe,
+);
 
 /*
  * ===============================================

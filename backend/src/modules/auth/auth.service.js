@@ -339,6 +339,49 @@ const refreshTokens = async (refreshToken) => {
 
 /*
  * ===============================================
+ * Get Current User
+ * ===============================================
+ */
+
+/**
+ * Retrieves the currently authenticated user's
+ * public information.
+ *
+ * @param {string} userId
+ * @returns {Promise<object>}
+ */
+const getCurrentUser = async (userId) => {
+  if (!userId) {
+    throw new ApiError(401, "Authentication required.");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  /*
+   * The user may have been deleted after the
+   * access token was issued.
+   */
+  if (!user || user.deletedAt) {
+    throw new ApiError(401, "User account no longer exists.");
+  }
+
+  /*
+   * The user's account status may have changed
+   * after the access token was issued.
+   */
+  if (user.accountStatus !== ACTIVE_ACCOUNT_STATUS) {
+    throw new ApiError(403, "This account is not currently active.");
+  }
+
+  return sanitizeUser(user);
+};
+
+/*
+ * ===============================================
  * Logout
  * ===============================================
  */
@@ -388,4 +431,4 @@ const logoutUser = async (sessionId, userId) => {
   });
 };
 
-export { registerUser, loginUser, refreshTokens, logoutUser };
+export { registerUser, loginUser, refreshTokens, getCurrentUser, logoutUser };
