@@ -1,27 +1,37 @@
-import express from "express"
-import cors from "cors"
-import cookieParser from "cookie-parser"
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 import helmet from "helmet";
 
-import { env } from "#config/env.config"
-import { errorMiddleware } from "#middleware/error.middleware"
+import { env } from "#config/env.config";
+import { errorMiddleware } from "#middleware/error.middleware";
+import authRouter from "#auth/auth.routes";
 
-const app = express()
+const app = express();
 
-const corsOrigin = env.CORS_ORIGIN
+/*
+ * ===============================================
+ * CORS Configuration
+ * ===============================================
+ */
 
-if(!corsOrigin) {
-    throw new Error("CORS_ORIGIN missing in environment variables");
+const corsOrigin = env.CORS_ORIGIN;
+
+if (!corsOrigin) {
+  throw new Error("CORS_ORIGIN missing in environment variables");
 }
 
-const allowedOrigins = process.env.CORS_ORIGIN.split(",").map((origin) =>
-  origin.trim(),
-);
+const allowedOrigins = corsOrigin.split(",").map((origin) => origin.trim());
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow Postman / server-to-server requests
+      /*
+       * Allow requests without an Origin header.
+       *
+       * This includes tools such as Postman and
+       * server-to-server requests.
+       */
       if (!origin) {
         return callback(null, true);
       }
@@ -32,25 +42,83 @@ app.use(
 
       return callback(new Error("Not allowed by CORS"));
     },
+
+    /*
+     * Required for HttpOnly refresh-token cookies
+     * to be sent with cross-origin requests.
+     */
     credentials: true,
   }),
 );
 
+/*
+ * ===============================================
+ * Security Middleware
+ * ===============================================
+ */
+
 app.use(helmet());
 
-app.use(express.json({ limit: "16kb" }));
+/*
+ * ===============================================
+ * Request Body Middleware
+ * ===============================================
+ */
 
-app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(
+  express.json({
+    limit: "16kb",
+  }),
+);
 
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: "16kb",
+  }),
+);
+
+/*
+ * ===============================================
+ * Cookie Middleware
+ * ===============================================
+ *
+ * Required for reading the refresh-token cookie:
+ *
+ * req.cookies.refreshToken
+ */
 app.use(cookieParser());
 
+/*
+ * ===============================================
+ * Health / Root Route
+ * ===============================================
+ */
+
 app.get("/", (req, res) => {
-  res.json({
+  res.status(200).json({
     success: true,
     message: "ExperiML Backend API",
     version: "1.0.0",
   });
 });
+
+/*
+ * ===============================================
+ * API Routes
+ * ===============================================
+ */
+
+app.use("/api/v1/auth", authRouter);
+
+/*
+ * ===============================================
+ * 404 Handler
+ * ===============================================
+ *
+ * This must come after all valid application
+ * routes so that unmatched requests reach here.
+ */
 
 app.use((req, res) => {
   res.status(404).json({
@@ -58,6 +126,16 @@ app.use((req, res) => {
     message: "Route not found",
   });
 });
+
+/*
+ * ===============================================
+ * Global Error Middleware
+ * ===============================================
+ *
+ * This must remain the final middleware so that
+ * errors passed through next(error) are handled
+ * centrally.
+ */
 
 app.use(errorMiddleware);
 
