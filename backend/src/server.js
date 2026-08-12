@@ -1,7 +1,7 @@
 import { app } from "./app.js";
 
 import { env } from "#config/env.config";
-import prisma from "#clients/prisma.client";
+import { prisma } from "#clients/prisma.client";
 
 const PORT = env.PORT;
 
