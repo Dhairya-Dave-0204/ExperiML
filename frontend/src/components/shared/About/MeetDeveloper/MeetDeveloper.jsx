@@ -1,74 +1,115 @@
-import React from "react";
+import { motion } from "framer-motion";
 import { GitGraph, Link, Mail } from "lucide-react";
+
+import {
+  sectionReveal,
+  heroContent,
+  fadeUp,
+  cardReveal,
+  socialHover,
+  defaultViewport,
+  sectionViewport,
+} from "@/animations/animations.index";
 
 function MeetDeveloper() {
   return (
-    <section
+    <motion.section
       id="developer"
       className="py-16 border-t border-border bg-surface-soft md:py-24"
+      variants={sectionReveal}
+      initial="hidden"
+      whileInView="visible"
+      viewport={sectionViewport}
     >
       <div className="container-custom">
-        <div className="flex flex-col items-center max-w-2xl gap-6 p-8 mx-auto text-center border shadow-sm rounded-xl border-border bg-surface md:p-10">
-          <div className="flex items-center justify-center w-16 h-16 text-xl font-bold text-white rounded-full bg-gradient-two-tone-2 font-heading">
+        <motion.div
+          variants={cardReveal}
+          initial="hidden"
+          whileInView="visible"
+          viewport={defaultViewport}
+          className="flex flex-col items-center max-w-2xl gap-6 p-8 mx-auto text-center border shadow-sm rounded-xl border-border bg-surface md:p-10"
+        >
+          <motion.div
+            variants={fadeUp}
+            className="flex items-center justify-center w-16 h-16 text-xl font-bold text-white rounded-full bg-gradient-two-tone-2 font-heading"
+          >
             DD
-          </div>
+          </motion.div>
 
-          <div>
-            <div className="inline-flex items-center gap-2 mb-2 text-xs font-semibold tracking-wider uppercase text-primary">
+          <motion.div
+            variants={heroContent}
+            initial="hidden"
+            whileInView="visible"
+            viewport={defaultViewport}
+          >
+            <motion.div
+              variants={fadeUp}
+              className="inline-flex items-center gap-2 mb-2 text-xs font-semibold tracking-wider uppercase text-primary"
+            >
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
               Meet the developer
-            </div>
-            <h2 className="text-2xl font-extrabold tracking-tight font-heading text-text">
-              Built by someone who kept losing track of their own experiments
-            </h2>
-          </div>
+            </motion.div>
 
-          <p className="max-w-xl text-[15px] leading-relaxed text-text-secondary">
+            <motion.h2
+              variants={fadeUp}
+              className="text-2xl font-extrabold tracking-tight font-heading text-text"
+            >
+              Built by someone who kept losing track of their own experiments
+            </motion.h2>
+          </motion.div>
+
+          <motion.p
+            variants={fadeUp}
+            className="max-w-xl text-[15px] leading-relaxed text-text-secondary"
+          >
             ExperiML started as a internship project and grew into something
             closer to a real product — a production-grade machine learning
             platform built to solve a workflow problem I ran into constantly:
             too many notebooks, not enough memory of what actually worked. It's
             still evolving, built one deliberate decision at a time, with a
             focus on getting the fundamentals right before adding anything new.
-          </p>
+          </motion.p>
 
-          <div className="flex items-center gap-3">
+          <motion.div variants={fadeUp} className="flex items-center gap-3">
             {/* GitHub */}
-            <a
+            <motion.a
               href="https://github.com/Dhairya-Dave-0204"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"
+              whileHover={socialHover}
               className="flex items-center justify-center w-10 h-10 transition-colors duration-150 border rounded-lg border-border text-text-secondary hover:border-border-hover hover:text-text"
             >
               <GitGraph size={18} strokeWidth={1.75} />
-            </a>
+            </motion.a>
 
             {/* LinkedIn */}
-            <a
+            <motion.a
               href="https://www.linkedin.com/in/davedhairya"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
+              whileHover={socialHover}
               className="flex items-center justify-center w-10 h-10 transition-colors duration-150 border rounded-lg border-border text-text-secondary hover:border-border-hover hover:text-text"
             >
               <Link size={18} strokeWidth={1.75} />
-            </a>
+            </motion.a>
 
             {/* Gmail Compose */}
-            <a
+            <motion.a
               href="https://mail.google.com/mail/?view=cm&fs=1&to=dhairyadave.work@gmail.com"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Send Email"
+              whileHover={socialHover}
               className="flex items-center justify-center w-10 h-10 transition-colors duration-150 border rounded-lg border-border text-text-secondary hover:border-border-hover hover:text-text"
             >
               <Mail size={18} strokeWidth={1.75} />
-            </a>
-          </div>
-        </div>
+            </motion.a>
+          </motion.div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
