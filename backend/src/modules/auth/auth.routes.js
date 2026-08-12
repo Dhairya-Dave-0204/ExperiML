@@ -2,29 +2,52 @@ import { Router } from "express";
 
 import { register, login, refresh, logout } from "./auth.controller.js";
 
+import { registerSchema, loginSchema } from "./auth.validation.js";
+
+import { authenticate } from "#middleware/auth.middleware";
+import { validate } from "#middleware/validate.middleware";
+
 const router = Router();
 
 /*
- * Register a new user * POST /api/v1/auth/register
+ * ===============================================
+ * Register * POST /api/v1/auth/register
+ * ===============================================
+ *
+ * Request body is validated before reaching
+ * the controller.
  */
-router.post("/register", register);
+router.post("/register", validate(registerSchema), register);
 
 /*
- * Authenticate an existing user * POST /api/v1/auth/login
+ * ===============================================
+ * Login * POST /api/v1/auth/login
+ * ===============================================
+ *
+ * Request body is validated before reaching
+ * the controller.
  */
-router.post("/login", login);
+router.post("/login", validate(loginSchema), login);
 
 /*
- * Refresh access token and rotate the refresh token * POST /api/v1/auth/refresh
+ * ===============================================
+ * Refresh Token * POST /api/v1/auth/refresh
+ * ===============================================
+ *
+ * The refresh token is read from the HttpOnly
+ * cookie, so no request-body validation is needed.
  */
 router.post("/refresh", refresh);
 
 /*
- * Logout and revoke the current session * POST /api/v1/auth/logout
+ * ===============================================
+ * Logout * POST /api/v1/auth/logout
+ * =============================================== 
  *
- * Authentication middleware will be added
- * here once auth.middleware.js is implemented.
+ * The current access token must be valid so that
+ * req.user contains the authenticated user and
+ * session information.
  */
-router.post("/logout", logout);
+router.post("/logout", authenticate, logout);
 
 export default router;
