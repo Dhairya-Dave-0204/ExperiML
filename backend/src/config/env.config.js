@@ -83,4 +83,5 @@ export const env = {
   ),
 
   STORAGE_PROVIDER: process.env.STORAGE_PROVIDER || "local",
+  MAX_DATASET_FILE_SIZE: process.env.MAX_DATASET_FILE_SIZE,
 };
