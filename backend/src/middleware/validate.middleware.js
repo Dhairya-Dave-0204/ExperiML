@@ -43,7 +43,7 @@ const validate = (
       throw new ApiError(
         400,
         "Validation failed.",
-        error.errors || [],
+        error.issues || [],
       );
     }
   };
