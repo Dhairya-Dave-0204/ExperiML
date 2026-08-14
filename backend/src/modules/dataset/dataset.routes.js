@@ -18,8 +18,8 @@ import { validate } from "#middleware/validate.middleware";
 import {
   createDatasetSchema,
   updateDatasetSchema,
-  datasetIdSchema,
   projectIdSchema,
+  projectDatasetIdSchema,
 } from "./dataset.validation.js";
 
 const router = Router();
@@ -74,9 +74,7 @@ router.get(
 
   authenticate,
 
-  validate(projectIdSchema, "params"),
-
-  validate(datasetIdSchema, "params"),
+  validate(projectDatasetIdSchema, "params"),
 
   getDatasetById,
 );
@@ -91,9 +89,7 @@ router.get(
 
   authenticate,
 
-  validate(projectIdSchema, "params"),
-
-  validate(datasetIdSchema, "params"),
+  validate(projectDatasetIdSchema, "params"),
 
   getDatasetMetadata,
 );
@@ -108,9 +104,7 @@ router.patch(
 
   authenticate,
 
-  validate(projectIdSchema, "params"),
-
-  validate(datasetIdSchema, "params"),
+  validate(projectDatasetIdSchema, "params"),
 
   validate(updateDatasetSchema, "body"),
 
@@ -127,9 +121,7 @@ router.delete(
 
   authenticate,
 
-  validate(projectIdSchema, "params"),
-
-  validate(datasetIdSchema, "params"),
+  validate(projectDatasetIdSchema, "params"),
 
   deleteDataset,
 );

@@ -24,3 +24,9 @@ export const datasetIdSchema = z.object({
 export const projectIdSchema = z.object({
   projectId: z.string().uuid("Invalid project ID"),
 });
+
+export const projectDatasetIdSchema = z.object({
+  projectId: z.string().uuid("Invalid project ID"),
+
+  datasetId: z.string().uuid("Invalid dataset ID"),
+});
