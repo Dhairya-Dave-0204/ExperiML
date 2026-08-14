@@ -21,15 +21,10 @@ class DatasetService {
     let permanentFilePath;
 
     try {
-      /*
-       * 1. Verify project ownership
-       */
       const project = await prisma.project.findFirst({
         where: {
           id: projectId,
-
           userId,
-
           deletedAt: null,
         },
       });
@@ -38,45 +33,22 @@ class DatasetService {
         throw new ApiError(404, "Project not found");
       }
 
-      /*
-       * 2. Generate dataset ID
-       *
-       * This same ID will be used for:
-       *
-       * - Storage directory
-       * - Database primary key
-       */
       const datasetId = crypto.randomUUID();
 
-      /*
-       * 3. Determine dataset format
-       */
       const extension = this.getFileExtension(file.originalname);
 
       const datasetFormat = this.getDatasetFormat(extension);
 
-      /*
-       * 4. Generate dataset version
-       */
       const datasetVersion = await this.generateDatasetVersion(projectId, name);
 
-      /*
-       * 5. Generate checksum
-       */
       const checksum = await generateFileChecksum(file.path);
 
-      /*
-       * 6. Process dataset metadata
-       */
       const metadata = await datasetProcessingService.analyzeDataset({
         filePath: file.path,
 
         datasetFormat,
       });
 
-      /*
-       * 7. Move file to permanent storage
-       */
       permanentFilePath = await fileStorageService.moveToPermanent({
         tempFilePath: file.path,
 
@@ -87,9 +59,6 @@ class DatasetService {
         extension,
       });
 
-      /*
-       * 8. Create database record
-       */
       const dataset = await prisma.dataset.create({
         data: {
           id: datasetId,
@@ -124,17 +93,10 @@ class DatasetService {
 
       return dataset;
     } catch (error) {
-      /*
-       * Cleanup temporary file
-       */
       if (file?.path) {
         await fileStorageService.delete(file.path);
       }
 
-      /*
-       * Cleanup permanent file
-       * if movement succeeded but DB failed
-       */
       if (permanentFilePath) {
         await fileStorageService.delete(permanentFilePath);
       }
@@ -143,16 +105,140 @@ class DatasetService {
     }
   }
 
-  /*
-   * Extract extension from filename
-   */
+  async getProjectDatasets({ projectId, userId }) {
+    const project = await prisma.project.findFirst({
+      where: {
+        id: projectId,
+
+        userId,
+
+        deletedAt: null,
+      },
+    });
+
+    if (!project) {
+      throw new ApiError(404, "Project not found");
+    }
+
+    return prisma.dataset.findMany({
+      where: {
+        projectId,
+
+        deletedAt: null,
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }
+
+  async getDatasetById({ projectId, datasetId, userId }) {
+    const dataset = await prisma.dataset.findFirst({
+      where: {
+        id: datasetId,
+
+        projectId,
+
+        deletedAt: null,
+
+        project: {
+          userId,
+        },
+      },
+    });
+
+    if (!dataset) {
+      throw new ApiError(404, "Dataset not found");
+    }
+
+    return dataset;
+  }
+
+  async getDatasetMetadata({ projectId, datasetId, userId }) {
+    const dataset = await this.getDatasetById({
+      projectId,
+
+      datasetId,
+
+      userId,
+    });
+
+    return {
+      id: dataset.id,
+
+      name: dataset.name,
+
+      version: dataset.datasetVersion,
+
+      format: dataset.datasetFormat,
+
+      rowCount: dataset.rowCount,
+
+      columnCount: dataset.columnCount,
+
+      metadata: dataset.metadata,
+    };
+  }
+
+  async updateDataset({ projectId, datasetId, userId, name }) {
+    await this.getDatasetById({
+      projectId,
+
+      datasetId,
+
+      userId,
+    });
+
+    return prisma.dataset.update({
+      where: {
+        id: datasetId,
+      },
+
+      data: {
+        name,
+      },
+    });
+  }
+
+  async deleteDataset({ projectId, datasetId, userId }) {
+    const dataset = await this.getDatasetById({
+      projectId,
+
+      datasetId,
+
+      userId,
+    });
+
+    await prisma.dataset.update({
+      where: {
+        id: dataset.id,
+      },
+
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+
+    /*
+     * We intentionally do not delete
+     * physical files immediately.
+     *
+     * Reason:
+     * Experiments may reference
+     * historical datasets.
+     *
+     * Cleanup can happen later
+     * through a background process.
+     */
+
+    return true;
+  }
+
   getFileExtension(filename) {
     return filename.slice(filename.lastIndexOf(".")).toLowerCase();
   }
 
-  /*
-   * Convert extension into Prisma enum value
-   */
   getDatasetFormat(extension) {
     switch (extension) {
       case ALLOWED_DATASET_EXTENSIONS.CSV:
@@ -169,11 +255,6 @@ class DatasetService {
     }
   }
 
-  /*
-   * Backend-controlled version generation.
-   *
-   * Deleted versions are never reused.
-   */
   async generateDatasetVersion(projectId, name) {
     const latestDataset = await prisma.dataset.findFirst({
       where: {
