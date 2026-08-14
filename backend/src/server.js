@@ -2,6 +2,7 @@ import { app } from "./app.js";
 
 import { env } from "#config/env.config";
 import { prisma } from "#clients/prisma.client";
+import { initializeStorage } from "#infra-services/storage/storage-initializer";
 
 const PORT = env.PORT;
 
@@ -91,6 +92,8 @@ async function startServer() {
       the application starts accepting requests.
     */
     await connectDatabase();
+
+    await initializeStorage();
 
     server = app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
