@@ -5,8 +5,10 @@ import helmet from "helmet";
 
 import { env } from "#config/env.config";
 import { errorMiddleware } from "#middleware/error.middleware";
+
 import authRouter from "#auth/auth.routes";
-import projectRouter from "#project/project.routes"
+import projectRouter from "#project/project.routes";
+import datasetRoutes from "#dataset/dataset.routes";
 
 const app = express();
 
@@ -112,6 +114,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/projects", projectRouter);
+app.use("/api/v1/projects", datasetRoutes);
 
 /*
  * ===============================================
