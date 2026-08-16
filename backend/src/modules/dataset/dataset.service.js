@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-import prisma from "#clients/prisma";
+import { prisma } from "#clients/prisma.client";
 
 import { ApiError } from "#utils/ApiError";
 
