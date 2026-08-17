@@ -12,6 +12,10 @@ import datasetRoutes from "#dataset/dataset.routes";
 
 const app = express();
 
+app.set("json replacer", (_key, value) =>
+  typeof value === "bigint" ? value.toString() : value,
+);
+
 /*
  * ===============================================
  * CORS Configuration
