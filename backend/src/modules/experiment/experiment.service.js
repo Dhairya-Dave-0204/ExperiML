@@ -5,7 +5,7 @@ import { ApiError } from "#utils/ApiError";
 import {
   EXPERIMENT_STATUSES,
   EXPERIMENT_ERRORS,
-} from "#experiment/experiment.constants.js";
+} from "#experiment/experiment.constants";
 
 import { DATASET_STATUSES } from "#dataset/dataset.constants";
 
