@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 
 import {
   FaqHero,
@@ -9,6 +10,14 @@ import {
 } from "@/components/components.index";
 
 import FAQ_DATA from "./faqMainLayoutData";
+
+import {
+  sectionReveal,
+  fadeLeft,
+  fadeRight,
+  defaultViewport,
+  sectionViewport,
+} from "@/animations/animations.index";
 
 const TOTAL_QUESTIONS = FAQ_DATA.reduce(
   (sum, category) => sum + category.questions.length,
@@ -67,11 +76,23 @@ function FaqMainLayout() {
         categoryCount={FAQ_DATA.length}
       />
 
-      <section className="border-t border-border py-14 md:py-20">
+      <motion.section
+        className="border-t border-border py-14 md:py-20"
+        variants={sectionReveal}
+        initial="hidden"
+        whileInView="visible"
+        viewport={sectionViewport}
+      >
         <div className="container-custom">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr] lg:gap-10 xl:grid-cols-[320px_1fr]">
             {/* Sidebar: search + category navigation, sticky on desktop */}
-            <aside className="lg:sticky lg:top-24 lg:self-start">
+            <motion.aside
+              variants={fadeLeft}
+              initial="hidden"
+              whileInView="visible"
+              viewport={defaultViewport}
+              className="lg:sticky lg:top-24 lg:self-start"
+            >
               <div className="p-4 border rounded-2xl border-border bg-surface sm:p-5">
                 <FaqSearch value={searchQuery} onChange={setSearchQuery} />
 
@@ -89,10 +110,16 @@ function FaqMainLayout() {
                   />
                 </div>
               </div>
-            </aside>
+            </motion.aside>
 
             {/* Content pane */}
-            <div className="min-w-0">
+            <motion.div
+              variants={fadeRight}
+              initial="hidden"
+              whileInView="visible"
+              viewport={defaultViewport}
+              className="min-w-0"
+            >
               {isSearching && (
                 <p className="mb-6 text-sm text-text-secondary">
                   {resultCount} {resultCount === 1 ? "result" : "results"} for{" "}
@@ -107,10 +134,10 @@ function FaqMainLayout() {
                 isSearching={isSearching}
                 searchQuery={searchQuery}
               />
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       <FaqCta />
     </>
