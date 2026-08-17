@@ -6,7 +6,7 @@ import {
   getExperimentById,
   updateExperiment,
   deleteExperiment,
-} from "./experiment.controller";
+} from "./experiment.controller.js";
 
 import { authenticate } from "#middleware/auth.middleware";
 import { validate } from "#middleware/validate.middleware";
@@ -16,7 +16,7 @@ import {
   updateExperimentSchema,
   projectIdSchema,
   projectExperimentIdSchema,
-} from "./experiment.validation";
+} from "./experiment.validation.js";
 
 const router = Router();
 
