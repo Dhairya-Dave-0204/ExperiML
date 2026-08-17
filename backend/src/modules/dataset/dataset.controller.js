@@ -155,3 +155,36 @@ export {
   updateDataset,
   deleteDataset,
 };
+
+/*
+ * BIGINT JSON SERIALIZATION
+ *
+ * The Dataset model contains `fileSize` as a Prisma/ PostgreSQL BigInt.
+ * Prisma therefore returns this value as a JavaScript BigInt, for example:
+ *
+ *     fileSize: 1048576n
+ *
+ * JavaScript's JSON.stringify() cannot serialize BigInt values directly.
+ * Consequently, Express's res.json() throws:
+ *
+ *     TypeError: Do not know how to serialize a BigInt
+ *
+ * The dataset had already been successfully processed, stored, and
+ * persisted in the database; the error occurred only while serializing
+ * the response.
+ *
+ * Solution:
+ * Configure Express with a global JSON replacer that converts BigInt
+ * values to strings before JSON serialization.
+ *
+ *     app.set(
+ *       "json replacer",
+ *       (_key, value) =>
+ *         typeof value === "bigint"
+ *           ? value.toString()
+ *           : value,
+ *     );
+ *
+ * BigInt is converted to a string instead of a Number to avoid possible
+ * precision loss for values larger than JavaScript's safe integer range.
+ */
