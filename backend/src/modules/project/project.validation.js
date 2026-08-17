@@ -1,24 +1,12 @@
 import { z } from "zod";
-
-/*
- * ===============================================
- * Constants
- * ===============================================
- */
-
-const PROJECT_NAME_MIN_LENGTH = 3;
-const PROJECT_NAME_MAX_LENGTH = 100;
-
-const PROJECT_DESCRIPTION_MAX_LENGTH = 500;
+import { PROJECT_NAME_MIN_LENGTH, PROJECT_NAME_MAX_LENGTH, PROJECT_DESCRIPTION_MAX_LENGTH } from "./project.constants.js"
 
 /*
  * ===============================================
  * Create Project Schema
  * ===============================================
  *
- * Used for:
- * POST /api/v1/projects
- *
+ * Used for: * POST /api/v1/projects
  */
 
 const createProjectSchema = z.object({
@@ -51,10 +39,7 @@ const createProjectSchema = z.object({
  * Update Project Schema
  * ===============================================
  *
- * Used for:
- *
- * PATCH /api/v1/projects/:id
- *
+ * Used for: * PATCH /api/v1/projects/:id
  */
 
 const updateProjectSchema = z
@@ -93,11 +78,9 @@ const updateProjectSchema = z
  * ===============================================
  *
  * Used for:
- *
  * GET /projects/:id
  * PATCH /projects/:id
  * DELETE /projects/:id
- *
  */
 
 const projectIdSchema = z.object({
