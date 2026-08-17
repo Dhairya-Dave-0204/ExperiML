@@ -44,7 +44,7 @@ function FaqCategoryTabs({ categories, activeId, onSelect }) {
               {isActive && (
                 <motion.span
                   layoutId="faq-active-category"
-                  className="absolute inset-0 rounded-[inherit] bg-primary-light -z-0"
+                  className="absolute inset-0 rounded-[inherit] bg-primary-light z-0"
                   transition={{
                     type: "spring",
                     stiffness: 420,
