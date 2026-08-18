@@ -33,10 +33,25 @@ class CloudinaryProvider {
   }
 
   /**
+   * Create access to a stored file.
+   *
+   * Future Artifact flow may use:
+   * Cloudinary asset
+   *      |
+   *      ▼
+   * secure delivery URL / signed URL / stream
+   *
+   * The exact implementation will be decided
+   * when Cloudinary storage is integrated.
+   */
+  createReadStream() {
+    throw new Error("Cloudinary createReadStream() is not implemented yet");
+  }
+
+  /**
    * Delete Cloudinary asset.
    *
    * Future:
-   *
    * public_id
    *      |
    *      ▼
@@ -49,9 +64,7 @@ class CloudinaryProvider {
   /**
    * Check whether asset exists.
    *
-   * Future:
-   *
-   * Cloudinary Admin API lookup
+   * Future: Cloudinary Admin API lookup
    */
   async exists() {
     throw new Error("Cloudinary exists() is not implemented yet");
