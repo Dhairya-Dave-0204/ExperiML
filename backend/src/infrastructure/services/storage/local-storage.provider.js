@@ -1,3 +1,4 @@
+import { createReadStream } from "fs";
 import fs from "fs/promises";
 import path from "path";
 
@@ -57,6 +58,20 @@ class LocalStorageProvider {
     await fs.rename(tempFilePath, finalFilePath);
 
     return finalFilePath;
+  }
+
+  /**
+   * Create a readable stream for a stored file.
+   *
+   * Used by:
+   * - artifact download
+   * - future file streaming operations
+   *
+   * The provider does not handle the HTTP response.
+   * It only provides access to the stored file as a stream.
+   */
+  createReadStream(filePath) {
+    return createReadStream(filePath);
   }
 
   /**
