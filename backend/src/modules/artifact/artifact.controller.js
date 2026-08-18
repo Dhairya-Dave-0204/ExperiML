@@ -7,7 +7,6 @@ import artifactService from "#artifact/artifact.service";
  * ============================================================
  * GET PROJECT EXPERIMENT ARTIFACTS
  * ============================================================
- *
  * GET /api/v1/projects/:projectId/experiments/:experimentId/artifacts
  */
 
@@ -29,7 +28,6 @@ const getArtifacts = asyncHandler(async (req, res) => {
  * ============================================================
  * GET ARTIFACT BY ID
  * ============================================================
- *
  * GET /api/v1/projects/:projectId/experiments/:experimentId/artifacts/:artifactId
  */
 
@@ -52,7 +50,6 @@ const getArtifactById = asyncHandler(async (req, res) => {
  * ============================================================
  * DOWNLOAD ARTIFACT
  * ============================================================
- *
  * GET /api/v1/projects/:projectId/experiments/:experimentId/artifacts/:artifactId/download
  *
  * Streams physical artifact file.
@@ -85,7 +82,6 @@ const downloadArtifact = asyncHandler(async (req, res) => {
  * ============================================================
  * DELETE ARTIFACT
  * ============================================================
- *
  * DELETE /api/v1/projects/:projectId/experiments/:experimentId/artifacts/:artifactId
  *
  * Performs soft delete.
