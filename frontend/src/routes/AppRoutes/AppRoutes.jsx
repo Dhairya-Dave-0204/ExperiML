@@ -2,8 +2,9 @@ import { Routes, Route } from "react-router-dom";
 
 import { PublicLayout, AuthLayout } from "@/layout/layout.index";
 
-import { NotFound } from "@/pages/page.index"
+import { NotFound } from "@/pages/page.index";
 
+import  Test  from "@/Test";
 import {
   Home,
   About,
@@ -42,6 +43,7 @@ export default function AppRoutes() {
       </Route>
 
       <Route path="*" element={<NotFound />} />
+      <Route path="/test" element={<Test />} />
     </Routes>
   );
 }
