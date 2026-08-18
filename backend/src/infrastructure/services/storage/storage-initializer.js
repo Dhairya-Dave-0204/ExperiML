@@ -16,6 +16,10 @@ const initializeStorage = async () => {
       recursive: true,
     });
 
+    await fs.mkdir(storageConfig.artifactsPath, {
+      recursive: true,
+    });
+
     console.log("Storage directories initialized successfully");
   } catch (error) {
     console.error("Failed to initialize storage directories", error);
