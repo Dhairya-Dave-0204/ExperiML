@@ -10,6 +10,9 @@ const __dirname = path.dirname(__filename);
 // Root directory for all uploaded files
 const UPLOAD_ROOT = path.resolve(__dirname, "../../uploads");
 
+// Root directory for system-generated artifacts
+const ARTIFACT_STORAGE_ROOT = path.resolve(__dirname, "../../storage");
+
 export const storageConfig = {
   /*
    * Active storage provider.
@@ -26,6 +29,10 @@ export const storageConfig = {
    * Base upload directory
    *
    * backend/uploads/
+   *
+   * Used for user-provided files.
+   * Currently:
+   * - dataset uploads
    */
   rootPath: UPLOAD_ROOT,
 
@@ -46,8 +53,7 @@ export const storageConfig = {
    *
    * backend/uploads/projects/
    *
-   * Structure:
-   *
+   * Dataset structure:
    * projects/
    *   <projectId>/
    *      datasets/
@@ -55,4 +61,20 @@ export const storageConfig = {
    *              data.csv
    */
   projectsPath: path.join(UPLOAD_ROOT, "projects"),
+
+  /*
+   * Artifact storage location
+   * backend/storage/artifacts/
+   *
+   * Used for: system-generated experiment artifacts
+   *
+   * Future structure:
+   * artifacts/
+   *   <projectId>/
+   *      <experimentId>/
+   *          model.joblib
+   *          metrics.json
+   *          report.pdf
+   */
+  artifactsPath: path.join(ARTIFACT_STORAGE_ROOT, "artifacts"),
 };
