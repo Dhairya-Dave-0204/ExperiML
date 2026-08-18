@@ -10,6 +10,7 @@ import authRouter from "#auth/auth.routes";
 import projectRouter from "#project/project.routes";
 import datasetRoutes from "#dataset/dataset.routes";
 import experimentRoutes from "#experiment/experiment.routes";
+import artifactRoutes from "#artifact/artifact.routes";
 
 const app = express();
 
@@ -121,6 +122,10 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/projects", projectRouter);
 app.use("/api/v1/projects", datasetRoutes);
 app.use("/api/v1/projects", experimentRoutes);
+app.use(
+  "/api/v1/projects/:projectId/experiments/:experimentId/artifacts",
+  artifactRoutes,
+);
 
 /*
  * ===============================================
