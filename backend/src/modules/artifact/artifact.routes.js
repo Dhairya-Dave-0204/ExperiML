@@ -62,7 +62,7 @@ router.get(
  */
 
 router.get(
-  "/:projectId/experiments/:projectId/experiments/:experimentId/artifacts/:artifactId",
+  "/:projectId/experiments/:experimentId/artifacts/:artifactId",
   authenticate,
   validate(artifactParamsSchema, "params"),
   getArtifactById,
