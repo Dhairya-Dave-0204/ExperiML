@@ -6,12 +6,6 @@ import helmet from "helmet";
 import { env } from "#config/env.config";
 import { errorMiddleware } from "#middleware/error.middleware";
 
-import authRouter from "#auth/auth.routes";
-import projectRouter from "#project/project.routes";
-import datasetRoutes from "#dataset/dataset.routes";
-import experimentRoutes from "#experiment/experiment.routes";
-import artifactRoutes from "#artifact/artifact.routes";
-
 const app = express();
 
 app.set("json replacer", (_key, value) =>
@@ -118,14 +112,17 @@ app.get("/", (req, res) => {
  * ===============================================
  */
 
+import authRouter from "#auth/auth.routes";
+import projectRouter from "#project/project.routes";
+import datasetRoutes from "#dataset/dataset.routes";
+import experimentRoutes from "#experiment/experiment.routes";
+import artifactRoutes from "#artifact/artifact.routes";
+
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/projects", projectRouter);
 app.use("/api/v1/projects", datasetRoutes);
 app.use("/api/v1/projects", experimentRoutes);
-app.use(
-  "/api/v1/projects/:projectId/experiments/:experimentId/artifacts",
-  artifactRoutes,
-);
+app.use("/api/v1/projects", artifactRoutes);
 
 /*
  * ===============================================
