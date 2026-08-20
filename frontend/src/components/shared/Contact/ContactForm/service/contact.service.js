@@ -1,4 +1,4 @@
-import { ENV } from "@/config/env"
+import env from "@/config/env.config"
 
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 
