@@ -247,7 +247,7 @@ function TopBar({ onOpenMobileNav }) {
           <input
             type="text"
             placeholder="Search projects, experiments..."
-            className="w-64 rounded-lg border border-border bg-surface-soft py-1.5 pl-9 pr-14 text-sm text-text placeholder:text-text-secondary/70 transition-colors duration-150 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-light"
+            className="w-80 rounded-lg border border-border bg-surface-soft py-1.5 pl-9 pr-14 text-sm text-text placeholder:text-text-secondary/70 transition-colors duration-150 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-light"
           />
           <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-text-secondary">
             ⌘K
