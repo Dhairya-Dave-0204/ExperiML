@@ -16,11 +16,11 @@ function App() {
       <ScrollToTop />
 
       <Routes>
-        <PublicRoutes />
+        {PublicRoutes}
 
-        <AuthRoutes />
+        {AuthRoutes}
 
-        <AppRoutes />
+        {AppRoutes}
 
         <Route path="/test" element={<Test />} />
 
