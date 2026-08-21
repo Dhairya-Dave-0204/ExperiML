@@ -7,11 +7,11 @@ import { env } from "./env.config.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Root directory for all uploaded files
+// Root directory for user-provided uploaded files
 const UPLOAD_ROOT = path.resolve(__dirname, "../../uploads");
 
-// Root directory for system-generated artifacts
-const ARTIFACT_STORAGE_ROOT = path.resolve(__dirname, "../../storage");
+// Root directory for system-managed storage
+const STORAGE_ROOT = path.resolve(__dirname, "../../storage");
 
 export const storageConfig = {
   /*
@@ -26,20 +26,16 @@ export const storageConfig = {
   provider: env.STORAGE_PROVIDER || "local",
 
   /*
-   * Base upload directory
+   * User upload directory: backend/uploads/
    *
-   * backend/uploads/
-   *
-   * Used for user-provided files.
-   * Currently:
+   * Used for:
    * - dataset uploads
+   * - user-provided files
    */
   rootPath: UPLOAD_ROOT,
 
   /*
-   * Temporary upload location
-   *
-   * backend/uploads/temp/
+   * Temporary upload location: backend/uploads/temp/
    *
    * Used during:
    * - file upload
@@ -49,9 +45,7 @@ export const storageConfig = {
   tempPath: path.join(UPLOAD_ROOT, "temp"),
 
   /*
-   * Permanent project storage location
-   *
-   * backend/uploads/projects/
+   * Permanent dataset storage location: backend/uploads/projects/
    *
    * Dataset structure:
    * projects/
@@ -63,12 +57,16 @@ export const storageConfig = {
   projectsPath: path.join(UPLOAD_ROOT, "projects"),
 
   /*
-   * Artifact storage location
-   * backend/storage/artifacts/
+   * System-generated artifact storage location: backend/storage/artifacts/
    *
-   * Used for: system-generated experiment artifacts
+   * Used for:
+   * - models
+   * - metrics
+   * - reports
+   * - plots
+   * - logs
    *
-   * Future structure:
+   * Structure:
    * artifacts/
    *   <projectId>/
    *      <experimentId>/
@@ -76,5 +74,22 @@ export const storageConfig = {
    *          metrics.json
    *          report.pdf
    */
-  artifactsPath: path.join(ARTIFACT_STORAGE_ROOT, "artifacts"),
+  artifactsPath: path.join(STORAGE_ROOT, "artifacts"),
+
+  /*
+   * Prediction input storage location: backend/storage/predictions/
+   *
+   * Used for:
+   * - prediction input files
+   *
+   * Prediction structure:
+   * predictions/
+   *   <projectId>/
+   *      <experimentId>/
+   *          <predictionId>/
+   *              input.csv
+   * Note:
+   * The deeper directory hierarchy is created dynamically when a prediction input file is stored.
+   */
+  predictionInputsPath: path.join(STORAGE_ROOT, "predictions"),
 };
