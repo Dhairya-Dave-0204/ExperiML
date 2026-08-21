@@ -1,22 +1,33 @@
 import "./App.css";
 
+import { Routes, Route } from "react-router-dom";
+
 import { PublicRoutes, AuthRoutes, AppRoutes } from "@/routes/routes.index";
 
 import { ScrollToTop } from "@/components/components.index";
+
+import { NotFound } from "@/pages/page.index";
+
+import Test from "@/Test";
 
 function App() {
   return (
     <>
       <ScrollToTop />
 
-      <PublicRoutes />
+      <Routes>
+        <PublicRoutes />
 
-      <AuthRoutes />
+        <AuthRoutes />
 
-      <AppRoutes />
+        <AppRoutes />
+
+        <Route path="/test" element={<Test />} />
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </>
   );
 }
 
 export default App;
-// TODO: Add the reset password page
