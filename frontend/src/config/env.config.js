@@ -1,8 +1,4 @@
 /*
- * ============================================================
- * FRONTEND ENVIRONMENT CONFIGURATION
- * ============================================================
- *
  * Centralized access to frontend environment variables.
  *
  * Application code should NOT access import.meta.env directly.
@@ -11,20 +7,10 @@
  *
  * Vite exposes only variables prefixed with VITE_ to the
  * client-side application.
- *
- */
-
-/*
- * ============================================================
- * WEB3FORMS
- * ============================================================
- *
- * Public/client-side configuration required by the contact
- * form integration.
- *
  */
 
 const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+const API_URL = import.meta.env.VITE_API_URL;
 
 /*
  * ============================================================
@@ -45,17 +31,22 @@ if (!WEB3FORMS_ACCESS_KEY) {
   );
 }
 
+if (!API_URL) {
+  throw new Error(
+    "Missing required environment variable: API_URL",
+  );
+}
+
 /*
  * ============================================================
  * EXPORT
  * ============================================================
- *
  * Export a centralized, immutable configuration object.
- *
  */
 
 const env = Object.freeze({
   WEB3FORMS_ACCESS_KEY,
+  API_URL
 });
 
 export default env;
