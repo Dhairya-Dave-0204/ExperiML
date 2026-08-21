@@ -1,18 +1,22 @@
-import './App.css'
-import { AppRoutes } from "@/routes/routes.index"
+import "./App.css";
 
-import { ScrollToTop } from "@/components/components.index"
+import { PublicRoutes, AuthRoutes, AppRoutes } from "@/routes/routes.index";
+
+import { ScrollToTop } from "@/components/components.index";
 
 function App() {
-
   return (
     <>
       <ScrollToTop />
 
+      <PublicRoutes />
+
+      <AuthRoutes />
+
       <AppRoutes />
     </>
-  )
+  );
 }
 
-export default App
-// TODO: make the reset password page
+export default App;
+// TODO: Add the reset password page
