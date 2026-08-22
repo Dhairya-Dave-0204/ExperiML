@@ -251,7 +251,7 @@ const getPredictionById = async ({
 /*
  * Internal lifecycle update.
  *
- * Used later by:
+ * Used later by: 
  * - FastAPI integration
  * - background processing
  */
