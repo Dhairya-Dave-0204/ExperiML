@@ -1,9 +1,7 @@
 class CloudinaryProvider {
   /**
    * Upload file to Cloudinary.
-   *
    * Future flow:
-   *
    * Local file
    *      |
    *      ▼
@@ -20,7 +18,6 @@ class CloudinaryProvider {
    * Move file to permanent storage.
    *
    * Future Cloudinary structure:
-   *
    * experiml/
    *   projects/
    *      projectId/
@@ -33,16 +30,35 @@ class CloudinaryProvider {
   }
 
   /**
+   * Generic file movement.
+   *
+   * Future:
+   * Local file
+   *      |
+   *      ▼
+   * Cloudinary upload
+   *
+   * The exact implementation depends on:
+   * - upload strategy
+   * - public_id convention
+   * - folder structure
+   */
+  async moveFile() {
+    throw new Error("Cloudinary moveFile() is not implemented yet");
+  }
+
+  /**
    * Create access to a stored file.
    *
    * Future Artifact flow may use:
    * Cloudinary asset
    *      |
    *      ▼
-   * secure delivery URL / signed URL / stream
+   * secure delivery URL /
+   * signed URL /
+   * stream
    *
-   * The exact implementation will be decided
-   * when Cloudinary storage is integrated.
+   * Exact implementation will be decided when Cloudinary storage is integrated.
    */
   createReadStream() {
     throw new Error("Cloudinary createReadStream() is not implemented yet");
@@ -64,7 +80,8 @@ class CloudinaryProvider {
   /**
    * Check whether asset exists.
    *
-   * Future: Cloudinary Admin API lookup
+   * Future:
+   * Cloudinary Admin API lookup
    */
   async exists() {
     throw new Error("Cloudinary exists() is not implemented yet");
