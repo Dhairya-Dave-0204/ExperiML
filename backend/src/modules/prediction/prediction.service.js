@@ -1,15 +1,15 @@
 import path from "path";
 
 import { prisma } from "#clients/prisma.client";
-import { ApiError } from "#utils/ApiError";
-
+import { storageConfig } from "#config/storage.config";
 import { fileStorageService } from "#infra-services/file-storage.service";
 
 import { PREDICTION_STATUS } from "#prediction/prediction.constants";
 
+import { ApiError } from "#utils/ApiError";
+
 /*
  * Verify project and experiment relationship.
- *
  * Ensures:
  * User
  *  |
@@ -28,9 +28,7 @@ const verifyExperimentOwnership = async ({
 
       project: {
         id: projectId,
-
         userId,
-
         deletedAt: null,
       },
 
@@ -53,7 +51,9 @@ const verifyExperimentOwnership = async ({
  * 2. Check active prediction
  * 3. Create Prediction record
  * 4. Store input file
- * 5. Update metadata
+ * 5. Update input metadata
+ *
+ * FastAPI execution is not triggered yet.
  */
 const createPrediction = async ({
   projectId,
@@ -68,11 +68,14 @@ const createPrediction = async ({
     userId,
   });
 
+  if (!file) {
+    throw new ApiError(400, "Prediction input file is required");
+  }
+
   /*
-   * Only one active prediction
-   * per experiment.
+   * Only one active prediction per experiment.
    *
-   * Active:
+   * Active states:
    * CREATED
    * RUNNING
    */
@@ -96,10 +99,9 @@ const createPrediction = async ({
   }
 
   /*
-   * Prediction is created first.
+   * Create prediction first.
    *
-   * This gives us predictionId
-   * which becomes the storage boundary.
+   * Prediction ID becomes the storage boundary.
    */
   const prediction = await prisma.prediction.create({
     data: {
@@ -114,68 +116,76 @@ const createPrediction = async ({
   });
 
   try {
-    if (file) {
-      const predictionDirectory = path.join(
-        "predictions",
-        projectId,
-        experimentId,
-        prediction.id,
-      );
+    /*
+     * Prediction input storage:
+     * storage/
+     *   predictions/
+     *      projectId/
+     *          experimentId/
+     *              predictionId/
+     *                  input.csv
+     */
+    const predictionDirectory = path.join(
+      storageConfig.predictionInputsPath,
+      projectId,
+      experimentId,
+      prediction.id,
+    );
 
-      /*
-       * Physical storage path:
-       * storage/predictions/projectId/experimentId/predictionId/input.csv
-       */
+    await fileStorageService.ensureDirectory(predictionDirectory);
 
-      const destinationDirectory = path.join(predictionDirectory);
+    const extension = path.extname(file.originalname);
 
-      await fileStorageService.ensureDirectory(
-        path.join(
-          fileStorageService.predictionInputsPath,
-          destinationDirectory,
-        ),
-      );
+    const destinationPath = path.join(predictionDirectory, `input${extension}`);
 
-      const extension = path.extname(file.originalname);
+    await fileStorageService.moveFile({
+      sourcePath: file.path,
+      destinationPath,
+    });
 
-      const destinationPath = path.join(
-        fileStorageService.predictionInputsPath,
-        destinationDirectory,
-        `input${extension}`,
-      );
+    await prisma.prediction.update({
+      where: {
+        id: prediction.id,
+      },
 
-      await fileStorageService.moveFile({
-        sourcePath: file.path,
-        destinationPath,
-      });
+      data: {
+        inputFileName: file.originalname,
 
-      await prisma.prediction.update({
-        where: {
-          id: prediction.id,
-        },
+        inputFilePath: destinationPath,
 
-        data: {
-          inputFileName: file.originalname,
+        inputFormat: extension.replace(".", "").toUpperCase(),
 
-          inputFilePath: destinationPath,
+        fileSize: BigInt(file.size),
 
-          inputFormat: extension.replace(".", "").toUpperCase(),
-
-          fileSize: BigInt(file.size),
-
-          mimeType: file.mimetype,
-        },
-      });
-    }
+        mimeType: file.mimetype,
+      },
+    });
   } catch (error) {
     /*
-     * If storage fails,
-     * prediction should not silently continue.
+     * Storage failed.
+     *
+     * Prediction record exists, but execution cannot continue.
      */
+    await prisma.prediction.update({
+      where: {
+        id: prediction.id,
+      },
+
+      data: {
+        status: PREDICTION_STATUS.FAILED,
+      },
+    });
 
     throw new ApiError(500, "Failed to store prediction input file");
   }
 
+  /*
+   * Future:
+   * Trigger FastAPI prediction execution here.
+   *
+   * Current state:
+   * CREATED
+   */
   return prisma.prediction.findUnique({
     where: {
       id: prediction.id,
@@ -241,7 +251,9 @@ const getPredictionById = async ({
 /*
  * Internal lifecycle update.
  *
- * Used later by FastAPI integration.
+ * Used later by:
+ * - FastAPI integration
+ * - background processing
  */
 const updatePredictionStatus = async ({ predictionId, status, data = {} }) => {
   const prediction = await prisma.prediction.findUnique({
