@@ -13,27 +13,38 @@ import {
   createPredictionSchema,
 } from "./prediction.validation.js";
 
-import { validate } from "#middleware/validate.middleware";
-
 import { verifyJWT } from "#auth/auth.middleware";
+
+import { validate } from "#middleware/validate.middleware";
 
 import { upload } from "#middleware/upload.middleware";
 
 const router = Router();
 
 /*
- * POST /
+ * Prediction routes
  *
+ * Base:
+ * /api/v1/projects/:projectId/experiments/:experimentId/predictions
+ */
+
+/*
  * Create Prediction
- * Body:
- * - name
- * - predictionType
+ *
+ * POST
+ * /projects/:projectId/experiments/:experimentId/predictions
+ *
+ * multipart/form-data
+ * Fields:
+ * name
+ * predictionType
  *
  * File:
- * - file
+ * file
  */
 router.post(
-  "/",
+  "/projects/:projectId/experiments/:experimentId/predictions",
+
   verifyJWT,
 
   upload.single("file"),
@@ -46,11 +57,14 @@ router.post(
 );
 
 /*
- * GET /
  * Get Predictions
+ *
+ * GET
+ * /projects/:projectId/experiments/:experimentId/predictions
  */
 router.get(
-  "/",
+  "/projects/:projectId/experiments/:experimentId/predictions",
+
   verifyJWT,
 
   validate(predictionParamsSchema, "params"),
@@ -59,11 +73,14 @@ router.get(
 );
 
 /*
- * GET /:predictionId
  * Get Prediction
+ *
+ * GET
+ * /projects/:projectId/experiments/:experimentId/predictions/:predictionId
  */
 router.get(
-  "/:predictionId",
+  "/projects/:projectId/experiments/:experimentId/predictions/:predictionId",
+
   verifyJWT,
 
   validate(predictionIdParamsSchema, "params"),
@@ -72,11 +89,14 @@ router.get(
 );
 
 /*
- * DELETE /:predictionId
- * Soft delete Prediction
+ * Delete Prediction
+ *
+ * DELETE
+ * /projects/:projectId/experiments/:experimentId/predictions/:predictionId
  */
 router.delete(
-  "/:predictionId",
+  "/projects/:projectId/experiments/:experimentId/predictions/:predictionId",
+
   verifyJWT,
 
   validate(predictionIdParamsSchema, "params"),
