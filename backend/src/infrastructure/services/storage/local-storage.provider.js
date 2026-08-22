@@ -15,9 +15,7 @@ class LocalStorageProvider {
   }
 
   /**
-   * Save uploaded file into temporary storage.
-   *
-   * Currently Multer will handle writing the file.
+   * Save uploaded file into temporary storage. Currently Multer will handle writing the file.
    * This method is kept for future flexibility.
    */
   async saveTempFile(sourcePath, fileName) {
@@ -31,11 +29,10 @@ class LocalStorageProvider {
   }
 
   /**
-   * Move processed dataset file
-   * from temp storage to permanent storage.
+   * Move processed dataset file from temp storage to permanent storage.
+   * Dataset-specific method.
    *
    * Structure:
-   *
    * uploads/
    *   projects/
    *      projectId/
@@ -61,14 +58,37 @@ class LocalStorageProvider {
   }
 
   /**
+   * Generic file movement.
+   *
+   * Used by:
+   * - prediction input storage
+   * - future generic storage operations
+   *
+   * The provider does not know:
+   * - artifact
+   * - prediction
+   * - dataset
+   *
+   * It only moves files.
+   */
+  async moveFile({ sourcePath, destinationPath }) {
+    const destinationDirectory = path.dirname(destinationPath);
+
+    await this.ensureDirectory(destinationDirectory);
+
+    await fs.rename(sourcePath, destinationPath);
+
+    return destinationPath;
+  }
+
+  /**
    * Create a readable stream for a stored file.
    *
    * Used by:
    * - artifact download
    * - future file streaming operations
    *
-   * The provider does not handle the HTTP response.
-   * It only provides access to the stored file as a stream.
+   * The provider does not handle HTTP response.
    */
   createReadStream(filePath) {
     return createReadStream(filePath);
@@ -91,6 +111,7 @@ class LocalStorageProvider {
        * Example:
        * cleanup already performed.
        */
+
       if (error.code !== "ENOENT") {
         throw error;
       }
