@@ -12,6 +12,8 @@ import {
 
 import { useAuth } from "@/context/AuthContext";
 
+import { ROUTES } from "@/constants/routes"
+
 function SignUpMainLayout() {
   const { register } = useAuth();
 
@@ -23,7 +25,7 @@ function SignUpMainLayout() {
 
       toast.success("Account created successfully. Please sign in.");
 
-      navigate("/sign-in");
+      navigate(ROUTES.SIGN_IN);
     } catch (error) {
       toast.error(
         error?.response?.data?.message ||

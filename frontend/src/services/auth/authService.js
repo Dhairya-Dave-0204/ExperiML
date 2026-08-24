@@ -16,7 +16,10 @@ const authService = {
       lastName,
       email: userData.email,
       password: userData.password,
+      confirmPassword: userData.confirmPassword,
     };
+
+    console.log("REGISTER PAYLOAD:", payload);
 
     const response = await apiClient.post(API_ENDPOINTS.auth.register, payload);
 
