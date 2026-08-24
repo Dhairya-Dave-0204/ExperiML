@@ -1,172 +1,135 @@
-import { useMemo, useState } from "react";
+import { Mail } from "lucide-react";
 
-import { validateField, validateSignInForm } from "../signInValidation";
+import { useSignInForm } from "./hooks/useSignInForm";
 
-const INITIAL_VALUES = {
-  email: "",
-  password: "",
-};
+import FormField from "./components/FormField";
+import PasswordField from "./components/PasswordField";
+import FormDivider from "./components/FormDivider";
 
-const INITIAL_ERRORS = {
-  email: "",
-  password: "",
-};
-
-const INITIAL_TOUCHED = {
-  email: false,
-  password: false,
-};
-
-function useSignInForm() {
-  const [values, setValues] = useState(INITIAL_VALUES);
-
-  const [errors, setErrors] = useState(INITIAL_ERRORS);
-
-  const [touched, setTouched] = useState(INITIAL_TOUCHED);
-
-  const [rememberMe, setRememberMe] = useState(false);
-
-  const [showPassword, setShowPassword] = useState(false);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  /**
-   * Handle input changes.
-   * Performs live validation after a field has been touched.
-   */
-  function handleChange(event) {
-    const { name, value } = event.target;
-
-    setValues((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    if (touched[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: validateField(name, value),
-      }));
-    }
-  }
-
-  /**
-   * Validate field when it loses focus.
-   */
-  function handleBlur(event) {
-    const { name, value } = event.target;
-
-    setTouched((prev) => ({
-      ...prev,
-      [name]: true,
-    }));
-
-    setErrors((prev) => ({
-      ...prev,
-      [name]: validateField(name, value),
-    }));
-  }
-
-  /**
-   * Validate entire form on submit.
-   * Returns credentials when valid.
-   */
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    setTouched({
-      email: true,
-      password: true,
-    });
-
-    const { errors, isValid } = validateSignInForm(values);
-
-    setErrors(errors);
-
-    if (!isValid) {
-      return null;
-    }
-
-    return {
-      email: values.email,
-      password: values.password,
-    };
-  }
-
-  /**
-   * Update submitting state for UI feedback.
-   */
-  function setSubmitting(value) {
-    setIsSubmitting(value);
-  }
-
-  /**
-   * Toggle password visibility.
-   */
-  function togglePasswordVisibility() {
-    setShowPassword((prev) => !prev);
-  }
-
-  /**
-   * Toggle Remember Me.
-   */
-  function toggleRememberMe() {
-    setRememberMe((prev) => !prev);
-  }
-
-  /**
-   * Reset form.
-   */
-  function resetForm() {
-    setValues(INITIAL_VALUES);
-
-    setErrors(INITIAL_ERRORS);
-
-    setTouched(INITIAL_TOUCHED);
-
-    setRememberMe(false);
-
-    setShowPassword(false);
-
-    setIsSubmitting(false);
-  }
-
-  /**
-   * Button enabled only when form is completely valid.
-   */
-  const isFormValid = useMemo(() => {
-    return validateSignInForm(values).isValid;
-  }, [values]);
-
-  return {
+function SignInForm({ onSubmit }) {
+  const {
     values,
-
     errors,
-
     touched,
-
     rememberMe,
-
     showPassword,
-
     isSubmitting,
-
     isFormValid,
 
     handleChange,
-
     handleBlur,
-
     handleSubmit,
 
     toggleRememberMe,
-
     togglePasswordVisibility,
 
-    resetForm,
-
     setSubmitting,
-  };
+  } = useSignInForm();
+
+  async function submitHandler(event) {
+    const credentials = handleSubmit(event);
+
+    if (!credentials) {
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      await onSubmit(credentials);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <form noValidate onSubmit={submitHandler} className="space-y-5">
+      <FormField
+        label="Email address"
+        name="email"
+        type="email"
+        value={values.email}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        error={touched.email && errors.email}
+        placeholder="Enter your email"
+      >
+        <div className="relative">
+          <Mail
+            size={17}
+            strokeWidth={1.75}
+            className="absolute -translate-y-1/2 left-3 top-1/2 text-text-secondary"
+          />
+
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={values.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            placeholder="Enter your email"
+            className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 pl-10 text-sm text-text placeholder:text-text-secondary/70 transition-colors duration-150 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-light"
+          />
+        </div>
+      </FormField>
+
+      <PasswordField
+        value={values.password}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        error={touched.password && errors.password}
+        showPassword={showPassword}
+        togglePasswordVisibility={togglePasswordVisibility}
+      />
+
+      <div className="flex items-center justify-between">
+        <label className="flex items-center gap-2 text-sm text-text-secondary">
+          <input
+            type="checkbox"
+            checked={rememberMe}
+            onChange={toggleRememberMe}
+            className="rounded border-border text-primary focus:ring-primary-light"
+          />
+          Remember me
+        </label>
+
+        <button
+          type="button"
+          className="text-sm font-medium text-primary hover:underline"
+        >
+          Forgot password?
+        </button>
+      </div>
+
+      <button
+        type="submit"
+        disabled={!isFormValid || isSubmitting}
+        className="
+          flex
+          w-full
+          items-center
+          justify-center
+          rounded-lg
+          bg-primary
+          px-5
+          py-2.5
+          text-sm
+          font-semibold
+          text-white
+          transition-colors
+          duration-200
+          hover:bg-primary-dark
+          disabled:cursor-not-allowed
+          disabled:opacity-50
+        "
+      >
+        {isSubmitting ? "Signing in..." : "Sign in"}
+      </button>
+
+      <FormDivider />
+    </form>
+  );
 }
 
-export default useSignInForm;
+export default SignInForm;
