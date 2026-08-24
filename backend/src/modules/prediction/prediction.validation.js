@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { PREDICTION_TYPE } from "#prediction/prediction.constants.js";
+import { PREDICTION_TYPE } from "#prediction/prediction.constants";
 
 /*
  * Route parameter validation

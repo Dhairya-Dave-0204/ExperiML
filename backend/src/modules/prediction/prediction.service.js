@@ -2,7 +2,7 @@ import path from "path";
 
 import { prisma } from "#clients/prisma.client";
 import { storageConfig } from "#config/storage.config";
-import { fileStorageService } from "#infra-services/file-storage.service";
+import { fileStorageService } from "#infra-services/storage/file-storage.service";
 
 import { PREDICTION_STATUS } from "#prediction/prediction.constants";
 

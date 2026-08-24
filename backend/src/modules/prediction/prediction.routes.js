@@ -13,7 +13,7 @@ import {
   createPredictionSchema,
 } from "./prediction.validation.js";
 
-import { verifyJWT } from "#auth/auth.middleware";
+import { authenticate } from "#middleware/auth.middleware";
 
 import { validate } from "#middleware/validate.middleware";
 
@@ -45,7 +45,7 @@ const router = Router();
 router.post(
   "/projects/:projectId/experiments/:experimentId/predictions",
 
-  verifyJWT,
+  authenticate,
 
   upload.single("file"),
 
@@ -65,7 +65,7 @@ router.post(
 router.get(
   "/projects/:projectId/experiments/:experimentId/predictions",
 
-  verifyJWT,
+  authenticate,
 
   validate(predictionParamsSchema, "params"),
 
@@ -81,7 +81,7 @@ router.get(
 router.get(
   "/projects/:projectId/experiments/:experimentId/predictions/:predictionId",
 
-  verifyJWT,
+  authenticate,
 
   validate(predictionIdParamsSchema, "params"),
 
@@ -97,7 +97,7 @@ router.get(
 router.delete(
   "/projects/:projectId/experiments/:experimentId/predictions/:predictionId",
 
-  verifyJWT,
+  authenticate,
 
   validate(predictionIdParamsSchema, "params"),
 
