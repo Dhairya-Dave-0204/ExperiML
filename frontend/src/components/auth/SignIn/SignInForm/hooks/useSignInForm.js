@@ -69,6 +69,7 @@ function useSignInForm() {
 
   /**
    * Validate entire form on submit.
+   * Returns credentials when valid.
    */
   function handleSubmit(event) {
     event.preventDefault();
@@ -83,14 +84,20 @@ function useSignInForm() {
     setErrors(errors);
 
     if (!isValid) {
-      return false;
+      return null;
     }
 
-    setIsSubmitting(true);
+    return {
+      email: values.email,
+      password: values.password,
+    };
+  }
 
-    // Backend integration will be added later.
-
-    return true;
+  /**
+   * Update submitting state for UI feedback.
+   */
+  function setSubmitting(value) {
+    setIsSubmitting(value);
   }
 
   /**
@@ -112,10 +119,15 @@ function useSignInForm() {
    */
   function resetForm() {
     setValues(INITIAL_VALUES);
+
     setErrors(INITIAL_ERRORS);
+
     setTouched(INITIAL_TOUCHED);
+
     setRememberMe(false);
+
     setShowPassword(false);
+
     setIsSubmitting(false);
   }
 
@@ -152,6 +164,8 @@ function useSignInForm() {
     togglePasswordVisibility,
 
     resetForm,
+
+    setSubmitting,
   };
 }
 

@@ -2,7 +2,12 @@ import "./App.css";
 
 import { Routes, Route } from "react-router-dom";
 
-import { PublicRoutes, AuthRoutes, AppRoutes } from "@/routes/routes.index";
+import {
+  PublicRoutes,
+  AuthRoutes,
+  AppRoutes,
+  ProtectedRoute,
+} from "@/routes/routes.index";
 
 import { ScrollToTop } from "@/components/components.index";
 
@@ -20,7 +25,9 @@ function App() {
 
         {AuthRoutes}
 
-        {AppRoutes}
+        <Route element={<ProtectedRoute />}>
+          {AppRoutes}
+        </Route>
 
         <Route path="/test" element={<Test />} />
 
