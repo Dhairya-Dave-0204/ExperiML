@@ -8,7 +8,7 @@ import FormDivider from "../FormDivider/FormDivider";
 import { TextInput } from "./components/signup.index";
 import useSignUpForm from "./hooks/useSignUpForm";
 
-function SignUpForm() {
+function SignUpForm({ onSubmit }) {
   const {
     values,
     errors,
@@ -16,14 +16,34 @@ function SignUpForm() {
     agreed,
     isSubmitting,
     isFormValid,
+
     handleChange,
     handleBlur,
     handleSubmit,
+
     toggleAgreement,
+
+    setSubmitting,
   } = useSignUpForm();
 
+  async function submitHandler(event) {
+    const credentials = handleSubmit(event);
+
+    if (!credentials) {
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      await onSubmit(credentials);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+    <form onSubmit={submitHandler} className="space-y-5" noValidate>
       {/* Full Name */}
       <TextInput
         id="fullName"

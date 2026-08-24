@@ -1,14 +1,39 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import {
   AuthLayout,
   AuthCard,
   SignUpForm,
   AuthFooterUp,
-  AuthHeader
+  AuthHeader,
 } from "@/components/components.index";
 
+import { useAuth } from "@/context/AuthContext";
+
 function SignUpMainLayout() {
+  const { register } = useAuth();
+
+  const navigate = useNavigate();
+
+  async function handleRegister(credentials) {
+    try {
+      await register(credentials);
+
+      toast.success("Account created successfully. Please sign in.");
+
+      navigate("/sign-in");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Unable to create account. Please try again.",
+      );
+
+      throw error;
+    }
+  }
+
   return (
     <AuthLayout>
       <AuthCard>
@@ -16,8 +41,10 @@ function SignUpMainLayout() {
           title="Create Account"
           subtitle="Create your ExperiML account to manage datasets, experiments, and machine learning workflows."
         />
-        <SignUpForm />
+
+        <SignUpForm onSubmit={handleRegister} />
       </AuthCard>
+
       <AuthFooterUp actionLabel="creating an account" />
     </AuthLayout>
   );

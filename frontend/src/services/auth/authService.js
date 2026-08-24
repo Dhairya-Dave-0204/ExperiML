@@ -5,10 +5,20 @@ import tokenManager from "./tokenManager";
 
 const authService = {
   async register(userData) {
-    const response = await apiClient.post(
-      API_ENDPOINTS.auth.register,
-      userData,
-    );
+    const nameParts = userData.fullName.trim().split(" ");
+
+    const firstName = nameParts.shift();
+
+    const lastName = nameParts.join(" ");
+
+    const payload = {
+      firstName,
+      lastName,
+      email: userData.email,
+      password: userData.password,
+    };
+
+    const response = await apiClient.post(API_ENDPOINTS.auth.register, payload);
 
     return response.data;
   },

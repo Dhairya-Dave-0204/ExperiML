@@ -69,6 +69,7 @@ function useSignUpForm() {
         password: touched.password
           ? validateField("password", updatedValues)
           : prev.password,
+
         confirmPassword: validateField("confirmPassword", updatedValues),
       }));
     }
@@ -107,7 +108,11 @@ function useSignUpForm() {
     }));
   }
 
-  async function handleSubmit(event) {
+  /**
+   * Validate entire form on submit.
+   * Returns signup data when valid.
+   */
+  function handleSubmit(event) {
     event.preventDefault();
 
     const { errors: validationErrors, isValid } = validateSignUpForm(values);
@@ -122,18 +127,23 @@ function useSignUpForm() {
       agreed: true,
     });
 
-    if (!isValid) return;
-
-    try {
-      setIsSubmitting(true);
-
-      // TODO:
-      // Call Sign Up API here.
-
-      console.log("Sign Up Data:", values);
-    } finally {
-      setIsSubmitting(false);
+    if (!isValid) {
+      return null;
     }
+
+    return {
+      fullName: values.fullName,
+      email: values.email,
+      password: values.password,
+      confirmPassword: values.confirmPassword,
+    };
+  }
+
+  /**
+   * Update submitting state for UI feedback.
+   */
+  function setSubmitting(value) {
+    setIsSubmitting(value);
   }
 
   function resetForm() {
@@ -181,8 +191,12 @@ function useSignUpForm() {
     handleChange,
     handleBlur,
     handleSubmit,
+
     toggleAgreement,
+
     resetForm,
+
+    setSubmitting,
   };
 }
 
