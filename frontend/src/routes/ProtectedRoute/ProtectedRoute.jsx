@@ -2,6 +2,8 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import { useAuth } from "@/context/AuthContext";
 
+import { ROUTES } from "@/constants/routes";
+
 function ProtectedRoute() {
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -18,7 +20,7 @@ function ProtectedRoute() {
   if (!isAuthenticated) {
     return (
       <Navigate
-        to="/sign-in"
+        to={ROUTES.SIGN_IN}
         replace
         state={{
           from: location,
