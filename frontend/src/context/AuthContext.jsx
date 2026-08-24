@@ -17,6 +17,7 @@ export function AuthProvider({ children }) {
    */
   async function initializeAuth() {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       await authService.refresh();
 
       const currentUser = await authService.getCurrentUser();
