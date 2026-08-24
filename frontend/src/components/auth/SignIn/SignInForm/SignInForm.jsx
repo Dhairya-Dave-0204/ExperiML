@@ -1,10 +1,13 @@
-import { Mail } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 
-import useSignInForm from "./hooks/useSignInForm";
+import { ROUTES } from "@/constants/routes";
 
+import FormDivider from "../FormDivider/FormDivider";
 import FormField from "./components/FormField";
 import PasswordField from "./components/PasswordField";
-import FormDivider from "../FormDivider/FormDivider";
+
+import useSignInForm from "./hooks/useSignInForm";
 
 function SignInForm({ onSubmit }) {
   const {
@@ -43,92 +46,134 @@ function SignInForm({ onSubmit }) {
   }
 
   return (
-    <form noValidate onSubmit={submitHandler} className="space-y-5">
-      <FormField
-        label="Email address"
-        name="email"
-        type="email"
-        value={values.email}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        error={touched.email && errors.email}
-        placeholder="Enter your email"
-      >
-        <div className="relative">
-          <Mail
-            size={17}
-            strokeWidth={1.75}
-            className="absolute -translate-y-1/2 left-3 top-1/2 text-text-secondary"
-          />
+    <div className="w-full p-8 border shadow-sm rounded-3xl border-border bg-surface">
+      {/* Header */}
 
-          <input
-            id="email"
-            name="email"
-            type="email"
-            value={values.email}
+      <h1 className="mb-1.5 font-heading text-3xl font-extrabold tracking-tight text-text">
+        Sign In
+      </h1>
+
+      <p className="mb-8 text-sm leading-relaxed text-text-secondary">
+        Welcome back. Sign in to continue managing your machine learning
+        experiments and projects.
+      </p>
+
+      {/* Form */}
+
+      <form noValidate onSubmit={submitHandler} className="space-y-5">
+        {/* Email */}
+
+        <FormField
+          id="email"
+          name="email"
+          label="Email Address"
+          type="email"
+          value={values.email}
+          placeholder="you@example.com"
+          autoComplete="email"
+          icon={Mail}
+          error={errors.email}
+          touched={touched.email}
+          onChange={handleChange}
+          onBlur={handleBlur}
+        />
+
+        {/* Password */}
+
+        <div>
+          <PasswordField
+            value={values.password}
+            error={errors.password}
+            touched={touched.password}
+            showPassword={showPassword}
+            onToggleVisibility={togglePasswordVisibility}
             onChange={handleChange}
             onBlur={handleBlur}
-            placeholder="Enter your email"
-            className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 pl-10 text-sm text-text placeholder:text-text-secondary/70 transition-colors duration-150 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-light"
           />
         </div>
-      </FormField>
 
-      <PasswordField
-        value={values.password}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        error={touched.password && errors.password}
-        showPassword={showPassword}
-        togglePasswordVisibility={togglePasswordVisibility}
-      />
+        {/* Remember Me */}
 
-      <div className="flex items-center justify-between">
-        <label className="flex items-center gap-2 text-sm text-text-secondary">
+        <label className="flex cursor-pointer items-center gap-2.5 select-none">
           <input
             type="checkbox"
             checked={rememberMe}
             onChange={toggleRememberMe}
-            className="rounded border-border text-primary focus:ring-primary-light"
+            className="w-4 h-4 rounded border-border text-primary accent-primary focus:ring-2 focus:ring-primary-light"
           />
-          Remember me
+
+          <span className="text-sm text-text-secondary">Remember me</span>
         </label>
 
+        {/* Submit */}
+
         <button
-          type="button"
-          className="text-sm font-medium text-primary hover:underline"
+          type="submit"
+          disabled={!isFormValid || isSubmitting}
+          className="
+            inline-flex
+            items-center
+            justify-center
+            w-full
+            gap-2
+            px-5
+            h-10
+            py-2.5
+            text-sm
+            font-semibold
+            text-white
+            transition-all
+            duration-300
+            rounded-lg
+            bg-primary
+            hover:bg-primary-dark
+            disabled:cursor-not-allowed
+            disabled:opacity-50
+          "
         >
-          Forgot password?
+          {isSubmitting ? (
+            "Signing In..."
+          ) : (
+            <>
+              Sign In
+              <ArrowRight size={16} strokeWidth={2} />
+            </>
+          )}
         </button>
+      </form>
+
+      {/* Divider */}
+
+      <div className="my-7">
+        <FormDivider label="new here" />
       </div>
 
-      <button
-        type="submit"
-        disabled={!isFormValid || isSubmitting}
+      {/* Footer */}
+
+      <Link
+        to={ROUTES.SIGN_UP}
         className="
-          flex
+          inline-flex
           w-full
           items-center
           justify-center
           rounded-lg
-          bg-primary
+          border
+          border-border
           px-5
           py-2.5
           text-sm
           font-semibold
-          text-white
+          text-text
           transition-colors
           duration-200
-          hover:bg-primary-dark
-          disabled:cursor-not-allowed
-          disabled:opacity-50
+          hover:border-border-hover
+          hover:bg-surface-soft
         "
       >
-        {isSubmitting ? "Signing in..." : "Sign in"}
-      </button>
-
-      <FormDivider />
-    </form>
+        Create an Account
+      </Link>
+    </div>
   );
 }
 
