@@ -1,10 +1,10 @@
 import { Mail } from "lucide-react";
 
-import { useSignInForm } from "./hooks/useSignInForm";
+import useSignInForm from "./hooks/useSignInForm";
 
 import FormField from "./components/FormField";
 import PasswordField from "./components/PasswordField";
-import FormDivider from "./components/FormDivider";
+import FormDivider from "../FormDivider/FormDivider";
 
 function SignInForm({ onSubmit }) {
   const {
