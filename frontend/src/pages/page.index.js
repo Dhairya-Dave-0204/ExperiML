@@ -14,6 +14,7 @@ export { default as NotFound } from "./public/NotFound/NotFound";
 export { default as ForgotPassword } from "./auth/ForgotPassword/ForgotPassword";
 export { default as SignIn } from "./auth/SignIn/SignIn";
 export { default as SignUp } from "./auth/SignUp/SignUp";
+export { default as ResetPassword } from "./auth/ResetPassword/ResetPassword";
 
 // Main application pages
 export { default as Dashboard } from "./app/Dashboard/Dashboard";
