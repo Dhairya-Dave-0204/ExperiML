@@ -80,3 +80,4 @@ export { default as DashboardHeader } from "./app/features/Dashboard/DashboardHe
 export { default as ContinueWorkingPanel } from "./app/features/Dashboard/ContinueWorkingPanel/ContinueWorkingPanel";
 export { default as RecentExperiments } from "./app/features/Dashboard/RecentExperiments/RecentExperiments";
 export { default as RecentProjects } from "./app/features/Dashboard/RecentProjects/RecentProjects";
+export { default as WorkspaceSummary } from "./app/features/Dashboard/WorkspaceSummary/WorkspaceSummary";
