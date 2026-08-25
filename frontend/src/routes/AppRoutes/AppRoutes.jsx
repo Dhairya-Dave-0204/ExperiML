@@ -2,10 +2,11 @@ import { Route } from "react-router-dom";
 
 import { AppLayout } from "@/layout/layout.index";
 import { ROUTES } from "@/constants/routes";
+import { Dashboard } from "@/pages/page.index";
 
 const AppRoutes = (
   <Route element={<AppLayout />}>
-    <Route path={ROUTES.APP} element={<div className="p-10">Dashboard</div>} />
+    <Route path={ROUTES.APP} element={<Dashboard />} />
 
     <Route
       path={ROUTES.PROJECTS}
