@@ -1,9 +1,9 @@
 import React from 'react'
 
+import { ResetPasswordMainLayout } from "@/components/components.index"
+
 function ResetPassword() {
-  return (
-    <div>ResetPassword</div>
-  )
+  return <ResetPasswordMainLayout />;
 }
 
 export default ResetPassword
