@@ -81,3 +81,4 @@ export { default as ContinueWorkingPanel } from "./app/features/Dashboard/Contin
 export { default as RecentExperiments } from "./app/features/Dashboard/RecentExperiments/RecentExperiments";
 export { default as RecentProjects } from "./app/features/Dashboard/RecentProjects/RecentProjects";
 export { default as WorkspaceSummary } from "./app/features/Dashboard/WorkspaceSummary/WorkspaceSummary";
+export { default as DashboardOnboarding } from "./app/features/Dashboard/DashboardOnboarding/DashboardOnboarding";
