@@ -18,3 +18,4 @@ export { default as ResetPassword } from "./auth/ResetPassword/ResetPassword";
 
 // Main application pages
 export { default as Dashboard } from "./app/Dashboard/Dashboard";
+export { default as Settings } from "./app/Settings/Settings";
