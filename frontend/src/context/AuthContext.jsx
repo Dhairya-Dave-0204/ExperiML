@@ -17,7 +17,6 @@ export function AuthProvider({ children }) {
    */
   async function initializeAuth() {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       await authService.refresh();
 
       const currentUser = await authService.getCurrentUser();
@@ -68,9 +67,6 @@ export function AuthProvider({ children }) {
    */
   async function refreshUser() {
     const currentUser = await authService.getCurrentUser();
-
-    console.log("AUTH RESTORED USER:", currentUser);
-
     setUser(currentUser);
 
     return currentUser;
