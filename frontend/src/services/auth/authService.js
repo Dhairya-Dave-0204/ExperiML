@@ -19,8 +19,6 @@ const authService = {
       confirmPassword: userData.confirmPassword,
     };
 
-    console.log("REGISTER PAYLOAD:", payload);
-
     const response = await apiClient.post(API_ENDPOINTS.auth.register, payload);
 
     return response.data;
