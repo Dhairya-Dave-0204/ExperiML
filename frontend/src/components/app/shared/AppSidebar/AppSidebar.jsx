@@ -57,7 +57,7 @@ function AppSidebar() {
   return (
     <>
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-40 flex items-center h-16 px-4 border-b border-border bg-surface lg:hidden">
+      <header className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border bg-surface lg:hidden">
         <div className="flex items-center gap-2 ml-3 text-lg font-bold tracking-tight font-heading text-text">
           <FlaskConical size={24} strokeWidth={2.5} className="text-primary" />
           <span>ExperiML</span>
@@ -79,7 +79,7 @@ function AppSidebar() {
           type="button"
           aria-label="Close navigation"
           onClick={closeMobileSidebar}
-          className="fixed inset-0 z-40 bg-black/20 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/65 lg:hidden"
         />
       )}
 
