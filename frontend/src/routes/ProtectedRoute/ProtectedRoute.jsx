@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import { useAuth } from "@/context/AuthContext";
@@ -6,11 +5,11 @@ import { ROUTES } from "@/constants/routes";
 import { AuthLoadingScreen } from "@/components/components.index";
 
 function ProtectedRoute() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, isLoggingOut } = useAuth();
 
   const location = useLocation();
 
-  if (isLoading) {
+  if (isLoading || isLoggingOut) {
     return <AuthLoadingScreen />;
   }
 

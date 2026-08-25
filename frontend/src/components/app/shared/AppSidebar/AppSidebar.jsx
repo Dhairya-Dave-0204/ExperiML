@@ -60,6 +60,7 @@ function AppSidebar() {
       <header className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border bg-surface lg:hidden">
         <div className="flex items-center gap-2 ml-3 text-lg font-bold tracking-tight font-heading text-text">
           <FlaskConical size={24} strokeWidth={2.5} className="text-primary" />
+
           <span>ExperiML</span>
         </div>
 
@@ -142,22 +143,22 @@ function AppSidebar() {
                 onClick={closeMobileSidebar}
                 className={({ isActive }) =>
                   `
-                      flex
-                      h-10
-                      items-center
-                      gap-3
-                      rounded-lg
-                      px-3
-                      text-sm
-                      font-medium
-                      transition-colors
-                      duration-200
-                      ${
-                        isActive
-                          ? "bg-primary/20 text-primary"
-                          : "text-text-secondary hover:bg-primary-light/40 hover:text-text"
-                      }
-                    `
+                    flex
+                    h-10
+                    items-center
+                    gap-3
+                    rounded-lg
+                    px-3
+                    text-sm
+                    font-medium
+                    transition-colors
+                    duration-200
+                    ${
+                      isActive
+                        ? "bg-primary/20 text-primary"
+                        : "text-text-secondary hover:bg-primary-light/40 hover:text-text"
+                    }
+                  `
                 }
               >
                 <Icon size={18} strokeWidth={2} />

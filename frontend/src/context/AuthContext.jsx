@@ -10,6 +10,8 @@ export function AuthProvider({ children }) {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const initialized = useRef(false);
 
   /**
@@ -50,6 +52,7 @@ export function AuthProvider({ children }) {
   async function login(credentials) {
     const loggedInUser = await authService.login(credentials);
 
+    setIsLoggingOut(false);
     setUser(loggedInUser);
   }
 
@@ -76,6 +79,8 @@ export function AuthProvider({ children }) {
    * Logout user.
    */
   async function logout() {
+    setIsLoggingOut(true);
+
     try {
       await authService.logout();
     } finally {
@@ -91,6 +96,8 @@ export function AuthProvider({ children }) {
     user,
 
     isLoading,
+
+    isLoggingOut,
 
     isAuthenticated,
 

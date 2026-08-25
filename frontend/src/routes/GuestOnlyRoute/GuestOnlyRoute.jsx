@@ -13,7 +13,7 @@ function GuestOnlyRoute() {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/app" replace />;
+    return <Navigate to={ROUTES.APP} replace />;
   }
 
   return <Outlet />;

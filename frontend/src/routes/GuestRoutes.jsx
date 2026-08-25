@@ -1,13 +1,15 @@
 import { Route } from "react-router-dom";
 
-import { GuestOnlyRoute, PublicRoutes, AuthRoutes } from "./routes.index";
+import { PublicRoutes, AuthRoutes, GuestOnlyRoute } from "./routes.index";
 
 const GuestRoutes = (
-  <Route element={<GuestOnlyRoute />}>
+  <>
     {PublicRoutes}
 
-    {AuthRoutes}
-  </Route>
+    <Route element={<GuestOnlyRoute />}>
+      {AuthRoutes}
+    </Route>
+  </>
 );
 
 export default GuestRoutes;
