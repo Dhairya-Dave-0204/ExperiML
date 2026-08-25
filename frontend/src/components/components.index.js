@@ -77,3 +77,4 @@ export { default as AppSidebar } from "./app/shared/AppSidebar/AppSidebar";
 
 // Core application Dashboard components
 export { default as DashboardHeader } from "./app/features/Dashboard/DashboardHeader/DashboardHeader";
+export { default as ContinueWorkingPanel } from "./app/features/Dashboard/ContinueWorkingPanel/ContinueWorkingPanel";
