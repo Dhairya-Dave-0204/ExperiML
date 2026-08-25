@@ -15,7 +15,7 @@ function ForgotPasswordForm() {
 
     submitted,
     isSubmitting,
-    isValid,
+    isFormValid,
 
     handleChange,
     handleBlur,
@@ -159,7 +159,7 @@ function ForgotPasswordForm() {
 
         <button
           type="submit"
-          disabled={!isValid || isSubmitting}
+          disabled={!isFormValid || isSubmitting}
           className="
             inline-flex
             w-full
