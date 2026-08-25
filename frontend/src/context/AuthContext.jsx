@@ -21,7 +21,6 @@ export function AuthProvider({ children }) {
       await authService.refresh();
 
       const currentUser = await authService.getCurrentUser();
-
       setUser(currentUser);
     } catch (error) {
       tokenManager.clearAccessToken();
@@ -69,6 +68,8 @@ export function AuthProvider({ children }) {
    */
   async function refreshUser() {
     const currentUser = await authService.getCurrentUser();
+
+    console.log("AUTH RESTORED USER:", currentUser);
 
     setUser(currentUser);
 

@@ -3,10 +3,9 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 
 import {
-  PublicRoutes,
-  AuthRoutes,
   AppRoutes,
   ProtectedRoute,
+  GuestRoutes
 } from "@/routes/routes.index";
 
 import { ScrollToTop } from "@/components/components.index";
@@ -21,13 +20,9 @@ function App() {
       <ScrollToTop />
 
       <Routes>
-        {PublicRoutes}
+        {GuestRoutes}
 
-        {AuthRoutes}
-
-        <Route element={<ProtectedRoute />}>
-          {AppRoutes}
-        </Route>
+        <Route element={<ProtectedRoute />}>{AppRoutes}</Route>
 
         <Route path="/test" element={<Test />} />
 

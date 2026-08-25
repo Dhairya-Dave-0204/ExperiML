@@ -60,7 +60,7 @@ const authService = {
   async getCurrentUser() {
     const response = await apiClient.get(API_ENDPOINTS.auth.currentUser);
 
-    return response.data.data.user;
+    return response.data.data;
   },
 };
 
