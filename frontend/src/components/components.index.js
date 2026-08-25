@@ -79,3 +79,4 @@ export { default as AppSidebar } from "./app/shared/AppSidebar/AppSidebar";
 export { default as DashboardHeader } from "./app/features/Dashboard/DashboardHeader/DashboardHeader";
 export { default as ContinueWorkingPanel } from "./app/features/Dashboard/ContinueWorkingPanel/ContinueWorkingPanel";
 export { default as RecentExperiments } from "./app/features/Dashboard/RecentExperiments/RecentExperiments";
+export { default as RecentProjects } from "./app/features/Dashboard/RecentProjects/RecentProjects";
