@@ -20,7 +20,6 @@ function ResetPasswordForm() {
 
     submitted,
     isSubmitting,
-    isFormValid,
 
     handleChange,
     handleBlur,
@@ -129,7 +128,7 @@ function ResetPasswordForm() {
 
         <button
           type="submit"
-          disabled={!isFormValid || isSubmitting}
+          disabled={isSubmitting}
           className="
             inline-flex
             w-full
