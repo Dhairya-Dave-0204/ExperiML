@@ -1,9 +1,20 @@
-import React from 'react'
+import {
+  AuthLayout,
+  AuthCard,
+  AuthFooter,
+  ResetPasswordForm,
+} from "@/components/components.index";
 
 function ResetPasswordMainLayout() {
   return (
-    <div>ResetPasswordMainLayout</div>
-  )
+    <AuthLayout>
+      <AuthCard>
+        <ResetPasswordForm />
+      </AuthCard>
+
+      <AuthFooter actionLabel="resetting your password" />
+    </AuthLayout>
+  );
 }
 
-export default ResetPasswordMainLayout
+export default ResetPasswordMainLayout;
