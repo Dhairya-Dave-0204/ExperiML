@@ -1,13 +1,13 @@
 import { Outlet } from "react-router-dom";
 
-// import AppSidebar from "./components/AppSidebar";
+import { AppSidebar } from "@/components/components.index";
 
 
 function AppLayout() {
   return (
     <div className="flex min-h-screen bg-background">
 
-      {/* <AppSidebar /> */}
+      <AppSidebar />
 
       <main className="flex-1 min-w-0">
         <Outlet />

@@ -71,3 +71,6 @@ export { default as SignUpMainLayout } from "./auth/SignUp/SignUpMainLayout/Sign
 // Forgot Password page components
 export { default as ForgotPasswordForm } from "./auth/ForgotPassword/ForgotPasswordForm/ForgotPasswordForm";
 export { default as ForgotPasswordMainLayout } from "./auth/ForgotPassword/ForgotPasswordMainLayout/ForgotPasswordMainLayout";
+
+// Core application common components
+export { default as AppSidebar } from "./app/shared/AppSidebar/AppSidebar";
