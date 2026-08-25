@@ -74,3 +74,6 @@ export { default as ForgotPasswordMainLayout } from "./auth/ForgotPassword/Forgo
 
 // Core application common components
 export { default as AppSidebar } from "./app/shared/AppSidebar/AppSidebar";
+
+// Core application Dashboard components
+export { default as DashboardHeader } from "./app/features/Dashboard/DashboardHeader/DashboardHeader";
