@@ -90,3 +90,4 @@ export { default as DashboardOnboarding } from "./app/features/Dashboard/Dashboa
 
 // Core application Settings components
 export { default as SettingsAccount } from "./app/features/Settings/SettingsAccount/SettingsAccount";
+export { default as SettingsSecurity } from "./app/features/Settings/SettingsSecurity/SettingsSecurity";
