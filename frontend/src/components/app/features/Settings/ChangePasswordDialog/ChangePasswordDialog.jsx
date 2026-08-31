@@ -48,7 +48,7 @@ function ChangePasswordDialog({ isOpen, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center p-4 z-100 bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 flex items-center justify-center h-screen p-6 z-100 bg-black/60 backdrop-blur-sm"
       onMouseDown={handleBackdropClick}
       role="presentation"
     >
@@ -135,14 +135,14 @@ function ChangePasswordDialog({ isOpen, onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold transition-colors duration-200 border rounded-lg sm:w-auto border-border text-text hover:bg-surface hover:border-border-hover"
+              className="inline-flex items-center bg-border/50 justify-center w-full px-4 py-2.5 text-sm font-semibold transition-colors duration-200 border rounded-lg sm:w-auto border-border text-text hover:bg-surface hover:border-border-hover"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold transition-colors duration-200 rounded-lg sm:w-auto bg-primary text-white hover:bg-primary-hover"
+              className="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold transition-colors duration-200 rounded-lg sm:w-auto bg-primary text-white hover:bg-primary/80"
             >
               Change Password
             </button>
