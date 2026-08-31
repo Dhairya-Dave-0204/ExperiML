@@ -161,7 +161,7 @@ function DeleteAccountDialog({ isOpen, onClose }) {
             type="button"
             onClick={handleDeleteAccount}
             disabled={isDeleting}
-            className="inline-flex items-center justify-center w-full gap-2 px-4 py-2.5 text-sm font-semibold transition-colors duration-200 rounded-lg sm:w-auto bg-error text-white hover:bg-error/80 disabled:pointer-events-none disabled:opacity-60"
+            className="inline-flex items-center justify-center w-full gap-2 px-4 py-2.5 text-sm font-semibold transition-colors duration-200 rounded-lg sm:w-auto bg-danger text-white hover:bg-danger/80 disabled:pointer-events-none disabled:opacity-60"
           >
             <Trash2 size={16} strokeWidth={2} />
 
