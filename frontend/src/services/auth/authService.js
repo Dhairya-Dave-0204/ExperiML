@@ -60,6 +60,21 @@ const authService = {
 
     return response.data.data;
   },
+
+  async changePassword(passwordData) {
+    const response = await apiClient.patch(
+      API_ENDPOINTS.auth.changePassword,
+      passwordData,
+    );
+
+    return response.data;
+  },
+
+  async deleteAccount() {
+    const response = await apiClient.delete(API_ENDPOINTS.auth.deleteAccount);
+
+    return response.data;
+  },
 };
 
 export default authService;

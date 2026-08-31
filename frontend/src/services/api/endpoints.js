@@ -5,6 +5,8 @@ const API_ENDPOINTS = {
     logout: "/auth/logout",
     refresh: "/auth/refresh",
     currentUser: "/auth/me",
+    changePassword: "/auth/change-password",
+    deleteAccount: "/auth/delete-me",
   },
 
   // Future project-related endpoints

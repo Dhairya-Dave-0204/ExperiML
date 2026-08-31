@@ -90,6 +90,19 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function changePassword(passwordData) {
+    return await authService.changePassword(passwordData);
+  }
+
+  async function deleteAccount() {
+    try {
+      await authService.deleteAccount();
+    } finally {
+      tokenManager.clearAccessToken();
+      setUser(null);
+    }
+  }
+
   const isAuthenticated = Boolean(user);
 
   const value = {
@@ -108,6 +121,10 @@ export function AuthProvider({ children }) {
     logout,
 
     refreshUser,
+
+    changePassword,
+    
+    deleteAccount
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
