@@ -9,6 +9,11 @@ const API_ENDPOINTS = {
     deleteAccount: "/auth/delete-me",
   },
 
+  // Dashboard-related endpoints
+  dashboard: {
+    base: "/dashboard",
+  },
+
   // Future project-related endpoints
   projects: {
     base: "/projects",
