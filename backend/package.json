@@ -23,6 +23,7 @@
     "#experiment/*": "./src/modules/experiment/*.js",
     "#prediction/*": "./src/modules/prediction/*.js",
     "#project/*": "./src/modules/project/*.js",
+    "#dashboard/*": "./src/modules/dashboard/*.js",
     "#routes/*": "./src/routes/*.js",
     "#utils/*": "./src/utils/*.js"
   },
