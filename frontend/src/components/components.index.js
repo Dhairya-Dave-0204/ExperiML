@@ -92,3 +92,4 @@ export { default as SettingsAccount } from "./app/features/Settings/SettingsAcco
 export { default as SettingsSecurity } from "./app/features/Settings/SettingsSecurity/SettingsSecurity";
 export { default as SettingsDangerZone } from "./app/features/Settings/SettingsDangerZone/SettingsDangerZone";
 export { default as ChangePasswordDialog } from "./app/features/Settings/ChangePasswordDialog/ChangePasswordDialog";
+export { default as DeleteAccountDialog } from "./app/features/Settings/DeleteAccountDialog/DeleteAccountDialog";
