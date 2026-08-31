@@ -65,13 +65,34 @@ const loginSchema = z.object({
 
 /*
  * ===============================================
+ * Change Password
+ * ===============================================
+ * Used when an authenticated user changes their
+ * password from the Settings page.
+ */
+
+const changePasswordSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(1, "Current password is required.")
+      .max(128, "Current password must not exceed 128 characters."),
+
+    newPassword: passwordSchema,
+  })
+  .refine((data) => data.currentPassword !== data.newPassword, {
+    message: "New password must be different from your current password.",
+    path: ["newPassword"],
+  });
+
+/*
+ * ===============================================
  * Refresh Token
  * ===============================================
- *
  * The refresh token is intentionally NOT validated
  * through the request body.
  *
  * It will come from the HttpOnly cookie.
  */
 
-export { registerSchema, loginSchema };
+export { registerSchema, loginSchema, changePasswordSchema };

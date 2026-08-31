@@ -8,8 +8,6 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
 } from "#utils/token.util";
-import { env } from "#config/env.config";
-
 /*
  * ===============================================
  * Constants
@@ -27,10 +25,8 @@ const ACTIVE_ACCOUNT_STATUS = "ACTIVE";
 /**
  * Hashes a refresh token before storing it in the database.
  *
- * Refresh tokens are high-entropy values, so a fast
- * cryptographic hash is sufficient here. Unlike
- * passwords, refresh tokens do not require a slow
- * password-hashing function.
+ * Refresh tokens are high-entropy values, so a fast cryptographic hash is sufficient here.
+ * Unlike passwords, refresh tokens do not require a slow password-hashing function.
  *
  * @param {string} refreshToken
  * @returns {string}
@@ -42,9 +38,7 @@ const hashRefreshToken = (refreshToken) => {
 /**
  * Returns the public user representation.
  *
- * Sensitive authentication fields such as passwordHash
- * are intentionally excluded.
- *
+ * Sensitive authentication fields such as passwordHash are intentionally excluded.
  * @param {object} user
  * @returns {object}
  */
@@ -63,12 +57,10 @@ const sanitizeUser = (user) => {
 /**
  * Creates a session metadata object with safe defaults.
  *
- * The database requires browser, operating system,
- * device type, IP address and user agent.
+ * The database requires browser, operating system, device type, IP address and user agent. 
  *
- * Detailed parsing of the User-Agent will be handled
- * separately when the controller/middleware layer is
- * implemented.
+ * Detailed parsing of the User-Agent will be handled separately when the controller/middleware
+ * layer is implemented.
  *
  * @param {object} metadata
  * @returns {object}
@@ -84,11 +76,9 @@ const normalizeSessionMetadata = (metadata = {}) => {
 };
 
 /**
- * Creates a session and generates the refresh token
- * associated with that session.
+ * Creates a session and generates the refresh token associated with that session.
  *
- * The session ID is generated first so it can be included
- * in the refresh token payload.
+ * The session ID is generated first so it can be included in the refresh token payload.
  *
  * @param {string} userId
  * @param {object} metadata
@@ -100,8 +90,7 @@ const createSession = async (userId, metadata) => {
   const refreshToken = generateRefreshToken(userId, sessionId);
 
   /*
-   * Verify the token we just generated so we can use
-   * its exp claim as the authoritative session expiry.
+   * Verify the token we just generated so we can use its exp claim as the authoritative session expiry.
    */
   const refreshTokenPayload = verifyRefreshToken(refreshToken);
 
@@ -177,9 +166,7 @@ const registerUser = async ({ firstName, lastName, email, password }) => {
  */
 
 /**
- * Authenticates a user and creates a new session.
- *
- * Every successful login creates a new session.
+ * Authenticates a user and creates a new session. Every successful login creates a new session.
  *
  * @param {object} data
  * @param {object} sessionMetadata
@@ -247,8 +234,7 @@ const loginUser = async ({ email, password }, sessionMetadata = {}) => {
  */
 
 /**
- * Rotates the refresh token and generates a new
- * access token.
+ * Rotates the refresh token and generates a new access token.
  *
  * @param {string} refreshToken
  * @returns {Promise<object>}
@@ -293,8 +279,7 @@ const refreshTokens = async (refreshToken) => {
   }
 
   /*
-   * Compare the incoming refresh token against the
-   * hash stored in the session.
+   * Compare the incoming refresh token against the hash stored in the session.
    */
   const incomingTokenHash = hashRefreshToken(refreshToken);
 
@@ -304,7 +289,6 @@ const refreshTokens = async (refreshToken) => {
 
   /*
    * Simple refresh-token rotation:
-   *
    * old refresh token
    *       ↓
    * replaced by new refresh token
@@ -344,8 +328,7 @@ const refreshTokens = async (refreshToken) => {
  */
 
 /**
- * Retrieves the currently authenticated user's
- * public information.
+ * Retrieves the currently authenticated user's public information.
  *
  * @param {string} userId
  * @returns {Promise<object>}
@@ -362,22 +345,180 @@ const getCurrentUser = async (userId) => {
   });
 
   /*
-   * The user may have been deleted after the
-   * access token was issued.
+   * The user may have been deleted after the access token was issued.
    */
   if (!user || user.deletedAt) {
     throw new ApiError(401, "User account no longer exists.");
   }
 
   /*
-   * The user's account status may have changed
-   * after the access token was issued.
+   * The user's account status may have changed after the access token was issued.
    */
   if (user.accountStatus !== ACTIVE_ACCOUNT_STATUS) {
     throw new ApiError(403, "This account is not currently active.");
   }
 
   return sanitizeUser(user);
+};
+
+/*
+ * ===============================================
+ * Change Password
+ * ===============================================
+ */
+
+/**
+ * Changes the password of the currently authenticated user.
+ *
+ * The current password must match the stored BCrypt password hash before the new password is saved.
+ *
+ * After a successful password change, all other authenticated sessions are revoked. 
+ *
+ * The current session remains active so the user does not get unexpectedly logged out immediately
+ * after changing their password.
+ * @param {object} data
+ * @param {string} data.userId
+ * @param {string} data.sessionId
+ * @param {string} data.currentPassword
+ * @param {string} data.newPassword
+ * @returns {Promise<void>}
+ */
+const changePassword = async ({
+  userId,
+  sessionId,
+  currentPassword,
+  newPassword,
+}) => {
+  if (!userId || !sessionId) {
+    throw new ApiError(401, "Authentication required.");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  /*
+   * The user may have been deleted after the access token was issued.
+   */
+  if (!user || user.deletedAt) {
+    throw new ApiError(401, "User account no longer exists.");
+  }
+
+  /*
+   * Only ACTIVE accounts can change their password.
+   */
+  if (user.accountStatus !== ACTIVE_ACCOUNT_STATUS) {
+    throw new ApiError(403, "This account is not currently active.");
+  }
+
+  /*
+   * Verify the current password against the stored  BCrypt hash.
+   */
+  const isCurrentPasswordValid = await comparePassword(
+    currentPassword,
+    user.passwordHash,
+  );
+
+  if (!isCurrentPasswordValid) {
+    throw new ApiError(401, "Current password is incorrect.");
+  }
+
+  /*
+   * Prevent the user from replacing the password with the exact same password.
+   *
+   * This check also exists at the validation layer, but keeping it here protects the service when it
+   * is called independently of the HTTP layer.
+   */
+  const isSamePassword = await comparePassword(newPassword, user.passwordHash);
+
+  if (isSamePassword) {
+    throw new ApiError(
+      400,
+      "New password must be different from your current password.",
+    );
+  }
+
+  const newPasswordHash = await hashPassword(newPassword);
+
+  /* 
+   * Update the password and revoke all OTHER sessions atomically. The current session remains active.
+   */
+  await prisma.$transaction([
+    prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        passwordHash: newPasswordHash,
+      },
+    }),
+
+    prisma.session.updateMany({
+      where: {
+        userId,
+        id: {
+          not: sessionId,
+        },
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    }),
+  ]);
+};
+
+/**
+ * ===============================================
+ * Delete Current User
+ * ===============================================
+ * Soft-deletes the currently authenticated user.
+ *
+ * The user record remains in the database so that historical ownership  and referential integrity
+ * are preserved. All authentication sessions are revoked.
+ * @param {string} userId
+ * @returns {Promise<void>}
+ */
+const deleteCurrentUser = async (userId) => {
+  if (!userId) {
+    throw new ApiError(401, "Authentication required.");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!user || user.deletedAt) {
+    throw new ApiError(404, "User account not found or already deleted.");
+  }
+
+  /*
+   * Soft-delete the account and revoke all of its authentication sessions atomically.
+   */
+  await prisma.$transaction([
+    prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    }),
+
+    prisma.session.updateMany({
+      where: {
+        userId,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    }),
+  ]);
 };
 
 /*
@@ -413,8 +554,7 @@ const logoutUser = async (sessionId, userId) => {
   }
 
   /*
-   * Logout is idempotent from the application's
-   * perspective. If the session is already revoked,
+   * Logout is idempotent from the application's perspective. If the session is already revoked,
    * there is nothing further to do.
    */
   if (session.revokedAt) {
@@ -431,4 +571,12 @@ const logoutUser = async (sessionId, userId) => {
   });
 };
 
-export { registerUser, loginUser, refreshTokens, getCurrentUser, logoutUser };
+export {
+  registerUser,
+  loginUser,
+  refreshTokens,
+  getCurrentUser,
+  changePassword,
+  deleteCurrentUser,
+  logoutUser,
+};
