@@ -118,6 +118,7 @@ import datasetRoutes from "#dataset/dataset.routes";
 import experimentRoutes from "#experiment/experiment.routes";
 import artifactRoutes from "#artifact/artifact.routes";
 import predictionRoutes from "#prediction/prediction.routes";
+import dashboardRoutes from "#dashboard/dashboard.routes";
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/projects", projectRouter);
@@ -125,6 +126,7 @@ app.use("/api/v1/projects", datasetRoutes);
 app.use("/api/v1/projects", experimentRoutes);
 app.use("/api/v1/projects", artifactRoutes);
 app.use("/api/v1/projects", predictionRoutes);
+app.use("/api/v1/dashboard", dashboardRoutes);
 
 /*
  * ===============================================
