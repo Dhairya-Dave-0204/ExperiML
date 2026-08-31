@@ -1,16 +1,28 @@
 import { useEffect, useState } from "react";
 import { Eye, EyeOff, KeyRound, X } from "lucide-react";
+import toast from "react-hot-toast";
+
+import { useAuth } from "@/context/AuthContext";
 
 function ChangePasswordDialog({ isOpen, onClose }) {
+  const { changePassword } = useAuth();
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   /**
    * Close the dialog when the Escape key is pressed.
    */
   useEffect(() => {
-    if (!isOpen) {
+    if (!isOpen || isSubmitting) {
       return;
     }
 
@@ -25,7 +37,26 @@ function ChangePasswordDialog({ isOpen, onClose }) {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, isSubmitting, onClose]);
+
+  /**
+   * Reset the form whenever the dialog is closed.
+   */
+  useEffect(() => {
+    if (!isOpen) {
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+
+      setErrors({});
+
+      setShowCurrentPassword(false);
+      setShowNewPassword(false);
+      setShowConfirmPassword(false);
+
+      setIsSubmitting(false);
+    }
+  }, [isOpen]);
 
   /**
    * Prevent rendering when the dialog is closed.
@@ -35,15 +66,81 @@ function ChangePasswordDialog({ isOpen, onClose }) {
   }
 
   function handleBackdropClick(event) {
+    if (isSubmitting) {
+      return;
+    }
+
     if (event.target === event.currentTarget) {
       onClose();
     }
   }
 
-  function handleSubmit(event) {
+  function validateForm() {
+    const validationErrors = {};
+
+    if (!currentPassword.trim()) {
+      validationErrors.currentPassword = "Current password is required.";
+    } else if (currentPassword.length > 128) {
+      validationErrors.currentPassword =
+        "Current password must not exceed 128 characters.";
+    }
+
+    if (!newPassword) {
+      validationErrors.newPassword = "New password is required.";
+    } else if (newPassword.length < 8) {
+      validationErrors.newPassword =
+        "Password must contain at least 8 characters.";
+    } else if (newPassword.length > 20) {
+      validationErrors.newPassword = "Password must not exceed 20 characters.";
+    } else if (currentPassword === newPassword) {
+      validationErrors.newPassword =
+        "New password must be different from your current password.";
+    }
+
+    if (!confirmPassword) {
+      validationErrors.confirmPassword = "Password confirmation is required.";
+    } else if (newPassword !== confirmPassword) {
+      validationErrors.confirmPassword = "Passwords do not match.";
+    }
+
+    setErrors(validationErrors);
+
+    return Object.keys(validationErrors).length === 0;
+  }
+
+  async function handleSubmit(event) {
     event.preventDefault();
 
-    // API integration and validation will be added later.
+    if (isSubmitting) {
+      return;
+    }
+
+    const isValid = validateForm();
+
+    if (!isValid) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await changePassword({
+        currentPassword,
+        newPassword,
+      });
+
+      toast.success("Password changed successfully.");
+
+      onClose();
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        "Unable to change your password. Please try again.";
+
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -86,47 +183,84 @@ function ChangePasswordDialog({ isOpen, onClose }) {
           <button
             type="button"
             onClick={onClose}
+            disabled={isSubmitting}
             aria-label="Close change password dialog"
-            className="inline-flex items-center justify-center w-8 h-8 transition-colors duration-200 rounded-lg shrink-0 text-text-secondary hover:bg-surface-soft hover:text-text"
+            className="inline-flex items-center justify-center w-8 h-8 transition-colors duration-200 rounded-lg shrink-0 text-text-secondary hover:bg-surface-soft hover:text-text disabled:pointer-events-none disabled:opacity-50"
           >
             <X size={18} strokeWidth={2} />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="px-5 py-5 space-y-5 sm:px-6">
-            {/* Current password */}
             <PasswordField
               id="current-password"
               label="Current password"
               placeholder="Enter your current password"
+              value={currentPassword}
+              onChange={(event) => {
+                setCurrentPassword(event.target.value);
+
+                if (errors.currentPassword) {
+                  setErrors((previous) => ({
+                    ...previous,
+                    currentPassword: undefined,
+                  }));
+                }
+              }}
               showPassword={showCurrentPassword}
               onToggleVisibility={() =>
                 setShowCurrentPassword((previous) => !previous)
               }
+              error={errors.currentPassword}
+              disabled={isSubmitting}
             />
 
-            {/* New password */}
             <PasswordField
               id="new-password"
               label="New password"
               placeholder="Enter your new password"
+              value={newPassword}
+              onChange={(event) => {
+                setNewPassword(event.target.value);
+
+                if (errors.newPassword) {
+                  setErrors((previous) => ({
+                    ...previous,
+                    newPassword: undefined,
+                  }));
+                }
+              }}
               showPassword={showNewPassword}
               onToggleVisibility={() =>
                 setShowNewPassword((previous) => !previous)
               }
+              error={errors.newPassword}
+              disabled={isSubmitting}
             />
 
-            {/* Confirm password */}
             <PasswordField
               id="confirm-password"
               label="Confirm new password"
               placeholder="Re-enter your new password"
+              value={confirmPassword}
+              onChange={(event) => {
+                setConfirmPassword(event.target.value);
+
+                if (errors.confirmPassword) {
+                  setErrors((previous) => ({
+                    ...previous,
+                    confirmPassword: undefined,
+                  }));
+                }
+              }}
               showPassword={showConfirmPassword}
               onToggleVisibility={() =>
                 setShowConfirmPassword((previous) => !previous)
               }
+              error={errors.confirmPassword}
+              disabled={isSubmitting}
             />
           </div>
 
@@ -135,16 +269,18 @@ function ChangePasswordDialog({ isOpen, onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex items-center bg-border/50 justify-center w-full px-4 py-2.5 text-sm font-semibold transition-colors duration-200 border rounded-lg sm:w-auto border-border text-text hover:bg-surface hover:border-border-hover"
+              disabled={isSubmitting}
+              className="inline-flex items-center bg-border/50 justify-center w-full px-4 py-2.5 text-sm font-semibold transition-colors duration-200 border rounded-lg sm:w-auto border-border text-text hover:bg-surface hover:border-border-hover disabled:pointer-events-none disabled:opacity-50"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold transition-colors duration-200 rounded-lg sm:w-auto bg-primary text-white hover:bg-primary/80"
+              disabled={isSubmitting}
+              className="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm font-semibold transition-colors duration-200 rounded-lg sm:w-auto bg-primary text-white hover:bg-primary/80 disabled:pointer-events-none disabled:opacity-60"
             >
-              Change Password
+              {isSubmitting ? "Changing..." : "Change Password"}
             </button>
           </div>
         </form>
@@ -157,8 +293,12 @@ function PasswordField({
   id,
   label,
   placeholder,
+  value,
+  onChange,
   showPassword,
   onToggleVisibility,
+  error,
+  disabled,
 }) {
   return (
     <div>
@@ -172,15 +312,25 @@ function PasswordField({
           name={id}
           type={showPassword ? "text" : "password"}
           placeholder={placeholder}
+          value={value}
+          onChange={onChange}
           autoComplete="new-password"
-          className="w-full px-3 text-sm transition-colors duration-200 border rounded-lg outline-none h-11 pr-11 border-border bg-surface text-text placeholder:text-text-secondary/60 focus:border-primary focus:ring-2 focus:ring-primary/10"
+          disabled={disabled}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? `${id}-error` : undefined}
+          className={`w-full px-3 text-sm transition-colors duration-200 border rounded-lg outline-none h-11 pr-11 bg-surface text-text placeholder:text-text-secondary/60 disabled:cursor-not-allowed disabled:opacity-60 ${
+            error
+              ? "border-error focus:border-error focus:ring-2 focus:ring-error/10"
+              : "border-border focus:border-primary focus:ring-2 focus:ring-primary/10"
+          }`}
         />
 
         <button
           type="button"
           onClick={onToggleVisibility}
+          disabled={disabled}
           aria-label={showPassword ? `Hide ${label}` : `Show ${label}`}
-          className="absolute inline-flex items-center justify-center w-8 h-8 transition-colors duration-200 -translate-y-1/2 rounded-md right-2 top-1/2 text-text-secondary hover:bg-surface-soft hover:text-text"
+          className="absolute inline-flex items-center justify-center w-8 h-8 transition-colors duration-200 -translate-y-1/2 rounded-md right-2 top-1/2 text-text-secondary hover:bg-surface-soft hover:text-text disabled:pointer-events-none disabled:opacity-50"
         >
           {showPassword ? (
             <EyeOff size={17} strokeWidth={2} />
@@ -189,6 +339,12 @@ function PasswordField({
           )}
         </button>
       </div>
+
+      {error && (
+        <p id={`${id}-error`} className="mt-1.5 text-xs text-error">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
