@@ -76,7 +76,6 @@ export { default as ForgotPasswordMainLayout } from "./auth/ForgotPassword/Forgo
 export { default as ResetPasswordForm } from "./auth/ResetPassword/ResetPasswordForm/ResetPasswordForm";
 export { default as ResetPasswordMainLayout } from "./auth/ResetPassword/ResetPasswordMainLayout/ResetPasswordMainLayout";
 
-
 // Core application common components
 export { default as AppSidebar } from "./app/shared/AppSidebar/AppSidebar";
 
@@ -92,3 +91,4 @@ export { default as DashboardOnboarding } from "./app/features/Dashboard/Dashboa
 export { default as SettingsAccount } from "./app/features/Settings/SettingsAccount/SettingsAccount";
 export { default as SettingsSecurity } from "./app/features/Settings/SettingsSecurity/SettingsSecurity";
 export { default as SettingsDangerZone } from "./app/features/Settings/SettingsDangerZone/SettingsDangerZone";
+export { default as ChangePasswordDialog } from "./app/features/Settings/ChangePasswordDialog/ChangePasswordDialog";
