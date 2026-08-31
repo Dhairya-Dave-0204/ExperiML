@@ -80,7 +80,7 @@ router.patch(
  *
  * Soft-deletes the currently authenticated user. No request-body validation is required.
  */
-router.delete("/me", authenticate, deleteAccount);
+router.delete("/delete-me", authenticate, deleteAccount);
 
 /*
  * ===============================================
