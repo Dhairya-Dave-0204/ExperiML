@@ -1,41 +1,11 @@
 import { ChevronRight } from "lucide-react";
 
-const RECENT_EXPERIMENTS = [
-  {
-    name: "Random Forest Classification",
-    project: "Customer Churn Prediction",
-    status: "Completed",
-    metric: "F1 Score 0.914",
-    updated: "12 min ago",
-  },
-  {
-    name: "XGBoost Classification",
-    project: "Customer Churn Prediction",
-    status: "Completed",
-    metric: "F1 Score 0.907",
-    updated: "Yesterday",
-  },
-  {
-    name: "Linear Regression",
-    project: "House Price Prediction",
-    status: "Completed",
-    metric: "R² 0.903",
-    updated: "3 days ago",
-  },
-  {
-    name: "Support Vector Machine",
-    project: "Loan Approval Classification",
-    status: "Completed",
-    metric: "Accuracy 0.891",
-    updated: "4 days ago",
-  },
-];
-
 function StatusPill({ status }) {
   const styles = {
-    Completed: "bg-success/10 text-success",
-    Running: "bg-primary-light text-primary",
-    Failed: "bg-danger/10 text-danger",
+    COMPLETED: "bg-success/10 text-success",
+    RUNNING: "bg-primary-light text-primary",
+    FAILED: "bg-danger/10 text-danger",
+    CREATED: "bg-surface-soft text-text-secondary",
   };
 
   return (
@@ -56,7 +26,25 @@ function StatusPill({ status }) {
   );
 }
 
-function RecentExperiments() {
+function formatUpdatedAt(updatedAt) {
+  if (!updatedAt) {
+    return "Unknown";
+  }
+
+  const date = new Date(updatedAt);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Unknown";
+  }
+
+  return new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
+
+function RecentExperiments({ data = [] }) {
   return (
     <div className="border rounded-xl border-border bg-surface">
       <div className="flex items-center justify-between px-5 py-4 border-b border-border">
@@ -66,56 +54,58 @@ function RecentExperiments() {
 
         <button
           type="button"
-          className="inline-flex items-center gap-1 text-xs font-semibold  text-primary hover:text-primary-dark"
+          className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary-dark"
         >
           View all
           <ChevronRight size={13} strokeWidth={2.5} />
         </button>
       </div>
 
-      <ul>
-        {RECENT_EXPERIMENTS.map((experiment) => (
-          <li
-            key={`${experiment.name}-${experiment.updated}`}
-            className="
-              flex
-              items-center
-              justify-between
-              gap-4
-              border-b
-              border-border
-              px-5
-              py-3.5
-              transition-colors
-              duration-150
-              last:border-b-0
-              hover:bg-surface-soft
-            "
-          >
-            <div className="min-w-0">
-              <div className="text-sm font-semibold truncate text-text">
-                {experiment.name}
+      {data.length > 0 ? (
+        <ul>
+          {data.map((experiment) => (
+            <li
+              key={experiment.id}
+              className="
+                flex
+                items-center
+                justify-between
+                gap-4
+                border-b
+                border-border
+                px-5
+                py-3.5
+                transition-colors
+                duration-150
+                last:border-b-0
+                hover:bg-surface-soft
+              "
+            >
+              <div className="min-w-0">
+                <div className="text-sm font-semibold truncate text-text">
+                  {experiment.name}
+                </div>
+
+                <div className="text-xs truncate text-text-secondary">
+                  {experiment.project?.name ?? "Unknown project"}
+                </div>
               </div>
 
-              <div className="text-xs truncate text-text-secondary">
-                {experiment.project}
+              <div className="flex items-center gap-4 shrink-0">
+                <StatusPill status={experiment.status} />
+
+                <span className="hidden w-24 text-xs text-right text-text-secondary md:inline">
+                  {formatUpdatedAt(experiment.updatedAt)}
+                </span>
               </div>
-            </div>
-
-            <div className="flex items-center gap-4 shrink-0">
-              <span className="hidden font-mono text-xs text-text-secondary sm:inline">
-                {experiment.metric}
-              </span>
-
-              <StatusPill status={experiment.status} />
-
-              <span className="hidden w-16 text-xs text-right text-text-secondary md:inline">
-                {experiment.updated}
-              </span>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="px-5 py-8 text-sm text-center text-text-secondary">
+          No recent experiments yet.
+        </div>
+      )}
     </div>
   );
 }

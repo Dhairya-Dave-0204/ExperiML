@@ -101,7 +101,7 @@ function Dashboard() {
 
               <ContinueWorkingPanel data={dashboardData.recentWork} />
 
-              <RecentExperiments />
+              <RecentExperiments data={dashboardData.recentExperiments} />
 
               <RecentProjects />
 
