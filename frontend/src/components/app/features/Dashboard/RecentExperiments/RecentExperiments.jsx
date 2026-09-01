@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, FlaskConical } from "lucide-react";
 
 function StatusPill({ status }) {
   const styles = {
@@ -102,8 +102,27 @@ function RecentExperiments({ data = [] }) {
           ))}
         </ul>
       ) : (
-        <div className="px-5 py-8 text-sm text-center text-text-secondary">
-          No recent experiments yet.
+        <div className="flex flex-col items-center px-5 py-8 text-center">
+          <div className="flex items-center justify-center w-10 h-10 mb-3 rounded-lg bg-primary/10 text-primary">
+            <FlaskConical size={19} strokeWidth={2} />
+          </div>
+
+          <h4 className="text-sm font-semibold text-text">
+            No experiments yet
+          </h4>
+
+          <p className="max-w-sm mt-1 text-xs leading-relaxed text-text-secondary">
+            Create your first experiment to start testing models and tracking
+            your results.
+          </p>
+
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 px-3.5 py-2 mt-4 text-xs font-semibold text-white transition-colors duration-150 rounded-lg bg-primary hover:bg-primary-dark"
+          >
+            Create Experiment
+            <ChevronRight size={13} strokeWidth={2.5} />
+          </button>
         </div>
       )}
     </div>
