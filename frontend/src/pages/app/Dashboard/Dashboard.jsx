@@ -105,7 +105,7 @@ function Dashboard() {
 
               <RecentProjects data={dashboardData.recentProjects} />
 
-              <WorkspaceSummary />
+              <WorkspaceSummary data={dashboardData.workspaceSummary} />
             </>
           ) : (
             <DashboardOnboarding />
