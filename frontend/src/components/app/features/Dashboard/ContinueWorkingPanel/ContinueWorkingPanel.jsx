@@ -45,9 +45,6 @@ function formatUpdatedAt(updatedAt) {
 }
 
 function ContinueWorkingPanel({ data }) {
-  if (!data) {
-    return null;
-  }
 
   const { project, experiment, dataset, updatedAt } = data;
 

@@ -6,6 +6,7 @@ import dashboardService from "@/services/dashboard/dashboardService";
 import {
   DashboardHeader,
   ContinueWorkingPanel,
+  ContinueWorkingEmptyState,
   RecentExperiments,
   RecentProjects,
   WorkspaceSummary,
@@ -99,7 +100,11 @@ function Dashboard() {
                 </p>
               </div>
 
-              <ContinueWorkingPanel data={dashboardData.recentWork} />
+              {dashboardData.recentWork ? (
+                <ContinueWorkingPanel data={dashboardData.recentWork} />
+              ) : (
+                <ContinueWorkingEmptyState />
+              )}
 
               <RecentExperiments data={dashboardData.recentExperiments} />
 
