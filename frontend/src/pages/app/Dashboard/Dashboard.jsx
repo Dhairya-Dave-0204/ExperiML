@@ -1,4 +1,8 @@
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+
+import dashboardService from "@/services/dashboard/dashboardService";
+
 import {
   DashboardHeader,
   ContinueWorkingPanel,
@@ -23,9 +27,59 @@ function getFirstName(user) {
 function Dashboard() {
   const { user } = useAuth();
 
+  const [dashboardData, setDashboardData] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [error, setError] = useState(null);
+
   const firstName = getFirstName(user);
 
-  const hasWorkspace = true;
+  useEffect(() => {
+    async function fetchDashboard() {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const data = await dashboardService.getDashboard();
+
+        setDashboardData(data);
+      } catch (error) {
+        console.error("Failed to load dashboard:", error);
+
+        setError(
+          error.response?.data?.message ||
+            "Unable to load your dashboard. Please try again.",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchDashboard();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-full">
+        <p className="text-sm text-text-secondary">Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-full px-4 text-center">
+        <h2 className="text-base font-semibold text-text">
+          Unable to load dashboard
+        </h2>
+
+        <p className="mt-1 text-sm text-text-secondary">{error}</p>
+      </div>
+    );
+  }
+
+  const hasWorkspace = dashboardData?.hasWorkspace ?? false;
 
   return (
     <div className="flex flex-col min-h-full">
