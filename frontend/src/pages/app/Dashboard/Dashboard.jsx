@@ -103,7 +103,7 @@ function Dashboard() {
 
               <RecentExperiments data={dashboardData.recentExperiments} />
 
-              <RecentProjects />
+              <RecentProjects data={dashboardData.recentProjects} />
 
               <WorkspaceSummary />
             </>
