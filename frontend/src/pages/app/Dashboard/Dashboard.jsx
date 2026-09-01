@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
 
+import { useAuth } from "@/context/AuthContext";
 import dashboardService from "@/services/dashboard/dashboardService";
 
 import {
@@ -12,30 +12,16 @@ import {
   DashboardOnboarding,
 } from "@/components/components.index";
 
-/* ------------------------------------------------------------------ */
-/* Helpers                                                            */
-/* ------------------------------------------------------------------ */
-
-function getFirstName(user) {
-  return user?.firstName || "there";
-}
-
-/* ------------------------------------------------------------------ */
-/* Dashboard                                                          */
-/* ------------------------------------------------------------------ */
-
 function Dashboard() {
   const { user } = useAuth();
 
   const [dashboardData, setDashboardData] = useState(null);
-
   const [isLoading, setIsLoading] = useState(true);
-
   const [error, setError] = useState(null);
 
-  const firstName = getFirstName(user);
-
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchDashboard() {
       try {
         setIsLoading(true);
@@ -43,21 +29,35 @@ function Dashboard() {
 
         const data = await dashboardService.getDashboard();
 
+        if (!isMounted) {
+          return;
+        }
+
         setDashboardData(data);
       } catch (error) {
-        console.error("Failed to load dashboard:", error);
+        if (!isMounted) {
+          return;
+        }
 
         setError(
           error.response?.data?.message ||
             "Unable to load your dashboard. Please try again.",
         );
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     }
 
     fetchDashboard();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
+  const firstName = user?.firstName || "there";
 
   if (isLoading) {
     return (
