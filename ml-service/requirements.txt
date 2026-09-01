@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+pydantic-settings
+
+numpy
+pandas
+scikit-learn
+openpyxl
+pyarrow
+joblib
+
+pytest
+httpx
