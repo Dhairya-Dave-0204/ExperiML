@@ -86,6 +86,7 @@ export { default as RecentExperiments } from "./app/features/Dashboard/RecentExp
 export { default as RecentProjects } from "./app/features/Dashboard/RecentProjects/RecentProjects";
 export { default as WorkspaceSummary } from "./app/features/Dashboard/WorkspaceSummary/WorkspaceSummary";
 export { default as DashboardOnboarding } from "./app/features/Dashboard/DashboardOnboarding/DashboardOnboarding";
+export { default as ContinueWorkingEmptyState } from "./app/features/Dashboard/ContinueWorkingEmptyState/ContinueWorkingEmptyState";
 
 // Core application Settings components
 export { default as SettingsAccount } from "./app/features/Settings/SettingsAccount/SettingsAccount";
