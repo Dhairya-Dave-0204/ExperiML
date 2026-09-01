@@ -99,7 +99,7 @@ function Dashboard() {
                 </p>
               </div>
 
-              <ContinueWorkingPanel />
+              <ContinueWorkingPanel data={dashboardData.recentWork} />
 
               <RecentExperiments />
 
