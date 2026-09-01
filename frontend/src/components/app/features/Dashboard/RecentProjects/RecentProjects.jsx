@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, FolderKanban } from "lucide-react";
 
 function RecentProjects({ data = [] }) {
   return (
@@ -46,8 +46,24 @@ function RecentProjects({ data = [] }) {
           ))}
         </ul>
       ) : (
-        <div className="px-5 py-8 text-sm text-center text-text-secondary">
-          No projects yet.
+        <div className="flex flex-col items-center px-5 py-8 text-center">
+          <div className="flex items-center justify-center w-10 h-10 mb-3 rounded-lg bg-primary/10 text-primary">
+            <FolderKanban size={19} strokeWidth={2} />
+          </div>
+
+          <h4 className="text-sm font-semibold text-text">No projects yet</h4>
+
+          <p className="max-w-sm mt-1 text-xs leading-relaxed text-text-secondary">
+            Create a project to organize your datasets and experiments.
+          </p>
+
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 px-3.5 py-2 mt-4 text-xs font-semibold text-white transition-colors duration-150 rounded-lg bg-primary hover:bg-primary-dark"
+          >
+            Create Project
+            <ChevronRight size={13} strokeWidth={2.5} />
+          </button>
         </div>
       )}
     </div>
