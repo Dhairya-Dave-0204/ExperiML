@@ -6,15 +6,15 @@ function WorkspaceSummary({ data }) {
   const summary = [
     {
       label: "Projects",
-      value: data.projects,
+      value: data.projects ?? 0,
     },
     {
       label: "Experiments",
-      value: data.experiments,
+      value: data.experiments ?? 0,
     },
     {
       label: "Datasets",
-      value: data.datasets,
+      value: data.datasets ?? 0,
     },
   ];
 
