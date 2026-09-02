@@ -1,0 +1,4 @@
+from app.core.security import verify_internal_service_key
+
+
+internal_service_auth = verify_internal_service_key
