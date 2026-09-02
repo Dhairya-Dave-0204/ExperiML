@@ -3,6 +3,7 @@ from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel
+from app.schemas.errors import ExecutionError
 
 
 class ExecutionType:
@@ -41,4 +42,4 @@ class ExecutionResponse(BaseModel):
     started_at: datetime | None = None
     completed_at: datetime | None = None
     result: dict | None = None
-    error: dict | None = None
+    error: ExecutionError | None = None
