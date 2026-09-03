@@ -15,3 +15,5 @@ app = FastAPI(
 
 app.include_router(health_router)
 app.include_router(executions_router)
+
+# TODO: Modify the column detection such a way that the id columns, date and target columns
