@@ -1,11 +1,13 @@
 from datetime import datetime
-from typing import Literal
+from typing import Literal, Annotated
 from uuid import UUID
 
 from pydantic import BaseModel, Field
+
 from app.schemas.errors import ExecutionError
 from app.schemas.artifact import ArtifactResult
-
+from app.schemas.experiment import ExperimentExecutionRequest
+from app.schemas.prediction import PredictionExecutionRequest
 
 class ExecutionType:
     EXPERIMENT = "EXPERIMENT"
@@ -49,3 +51,8 @@ class ExecutionResponse(BaseModel):
     completed_at: datetime | None = None
     result: ExecutionResult | None = None
     error: ExecutionError | None = None
+
+ExecutionRequest = Annotated[
+    ExperimentExecutionRequest | PredictionExecutionRequest,
+    Field(discriminator="execution_type"),
+]

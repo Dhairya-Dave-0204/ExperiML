@@ -1,5 +1,6 @@
 from enum import Enum
 from uuid import UUID
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -36,7 +37,7 @@ class AlgorithmDefinition(BaseModel):
 
 class ExperimentExecutionRequest(BaseModel):
     execution_id: UUID
-    execution_type: str
+    execution_type: Literal["EXPERIMENT"]
     project_id: UUID
     experiment_id: UUID
     dataset: DatasetReference
