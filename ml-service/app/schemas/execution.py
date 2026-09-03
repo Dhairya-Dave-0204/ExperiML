@@ -2,8 +2,9 @@ from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from app.schemas.errors import ExecutionError
+from app.schemas.artifact import ArtifactResult
 
 
 class ExecutionType:
@@ -29,6 +30,11 @@ class ExecutionStage:
     ARTIFACT_GENERATION = "ARTIFACT_GENERATION"
     COMPLETED = "COMPLETED"
 
+class ExecutionResult(BaseModel):
+    metrics: dict | None = None
+    artifacts: list[ArtifactResult] = Field(default_factory=list)
+    metadata: dict | None = None
+
 
 class ExecutionAcceptedResponse(BaseModel):
     execution_id: UUID
@@ -41,5 +47,5 @@ class ExecutionResponse(BaseModel):
     stage: str | None = None
     started_at: datetime | None = None
     completed_at: datetime | None = None
-    result: dict | None = None
+    result: ExecutionResult | None = None
     error: ExecutionError | None = None
