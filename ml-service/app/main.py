@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 
-from app.api.routes.health import router as health_router
 from app.core.logging import configure_logging
+
+from app.api.routes.health import router as health_router
+from app.api.routes.executions import router as executions_router
 
 
 configure_logging()
@@ -12,3 +14,4 @@ app = FastAPI(
 )
 
 app.include_router(health_router)
+app.include_router(executions_router)
