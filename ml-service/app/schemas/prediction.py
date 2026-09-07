@@ -1,52 +1,37 @@
 from enum import Enum
-from typing import Literal
 from uuid import UUID
+from typing import Literal
 
-from pydantic import BaseModel, Field
-
-
-class DatasetFormat(str, Enum):
-    CSV = "CSV"
-    XLSX = "XLSX"
-    PARQUET = "PARQUET"
+from pydantic import BaseModel
 
 
-class ProblemType(str, Enum):
-    CLASSIFICATION = "CLASSIFICATION"
-    REGRESSION = "REGRESSION"
-    CLUSTERING = "CLUSTERING"
-    TIME_SERIES = "TIME_SERIES"
-    ANOMALY_DETECTION = "ANOMALY_DETECTION"
+class PredictionType(str, Enum):
+    SINGLE = "SINGLE"
+    BATCH = "BATCH"
 
 
-class DatasetReference(BaseModel):
+class PredictionInputReference(BaseModel):
     id: UUID
-    version: int
-    format: DatasetFormat
+    format: str
     storage_key: str
     file_size: int
     mime_type: str
     checksum: str
 
 
-class ExperimentConfiguration(BaseModel):
-    target_column: str
-    identifier_columns: list[str] = Field(default_factory=list)
-    datetime_columns: list[str] = Field(default_factory=list)
+class ModelArtifactReference(BaseModel):
+    id: UUID
+    storage_key: str
+    file_format: str
+    checksum: str
 
 
-class AlgorithmDefinition(BaseModel):
-    name: str
-    configuration: dict = Field(default_factory=dict)
-    hyperparameters: dict = Field(default_factory=dict)
-
-
-class ExperimentExecutionRequest(BaseModel):
+class PredictionExecutionRequest(BaseModel):
     execution_id: UUID
-    execution_type: Literal["EXPERIMENT"]
+    execution_type: Literal["PREDICTION"]
     project_id: UUID
     experiment_id: UUID
-    dataset: DatasetReference
-    problem_type: ProblemType
-    algorithm: AlgorithmDefinition
-    configuration: ExperimentConfiguration
+    prediction_id: UUID
+    prediction_type: PredictionType
+    input: PredictionInputReference
+    model_artifact: ModelArtifactReference

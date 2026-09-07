@@ -1,6 +1,6 @@
 from enum import Enum
-from uuid import UUID
 from typing import Literal
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
@@ -29,6 +29,12 @@ class DatasetReference(BaseModel):
     checksum: str
 
 
+class ExperimentConfiguration(BaseModel):
+    target_column: str
+    identifier_columns: list[str] = Field(default_factory=list)
+    datetime_columns: list[str] = Field(default_factory=list)
+
+
 class AlgorithmDefinition(BaseModel):
     name: str
     configuration: dict = Field(default_factory=dict)
@@ -43,3 +49,4 @@ class ExperimentExecutionRequest(BaseModel):
     dataset: DatasetReference
     problem_type: ProblemType
     algorithm: AlgorithmDefinition
+    configuration: ExperimentConfiguration
