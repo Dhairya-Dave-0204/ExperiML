@@ -19,6 +19,7 @@ class DatasetSplitter:
         target: pd.Series,
         test_size: float = 0.2,
         random_state: int = 42,
+        stratify: pd.Series | None = None,
     ) -> TrainTestData:
         self._validate_inputs(
             features,
@@ -31,6 +32,7 @@ class DatasetSplitter:
             target,
             test_size=test_size,
             random_state=random_state,
+            stratify=stratify,
         )
 
         return TrainTestData(

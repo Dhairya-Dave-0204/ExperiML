@@ -1,6 +1,6 @@
 import pandas as pd
 
-from app.ml.preprocessing.split import TrainTestData
+from app.ml.preprocessing.split import DatasetSplitter, TrainTestData
 
 
 class ClassificationSplitStrategy:
@@ -11,6 +11,7 @@ class ClassificationSplitStrategy:
     ):
         self.test_size = test_size
         self.random_state = random_state
+        self.splitter = DatasetSplitter()
 
     def split(
         self,
@@ -19,30 +20,9 @@ class ClassificationSplitStrategy:
     ) -> TrainTestData:
         self._validate_target(target)
 
-        X_train, X_test, y_train, y_test = (
-            self._stratified_split(
-                features,
-                target,
-            )
-        )
-
-        return TrainTestData(
-            X_train=X_train,
-            X_test=X_test,
-            y_train=y_train,
-            y_test=y_test,
-        )
-
-    def _stratified_split(
-        self,
-        features: pd.DataFrame,
-        target: pd.Series,
-    ):
-        from sklearn.model_selection import train_test_split
-
-        return train_test_split(
-            features,
-            target,
+        return self.splitter.split(
+            features=features,
+            target=target,
             test_size=self.test_size,
             random_state=self.random_state,
             stratify=target,
