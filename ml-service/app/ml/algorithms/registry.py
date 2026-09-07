@@ -1,6 +1,9 @@
 from typing import Callable
 
 from app.schemas.experiment import ProblemType
+from app.ml.algorithms.classification.logistic_regression import (
+    create_logistic_regression,
+)
 
 
 class AlgorithmRegistry:
@@ -52,3 +55,9 @@ class AlgorithmRegistry:
 
 
 algorithm_registry = AlgorithmRegistry()
+
+algorithm_registry.register(
+    problem_type=ProblemType.CLASSIFICATION,
+    name="logistic_regression",
+    factory=create_logistic_regression,
+)
