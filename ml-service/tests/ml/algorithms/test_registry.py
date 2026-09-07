@@ -1,4 +1,9 @@
-from app.ml.algorithms.registry import AlgorithmRegistry
+from sklearn.linear_model import LogisticRegression
+
+from app.ml.algorithms.registry import (
+    AlgorithmRegistry,
+    algorithm_registry,
+)
 from app.schemas.experiment import ProblemType
 
 
@@ -79,3 +84,12 @@ def test_unsupported_problem_type_raises_error():
         raise AssertionError(
             "Expected ValueError for unsupported problem type"
         )
+
+
+def test_global_registry_creates_logistic_regression():
+    model = algorithm_registry.create(
+        problem_type=ProblemType.CLASSIFICATION,
+        name="logistic_regression",
+    )
+
+    assert isinstance(model, LogisticRegression)
