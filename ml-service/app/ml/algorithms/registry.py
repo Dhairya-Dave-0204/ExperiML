@@ -1,0 +1,54 @@
+from typing import Callable
+
+from app.schemas.experiment import ProblemType
+
+
+class AlgorithmRegistry:
+    def __init__(self):
+        self._algorithms: dict[
+            ProblemType,
+            dict[str, Callable],
+        ] = {
+            ProblemType.CLASSIFICATION: {},
+            ProblemType.REGRESSION: {},
+        }
+
+    def register(
+        self,
+        problem_type: ProblemType,
+        name: str,
+        factory: Callable,
+    ) -> None:
+        if name in self._algorithms[problem_type]:
+            raise ValueError(
+                f"Algorithm already registered: "
+                f"{problem_type} / {name}"
+            )
+
+        self._algorithms[problem_type][name] = factory
+
+    def create(
+        self,
+        problem_type: ProblemType,
+        name: str,
+        **kwargs,
+    ):
+        algorithms = self._algorithms.get(problem_type)
+
+        if algorithms is None:
+            raise ValueError(
+                f"Unsupported problem type: {problem_type}"
+            )
+
+        factory = algorithms.get(name)
+
+        if factory is None:
+            raise ValueError(
+                f"Algorithm not found: "
+                f"{problem_type} / {name}"
+            )
+
+        return factory(**kwargs)
+
+
+algorithm_registry = AlgorithmRegistry()
