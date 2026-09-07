@@ -27,10 +27,10 @@ class DatetimeFeatureExtractor:
             result[f"{column}_day"] = result[column].dt.day
             result[f"{column}_day_of_week"] = (
                 result[column].dt.dayofweek
-            )
+            )   
             result[f"{column}_is_weekend"] = (
                 result[column].dt.dayofweek >= 5
-            )
+            ).astype(int)
 
             result = result.drop(columns=[column])
 
