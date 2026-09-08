@@ -11,6 +11,7 @@ from app.ml.preprocessing.features import FeatureTargetSplitter
 from app.ml.preprocessing.split_strategies.selector import (
     SplitStrategySelector,
 )
+from app.ml.training.trainer import ModelTrainer
 from app.schemas.experiment import (
     AlgorithmDefinition,
     DatasetFormat,
@@ -37,6 +38,7 @@ def create_executor(dataframe: pd.DataFrame) -> ExperimentExecutor:
         datetime_feature_extractor=DatetimeFeatureExtractor(),
         feature_target_splitter=FeatureTargetSplitter(),
         split_strategy_selector=SplitStrategySelector(),
+        model_trainer=ModelTrainer(),
     )
 
 
@@ -307,3 +309,79 @@ def test_prepare_excludes_identifier_column():
         feature_name.endswith("__id")
         for feature_name in result.feature_names
     )
+
+
+def test_execute_classification_with_logistic_regression():
+    dataframe = pd.DataFrame(
+        {
+            "age": [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+            "income": [
+                30000,
+                32000,
+                34000,
+                36000,
+                38000,
+                40000,
+                42000,
+                44000,
+                46000,
+                48000,
+            ],
+            "city": [
+                "A",
+                "A",
+                "B",
+                "B",
+                "A",
+                "B",
+                "A",
+                "B",
+                "A",
+                "B",
+            ],
+            "target": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+            ],
+        }
+    )
+
+    executor = create_executor(dataframe)
+
+    request = create_request(
+        problem_type=ProblemType.CLASSIFICATION,
+        target_column="target",
+    )
+
+    request.algorithm.name = "logistic_regression"
+    request.algorithm.hyperparameters = {
+        "max_iter": 1000,
+    }
+
+    result = executor.execute(request)
+
+    assert result["model"] is not None
+
+    assert set(result["metrics"].keys()) == {
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+    }
+
+    assert 0 <= result["metrics"]["accuracy"] <= 1
+    assert 0 <= result["metrics"]["precision"] <= 1
+    assert 0 <= result["metrics"]["recall"] <= 1
+    assert 0 <= result["metrics"]["f1"] <= 1
+
+    assert len(result["feature_names"]) == result["model"].n_features_in_
+
+    assert result["preprocessing_pipeline"]._is_fitted is True
