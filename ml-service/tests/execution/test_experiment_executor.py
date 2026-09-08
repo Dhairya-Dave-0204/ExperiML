@@ -4,6 +4,9 @@ import pandas as pd
 
 from app.execution.experiment_executor import ExperimentExecutor
 from app.execution.manager import execution_manager
+from app.ml.artifacts.generator import ModelArtifactGenerator
+from app.ml.artifacts.metadata import ArtifactMetadataBuilder
+from app.ml.artifacts.model_serializer import ModelSerializer
 from app.ml.preprocessing.column_roles import ColumnRoleResolver
 from app.ml.preprocessing.datetime import DatetimeProcessor
 from app.ml.preprocessing.datetime_features import DatetimeFeatureExtractor
@@ -12,6 +15,7 @@ from app.ml.preprocessing.split_strategies.selector import (
     SplitStrategySelector,
 )
 from app.ml.training.trainer import ModelTrainer
+from app.schemas.artifact import ArtifactType
 from app.schemas.experiment import (
     AlgorithmDefinition,
     DatasetFormat,
@@ -20,6 +24,7 @@ from app.schemas.experiment import (
     ExperimentExecutionRequest,
     ProblemType,
 )
+from app.storage.local import LocalStorageProvider
 
 
 class FakeDatasetLoader:
@@ -30,7 +35,16 @@ class FakeDatasetLoader:
         return self.dataframe.copy()
 
 
-def create_executor(dataframe: pd.DataFrame) -> ExperimentExecutor:
+def create_executor(
+    dataframe: pd.DataFrame,
+    storage_root,
+) -> ExperimentExecutor:
+    artifact_generator = ModelArtifactGenerator(
+        serializer=ModelSerializer(),
+        metadata_builder=ArtifactMetadataBuilder(),
+        storage_provider=LocalStorageProvider(storage_root),
+    )
+
     return ExperimentExecutor(
         dataset_loader=FakeDatasetLoader(dataframe),
         role_resolver=ColumnRoleResolver(),
@@ -39,6 +53,7 @@ def create_executor(dataframe: pd.DataFrame) -> ExperimentExecutor:
         feature_target_splitter=FeatureTargetSplitter(),
         split_strategy_selector=SplitStrategySelector(),
         model_trainer=ModelTrainer(),
+        artifact_generator=artifact_generator,
     )
 
 
@@ -74,7 +89,7 @@ def create_request(
     return request
 
 
-def test_prepare_classification():
+def test_prepare_classification(tmp_path):
     dataframe = pd.DataFrame(
         {
             "age": [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
@@ -117,7 +132,10 @@ def test_prepare_classification():
         }
     )
 
-    executor = create_executor(dataframe)
+    executor = create_executor(
+        dataframe,
+        tmp_path,
+    )
 
     request = create_request(
         problem_type=ProblemType.CLASSIFICATION,
@@ -141,7 +159,7 @@ def test_prepare_classification():
     assert result.preprocessing_pipeline._is_fitted is True
 
 
-def test_prepare_regression():
+def test_prepare_regression(tmp_path):
     dataframe = pd.DataFrame(
         {
             "age": [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
@@ -184,7 +202,10 @@ def test_prepare_regression():
         }
     )
 
-    executor = create_executor(dataframe)
+    executor = create_executor(
+        dataframe,
+        tmp_path,
+    )
 
     request = create_request(
         problem_type=ProblemType.REGRESSION,
@@ -205,7 +226,7 @@ def test_prepare_regression():
     assert result.preprocessing_pipeline._is_fitted is True
 
 
-def test_prepare_with_datetime_column():
+def test_prepare_with_datetime_column(tmp_path):
     dataframe = pd.DataFrame(
         {
             "age": [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
@@ -236,7 +257,10 @@ def test_prepare_with_datetime_column():
         }
     )
 
-    executor = create_executor(dataframe)
+    executor = create_executor(
+        dataframe,
+        tmp_path,
+    )
 
     request = create_request(
         problem_type=ProblemType.CLASSIFICATION,
@@ -271,7 +295,7 @@ def test_prepare_with_datetime_column():
     )
 
 
-def test_prepare_excludes_identifier_column():
+def test_prepare_excludes_identifier_column(tmp_path):
     dataframe = pd.DataFrame(
         {
             "id": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -291,7 +315,10 @@ def test_prepare_excludes_identifier_column():
         }
     )
 
-    executor = create_executor(dataframe)
+    executor = create_executor(
+        dataframe,
+        tmp_path,
+    )
 
     request = create_request(
         problem_type=ProblemType.CLASSIFICATION,
@@ -311,7 +338,7 @@ def test_prepare_excludes_identifier_column():
     )
 
 
-def test_execute_classification_with_logistic_regression():
+def test_execute_classification_with_logistic_regression(tmp_path):
     dataframe = pd.DataFrame(
         {
             "age": [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
@@ -354,7 +381,10 @@ def test_execute_classification_with_logistic_regression():
         }
     )
 
-    executor = create_executor(dataframe)
+    executor = create_executor(
+        dataframe,
+        tmp_path,
+    )
 
     request = create_request(
         problem_type=ProblemType.CLASSIFICATION,
@@ -385,3 +415,30 @@ def test_execute_classification_with_logistic_regression():
     assert len(result["feature_names"]) == result["model"].n_features_in_
 
     assert result["preprocessing_pipeline"]._is_fitted is True
+
+    assert "artifacts" in result
+    assert len(result["artifacts"]) == 1
+
+    artifact = result["artifacts"][0]
+
+    assert artifact.artifact_name == "model.joblib"
+    assert artifact.artifact_type == ArtifactType.MODEL
+    assert artifact.file_format == "joblib"
+    assert artifact.original_file_name == "model.joblib"
+
+    expected_storage_key = (
+        f"projects/{request.project_id}/"
+        f"experiments/{request.experiment_id}/"
+        f"artifacts/model.joblib"
+    )
+
+    assert artifact.storage_key == expected_storage_key
+
+    stored_file = tmp_path / artifact.storage_key
+
+    assert stored_file.exists()
+    assert stored_file.is_file()
+    assert stored_file.stat().st_size == artifact.file_size
+
+    assert artifact.checksum
+    assert len(artifact.checksum) == 64

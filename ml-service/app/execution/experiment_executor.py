@@ -2,6 +2,7 @@ import pandas as pd
 
 from app.execution.manager import execution_manager
 from app.ml.algorithms.registry import algorithm_registry
+from app.ml.artifacts.generator import ModelArtifactGenerator
 from app.ml.datasets.loader import DatasetLoader
 from app.ml.evaluation.evaluator import evaluator_selector
 from app.ml.preprocessing.column_roles import ColumnRoleResolver
@@ -46,6 +47,7 @@ class ExperimentExecutor:
         feature_target_splitter: FeatureTargetSplitter,
         split_strategy_selector: SplitStrategySelector,
         model_trainer: ModelTrainer,
+        artifact_generator: ModelArtifactGenerator,
     ):
         self.dataset_loader = dataset_loader
         self.role_resolver = role_resolver
@@ -54,6 +56,7 @@ class ExperimentExecutor:
         self.feature_target_splitter = feature_target_splitter
         self.split_strategy_selector = split_strategy_selector
         self.model_trainer = model_trainer
+        self.artifact_generator = artifact_generator
 
     def prepare(
         self,
@@ -191,9 +194,21 @@ class ExperimentExecutor:
             y_test=prepared_data.y_test,
         )
 
+        execution_manager.set_stage(
+            request.execution_id,
+            ExecutionStage.ARTIFACT_GENERATION,
+        )
+
+        model_artifact = self.artifact_generator.generate(
+            model=trained_model,
+            project_id=request.project_id,
+            experiment_id=request.experiment_id,
+        )
+
         return {
             "model": trained_model,
             "metrics": metrics,
             "feature_names": prepared_data.feature_names,
             "preprocessing_pipeline": prepared_data.preprocessing_pipeline,
+            "artifacts": [model_artifact],
         }
