@@ -199,8 +199,9 @@ class ExperimentExecutor:
             ExecutionStage.ARTIFACT_GENERATION,
         )
 
-        model_artifact = self.artifact_generator.generate(
+        artifacts = self.artifact_generator.generate(
             model=trained_model,
+            preprocessing_pipeline=prepared_data.preprocessing_pipeline,
             project_id=request.project_id,
             experiment_id=request.experiment_id,
         )
@@ -210,5 +211,5 @@ class ExperimentExecutor:
             "metrics": metrics,
             "feature_names": prepared_data.feature_names,
             "preprocessing_pipeline": prepared_data.preprocessing_pipeline,
-            "artifacts": [model_artifact],
+            "artifacts": artifacts,
         }
