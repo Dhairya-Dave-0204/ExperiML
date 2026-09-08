@@ -1,7 +1,9 @@
 import pandas as pd
 
 from app.execution.manager import execution_manager
+from app.ml.algorithms.registry import algorithm_registry
 from app.ml.datasets.loader import DatasetLoader
+from app.ml.evaluation.evaluator import evaluator_selector
 from app.ml.preprocessing.column_roles import ColumnRoleResolver
 from app.ml.preprocessing.datetime import DatetimeProcessor
 from app.ml.preprocessing.datetime_features import DatetimeFeatureExtractor
@@ -11,6 +13,7 @@ from app.ml.preprocessing.split import TrainTestData
 from app.ml.preprocessing.split_strategies.selector import (
     SplitStrategySelector,
 )
+from app.ml.training.trainer import ModelTrainer
 from app.schemas.execution import ExecutionStage
 from app.schemas.experiment import ExperimentExecutionRequest
 
@@ -42,6 +45,7 @@ class ExperimentExecutor:
         datetime_feature_extractor: DatetimeFeatureExtractor,
         feature_target_splitter: FeatureTargetSplitter,
         split_strategy_selector: SplitStrategySelector,
+        model_trainer: ModelTrainer,
     ):
         self.dataset_loader = dataset_loader
         self.role_resolver = role_resolver
@@ -49,6 +53,7 @@ class ExperimentExecutor:
         self.datetime_feature_extractor = datetime_feature_extractor
         self.feature_target_splitter = feature_target_splitter
         self.split_strategy_selector = split_strategy_selector
+        self.model_trainer = model_trainer
 
     def prepare(
         self,
@@ -146,4 +151,49 @@ class ExperimentExecutor:
             y_test=split_data.y_test,
             feature_names=X_train_processed.feature_names,
             preprocessing_pipeline=preprocessing_pipeline,
-        )   
+        )
+
+    def execute(
+        self,
+        request: ExperimentExecutionRequest,
+    ):
+        prepared_data = self.prepare(request)
+
+        execution_manager.set_stage(
+            request.execution_id,
+            ExecutionStage.TRAINING,
+        )
+
+        model = algorithm_registry.create(
+            problem_type=request.problem_type,
+            name=request.algorithm.name,
+            **request.algorithm.hyperparameters,
+        )
+
+        trained_model = self.model_trainer.train(
+            model=model,
+            X_train=prepared_data.X_train,
+            y_train=prepared_data.y_train,
+        )
+
+        execution_manager.set_stage(
+            request.execution_id,
+            ExecutionStage.EVALUATION,
+        )
+
+        evaluator = evaluator_selector.select(
+            request.problem_type,
+        )
+
+        metrics = evaluator.evaluate(
+            model=trained_model,
+            X_test=prepared_data.X_test,
+            y_test=prepared_data.y_test,
+        )
+
+        return {
+            "model": trained_model,
+            "metrics": metrics,
+            "feature_names": prepared_data.feature_names,
+            "preprocessing_pipeline": prepared_data.preprocessing_pipeline,
+        }
