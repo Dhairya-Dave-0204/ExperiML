@@ -4,6 +4,9 @@ from app.schemas.experiment import ProblemType
 from app.ml.algorithms.classification.logistic_regression import (
     create_logistic_regression,
 )
+from app.ml.algorithms.classification.decision_tree import (
+    create_decision_tree_classifier,
+)
 
 
 class AlgorithmRegistry:
@@ -60,4 +63,10 @@ algorithm_registry.register(
     problem_type=ProblemType.CLASSIFICATION,
     name="logistic_regression",
     factory=create_logistic_regression,
+)
+
+algorithm_registry.register(
+    problem_type=ProblemType.CLASSIFICATION,
+    name="decision_tree_classifier",
+    factory=create_decision_tree_classifier,
 )
