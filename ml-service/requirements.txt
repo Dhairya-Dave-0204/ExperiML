@@ -5,6 +5,7 @@ pydantic-settings
 numpy
 pandas
 scikit-learn
+xgboost
 openpyxl
 pyarrow
 joblib
