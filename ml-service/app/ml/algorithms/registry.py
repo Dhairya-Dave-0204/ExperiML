@@ -7,6 +7,7 @@ from app.ml.algorithms.classification.random_forest import ( create_random_fores
 from app.ml.algorithms.classification.knn import ( create_knn_classifier )
 from app.ml.algorithms.classification.svm import ( create_svm_classifier )
 from app.ml.algorithms.classification.naive_bayes import ( create_naive_bayes_classifier )
+from app.ml.algorithms.classification.xgboost_classifier import ( create_xgboost_classifier )
 
 
 class AlgorithmRegistry:
@@ -93,4 +94,10 @@ algorithm_registry.register(
     problem_type=ProblemType.CLASSIFICATION,
     name="naive_bayes",
     factory=create_naive_bayes_classifier,
+)
+
+algorithm_registry.register(
+    problem_type=ProblemType.CLASSIFICATION,
+    name="xgboost_classifier",
+    factory=create_xgboost_classifier,
 )
