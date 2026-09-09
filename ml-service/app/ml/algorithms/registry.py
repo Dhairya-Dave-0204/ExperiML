@@ -7,6 +7,9 @@ from app.ml.algorithms.classification.logistic_regression import (
 from app.ml.algorithms.classification.decision_tree import (
     create_decision_tree_classifier,
 )
+from app.ml.algorithms.classification.random_forest import (
+    create_random_forest_classifier
+)
 
 
 class AlgorithmRegistry:
@@ -69,4 +72,10 @@ algorithm_registry.register(
     problem_type=ProblemType.CLASSIFICATION,
     name="decision_tree_classifier",
     factory=create_decision_tree_classifier,
+)
+
+algorithm_registry.register(
+    problem_type=ProblemType.CLASSIFICATION,
+    name="random_forest_classifier",
+    factory=create_random_forest_classifier,
 )
