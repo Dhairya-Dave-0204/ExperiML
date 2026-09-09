@@ -5,6 +5,7 @@ from app.ml.algorithms.classification.logistic_regression import ( create_logist
 from app.ml.algorithms.classification.decision_tree import ( create_decision_tree_classifier )
 from app.ml.algorithms.classification.random_forest import ( create_random_forest_classifier )
 from app.ml.algorithms.classification.knn import ( create_knn_classifier )
+from app.ml.algorithms.classification.svm import ( create_svm_classifier )
 
 
 class AlgorithmRegistry:
@@ -79,4 +80,10 @@ algorithm_registry.register(
     problem_type=ProblemType.CLASSIFICATION,
     name="knn_classifier",
     factory=create_knn_classifier,
+)
+
+algorithm_registry.register(
+    problem_type=ProblemType.CLASSIFICATION,
+    name="svm_classifier",
+    factory=create_svm_classifier,
 )
