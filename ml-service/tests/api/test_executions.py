@@ -104,8 +104,8 @@ def test_create_execution_returns_202():
     assert orchestrator.called is True
 
     assert (
-        orchestrator.request.execution_id
-        == payload["execution_id"]
+        str(orchestrator.request.execution_id)
+    == payload["execution_id"]
     )
 
 
