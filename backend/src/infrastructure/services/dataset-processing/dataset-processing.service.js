@@ -1,8 +1,9 @@
 import NodeParserService from "./node-parser.service.js";
+import { env } from "#config/env.config"
 
 let processor;
 
-const PROCESSOR = process.env.DATASET_PROCESSOR || "node";
+const PROCESSOR = env.DATASET_PROCESSOR || "node";
 
 switch (PROCESSOR) {
   case "node":
