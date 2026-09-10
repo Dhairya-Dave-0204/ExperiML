@@ -1,9 +1,19 @@
 from typing import Any
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
 from app.schemas.experiment import DatasetFormat
 
+
+class DatasetAnalysisRequest(BaseModel):
+    dataset_id: UUID
+    version: int
+    format: DatasetFormat
+    storage_key: str
+    file_size: int
+    mime_type: str
+    checksum: str
 
 class ColumnAnalysis(BaseModel):
     name: str
