@@ -11,6 +11,7 @@ from app.ml.algorithms.classification.xgboost_classifier import ( create_xgboost
 from app.ml.algorithms.regression.linear_regression import ( create_linear_regression )
 from app.ml.algorithms.regression.ridge import ( create_ridge_regression )
 from app.ml.algorithms.regression.lasso import ( create_lasso_regression )
+from app.ml.algorithms.regression.decision_tree import ( create_decision_tree_regressor )
 
 
 class AlgorithmRegistry:
@@ -123,4 +124,10 @@ algorithm_registry.register(
     problem_type=ProblemType.REGRESSION,
     name="lasso",
     factory=create_lasso_regression,
+)
+
+algorithm_registry.register(
+    problem_type=ProblemType.REGRESSION,
+    name="decision_tree_regressor",
+    factory=create_decision_tree_regressor,
 )
