@@ -106,7 +106,10 @@ def test_analyze_dataset_not_found(tmp_path, monkeypatch):
         },
     )
 
-    assert response.status_code == 500
+    assert response.status_code == 404
+    assert response.json()["detail"].startswith(
+        "Dataset file not found:"
+    )
 
 
 def test_analyze_dataset_invalid_request():
