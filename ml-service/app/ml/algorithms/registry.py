@@ -14,6 +14,7 @@ from app.ml.algorithms.regression.lasso import ( create_lasso_regression )
 from app.ml.algorithms.regression.decision_tree import ( create_decision_tree_regressor )
 from app.ml.algorithms.regression.random_forest import ( create_random_forest_regressor )
 from app.ml.algorithms.regression.knn import ( create_knn_regressor )
+from app.ml.algorithms.regression.svr import ( create_svr )
 
 
 class AlgorithmRegistry:
@@ -144,4 +145,10 @@ algorithm_registry.register(
     problem_type=ProblemType.REGRESSION,
     name="knn_regressor",
     factory=create_knn_regressor,
+)
+
+algorithm_registry.register(
+    problem_type=ProblemType.REGRESSION,
+    name="svr",
+    factory=create_svr,
 )
