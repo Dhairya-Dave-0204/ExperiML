@@ -12,6 +12,7 @@ from app.ml.algorithms.regression.linear_regression import ( create_linear_regre
 from app.ml.algorithms.regression.ridge import ( create_ridge_regression )
 from app.ml.algorithms.regression.lasso import ( create_lasso_regression )
 from app.ml.algorithms.regression.decision_tree import ( create_decision_tree_regressor )
+from app.ml.algorithms.regression.random_forest import ( create_random_forest_regressor )
 
 
 class AlgorithmRegistry:
@@ -130,4 +131,10 @@ algorithm_registry.register(
     problem_type=ProblemType.REGRESSION,
     name="decision_tree_regressor",
     factory=create_decision_tree_regressor,
+)
+
+algorithm_registry.register(
+    problem_type=ProblemType.REGRESSION,
+    name="random_forest_regressor",
+    factory=create_random_forest_regressor,
 )
