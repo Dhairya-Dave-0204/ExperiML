@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.api.dependencies import internal_service_auth
 from app.core.config import settings
@@ -52,9 +52,15 @@ async def analyze_dataset(
 
     analyzer = DatasetAnalyzer()
 
-    dataframe = dataset_loader.load(
-        dataset=request_to_dataset_reference(request)
-    )
+    try:
+        dataframe = dataset_loader.load(
+            dataset=request_to_dataset_reference(request)
+        )
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
 
     return analyzer.analyze(
         dataframe=dataframe,
