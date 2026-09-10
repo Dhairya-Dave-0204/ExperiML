@@ -58,6 +58,37 @@ class LocalStorageProvider {
   }
 
   /**
+ * Convert an absolute permanent file path
+ * into a provider-independent storage key.
+ *
+ * Example:
+ * backend/uploads/projects/projectId/datasets/datasetId/data.csv
+ *
+ * becomes:
+ * projects/projectId/datasets/datasetId/data.csv
+ */
+getStorageKey(filePath) {
+  const relativePath = path.relative(
+    storageConfig.projectsPath,
+    filePath
+  );
+
+  if (
+    relativePath.startsWith("..") ||
+    path.isAbsolute(relativePath)
+  ) {
+    throw new Error(
+      "File path is outside the projects storage directory"
+    );
+  }
+
+  return path
+    .join("projects", relativePath)
+    .split(path.sep)
+    .join("/");
+}
+
+  /**
    * Generic file movement.
    *
    * Used by:
