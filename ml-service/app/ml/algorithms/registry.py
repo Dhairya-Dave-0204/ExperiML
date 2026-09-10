@@ -1,6 +1,7 @@
 from typing import Callable
 
 from app.schemas.experiment import ProblemType
+
 from app.ml.algorithms.classification.logistic_regression import ( create_logistic_regression )
 from app.ml.algorithms.classification.decision_tree import ( create_decision_tree_classifier )
 from app.ml.algorithms.classification.random_forest import ( create_random_forest_classifier )
@@ -8,6 +9,7 @@ from app.ml.algorithms.classification.knn import ( create_knn_classifier )
 from app.ml.algorithms.classification.svm import ( create_svm_classifier )
 from app.ml.algorithms.classification.naive_bayes import ( create_naive_bayes_classifier )
 from app.ml.algorithms.classification.xgboost_classifier import ( create_xgboost_classifier )
+
 from app.ml.algorithms.regression.linear_regression import ( create_linear_regression )
 from app.ml.algorithms.regression.ridge import ( create_ridge_regression )
 from app.ml.algorithms.regression.lasso import ( create_lasso_regression )
@@ -15,6 +17,7 @@ from app.ml.algorithms.regression.decision_tree import ( create_decision_tree_re
 from app.ml.algorithms.regression.random_forest import ( create_random_forest_regressor )
 from app.ml.algorithms.regression.knn import ( create_knn_regressor )
 from app.ml.algorithms.regression.svr import ( create_svr )
+from app.ml.algorithms.regression.xgboost_regressor import ( create_xgboost_regressor )
 
 
 class AlgorithmRegistry:
@@ -151,4 +154,10 @@ algorithm_registry.register(
     problem_type=ProblemType.REGRESSION,
     name="svr",
     factory=create_svr,
+)
+
+algorithm_registry.register(
+    problem_type=ProblemType.REGRESSION,
+    name="xgboost_regressor",
+    factory=create_xgboost_regressor,
 )
