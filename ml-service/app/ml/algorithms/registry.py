@@ -10,6 +10,7 @@ from app.ml.algorithms.classification.naive_bayes import ( create_naive_bayes_cl
 from app.ml.algorithms.classification.xgboost_classifier import ( create_xgboost_classifier )
 from app.ml.algorithms.regression.linear_regression import ( create_linear_regression )
 from app.ml.algorithms.regression.ridge import ( create_ridge_regression )
+from app.ml.algorithms.regression.lasso import ( create_lasso_regression )
 
 
 class AlgorithmRegistry:
@@ -116,4 +117,10 @@ algorithm_registry.register(
     problem_type=ProblemType.REGRESSION,
     name="ridge",
     factory=create_ridge_regression,
+)
+
+algorithm_registry.register(
+    problem_type=ProblemType.REGRESSION,
+    name="lasso",
+    factory=create_lasso_regression,
 )
