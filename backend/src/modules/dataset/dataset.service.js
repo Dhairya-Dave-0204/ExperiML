@@ -18,92 +18,82 @@ import datasetProcessingService from "#infra-services/dataset-processing/dataset
 
 class DatasetService {
   async createDataset({ projectId, userId, name, file }) {
-    let permanentFilePath;
+  let permanentFilePath;
 
-    try {
-      const project = await prisma.project.findFirst({
-        where: {
-          id: projectId,
-          userId,
-          deletedAt: null,
-        },
-      });
+  try {
+    const project = await prisma.project.findFirst({
+      where: {
+        id: projectId,
+        userId,
+        deletedAt: null,
+      },
+    });
 
-      if (!project) {
-        throw new ApiError(404, "Project not found");
-      }
-
-      const datasetId = crypto.randomUUID();
-
-      const extension = this.getFileExtension(file.originalname);
-
-      const datasetFormat = this.getDatasetFormat(extension);
-
-      const datasetVersion = await this.generateDatasetVersion(projectId, name);
-
-      const checksum = await generateFileChecksum(file.path);
-
-      const metadata = await datasetProcessingService.analyzeDataset({
-        filePath: file.path,
-
-        datasetFormat,
-      });
-
-      permanentFilePath = await fileStorageService.moveToPermanent({
-        tempFilePath: file.path,
-
-        projectId,
-
-        datasetId,
-
-        extension,
-      });
-
-      const dataset = await prisma.dataset.create({
-        data: {
-          id: datasetId,
-
-          projectId,
-
-          name,
-
-          datasetVersion,
-
-          originalFileName: file.originalname,
-
-          filePath: permanentFilePath,
-
-          fileSize: BigInt(file.size),
-
-          mimeType: file.mimetype,
-
-          checksum,
-
-          datasetFormat,
-
-          rowCount: metadata.rowCount,
-
-          columnCount: metadata.columnCount,
-
-          metadata: metadata.metadata,
-
-          datasetStatus: DATASET_STATUSES.READY,
-        },
-      });
-
-      return dataset;
-    } catch (error) {
-      if (file?.path) {
-        await fileStorageService.delete(file.path);
-      }
-
-      if (permanentFilePath) {
-        await fileStorageService.delete(permanentFilePath);
-      }
-
-      throw error;
+    if (!project) {
+      throw new ApiError(404, "Project not found");
     }
+
+    const datasetId = crypto.randomUUID();
+
+    const extension = this.getFileExtension(file.originalname);
+    const datasetFormat = this.getDatasetFormat(extension);
+
+    const datasetVersion = await this.generateDatasetVersion(
+      projectId,
+      name
+    );
+
+    const checksum = await generateFileChecksum(file.path);
+
+    permanentFilePath = await fileStorageService.moveToPermanent({
+      tempFilePath: file.path,
+      projectId,
+      datasetId,
+      extension,
+    });
+
+    const storageKey = fileStorageService.getStorageKey(
+      permanentFilePath
+    );
+
+    const metadata = await datasetProcessingService.analyzeDataset({
+      filePath: permanentFilePath,
+      storageKey,
+      datasetFormat,
+    });
+
+    const dataset = await prisma.dataset.create({
+      data: {
+        id: datasetId,
+        projectId,
+        name,
+        datasetVersion,
+        originalFileName: file.originalname,
+        filePath: permanentFilePath,
+        fileSize: BigInt(file.size),
+        mimeType: file.mimetype,
+        checksum,
+        datasetFormat,
+        rowCount: metadata.rowCount,
+        columnCount: metadata.columnCount,
+        metadata: metadata.metadata,
+        datasetStatus: DATASET_STATUSES.READY,
+      },
+    });
+
+    return dataset;
+  } catch (error) {
+    if (file?.path) {
+      await fileStorageService.delete(file.path);
+    }
+
+    if (permanentFilePath) {
+      await fileStorageService.delete(permanentFilePath);
+    }
+
+    throw error;
   }
+}
 
   async getProjectDatasets({ projectId, userId }) {
     const project = await prisma.project.findFirst({
