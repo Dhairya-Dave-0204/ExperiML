@@ -82,6 +82,8 @@ export const env = {
     JWT_REFRESH_EXPIRES_IN,
   ),
 
+  DATASET_PROCESSOR: process.env.DATASET_PROCESSOR,
+
   STORAGE_PROVIDER: process.env.STORAGE_PROVIDER || "local",
   MAX_DATASET_FILE_SIZE: process.env.MAX_DATASET_FILE_SIZE,
 };
