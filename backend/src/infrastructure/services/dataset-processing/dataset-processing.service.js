@@ -25,9 +25,14 @@ class DatasetProcessingService {
    *
    * Input:
    * {
+   *   datasetId,
+   *   version,
    *   filePath,
    *   storageKey,
-   *   datasetFormat
+   *   datasetFormat,
+   *   fileSize,
+   *   mimeType,
+   *   checksum
    * }
    *
    * Output:
@@ -37,11 +42,25 @@ class DatasetProcessingService {
    *   metadata
    * }
    */
-  async analyzeDataset({ filePath, storageKey, datasetFormat }) {
+  async analyzeDataset({
+    datasetId,
+    version,
+    filePath,
+    storageKey,
+    datasetFormat,
+    fileSize,
+    mimeType,
+    checksum,
+  }) {
     return processor.analyzeDataset({
+      datasetId,
+      version,
       filePath,
       storageKey,
       datasetFormat,
+      fileSize,
+      mimeType,
+      checksum,
     });
   }
 }
