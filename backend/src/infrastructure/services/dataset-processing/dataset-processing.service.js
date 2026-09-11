@@ -65,4 +65,4 @@ class DatasetProcessingService {
   }
 }
 
-export default DatasetProcessingService;
+export default new DatasetProcessingService();
