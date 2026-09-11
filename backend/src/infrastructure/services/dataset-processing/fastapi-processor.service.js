@@ -36,4 +36,4 @@ class FastApiProcessorService {
   }
 }
 
-export default new FastApiProcessorService();
+export default FastApiProcessorService;

@@ -1,4 +1,5 @@
 import NodeParserService from "./node-parser.service.js";
+import FastApiProcessorService from "./fastapi-processor.service.js";
 import { env } from "#config/env.config";
 
 let processor;
@@ -8,18 +9,11 @@ const PROCESSOR = env.DATASET_PROCESSOR || "node";
 switch (PROCESSOR) {
   case "node":
     processor = new NodeParserService();
-
     break;
 
   case "fastapi":
-    /*
-     * Future implementation:
-     *
-     * processor = new FastApiProcessorService();
-     *
-     */
-
-    throw new Error("FastAPI dataset processor is not implemented yet");
+    processor = new FastApiProcessorService();
+    break;
 
   default:
     throw new Error(`Unsupported dataset processor: ${PROCESSOR}`);
@@ -52,4 +46,4 @@ class DatasetProcessingService {
   }
 }
 
-export default new DatasetProcessingService();
+export default DatasetProcessingService;
