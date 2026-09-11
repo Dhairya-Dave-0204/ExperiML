@@ -33,6 +33,7 @@ class ExperimentConfiguration(BaseModel):
     target_column: str
     identifier_columns: list[str] = Field(default_factory=list)
     datetime_columns: list[str] = Field(default_factory=list)
+    remove_duplicates: bool = False
 
 
 class AlgorithmDefinition(BaseModel):
