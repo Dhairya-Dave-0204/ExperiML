@@ -1,5 +1,5 @@
 import NodeParserService from "./node-parser.service.js";
-import { env } from "#config/env.config"
+import { env } from "#config/env.config";
 
 let processor;
 
@@ -32,6 +32,7 @@ class DatasetProcessingService {
    * Input:
    * {
    *   filePath,
+   *   storageKey,
    *   datasetFormat
    * }
    *
@@ -42,9 +43,10 @@ class DatasetProcessingService {
    *   metadata
    * }
    */
-  async analyzeDataset({ filePath, datasetFormat }) {
+  async analyzeDataset({ filePath, storageKey, datasetFormat }) {
     return processor.analyzeDataset({
       filePath,
+      storageKey,
       datasetFormat,
     });
   }
