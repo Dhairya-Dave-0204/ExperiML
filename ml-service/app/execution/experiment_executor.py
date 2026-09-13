@@ -11,12 +11,11 @@ from app.ml.preprocessing.datetime_features import DatetimeFeatureExtractor
 from app.ml.preprocessing.features import FeatureTargetSplitter
 from app.ml.preprocessing.pipeline import PreprocessingPipeline
 from app.ml.preprocessing.split import TrainTestData
-from app.ml.preprocessing.split_strategies.selector import (
-    SplitStrategySelector,
-)
+from app.ml.preprocessing.split_strategies.selector import ( SplitStrategySelector )
 from app.ml.training.trainer import ModelTrainer
 from app.schemas.execution import ExecutionStage
 from app.schemas.experiment import ExperimentExecutionRequest
+from app.ml.preprocessing.duplicates import DuplicateHandler
 
 
 class PreparedExperimentData:
@@ -48,6 +47,7 @@ class ExperimentExecutor:
         split_strategy_selector: SplitStrategySelector,
         model_trainer: ModelTrainer,
         artifact_generator: ModelArtifactGenerator,
+        duplicate_handler: DuplicateHandler,
     ):
         self.dataset_loader = dataset_loader
         self.role_resolver = role_resolver
@@ -57,6 +57,7 @@ class ExperimentExecutor:
         self.split_strategy_selector = split_strategy_selector
         self.model_trainer = model_trainer
         self.artifact_generator = artifact_generator
+        self.duplicate_handler = duplicate_handler
 
     def prepare(
         self,
@@ -72,6 +73,11 @@ class ExperimentExecutor:
         dataframe = self.dataset_loader.load(
             request.dataset
         )
+
+        if request.configuration.remove_duplicates:
+            dataframe = self.duplicate_handler.remove_duplicates(
+                dataframe=dataframe,
+            )
 
         execution_manager.set_stage(
             execution_id,
