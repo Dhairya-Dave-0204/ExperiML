@@ -2,46 +2,21 @@ from uuid import uuid4
 
 import pandas as pd
 
-from app.execution.experiment_executor import (
-    ExperimentExecutor,
-)
+from app.execution.experiment_executor import ( ExperimentExecutor )
 from app.execution.manager import execution_manager
-from app.execution.orchestrator import (
-    ExecutionOrchestrator,
-)
-from app.ml.artifacts.generator import (
-    ModelArtifactGenerator,
-)
-from app.ml.artifacts.metadata import (
-    ArtifactMetadataBuilder,
-)
-from app.ml.artifacts.model_serializer import (
-    ModelSerializer,
-)
-from app.ml.artifacts.preprocessing_serializer import (
-    PreprocessingPipelineSerializer,
-)
+from app.execution.orchestrator import ( ExecutionOrchestrator )
+from app.ml.artifacts.generator import ( ModelArtifactGenerator )
+from app.ml.artifacts.metadata import ( ArtifactMetadataBuilder )
+from app.ml.artifacts.model_serializer import ( ModelSerializer )
+from app.ml.artifacts.preprocessing_serializer import ( PreprocessingPipelineSerializer )
 from app.ml.datasets.loader import DatasetLoader
-from app.ml.preprocessing.column_roles import (
-    ColumnRoleResolver,
-)
-from app.ml.preprocessing.datetime import (
-    DatetimeProcessor,
-)
-from app.ml.preprocessing.datetime_features import (
-    DatetimeFeatureExtractor,
-)
-from app.ml.preprocessing.features import (
-    FeatureTargetSplitter,
-)
-from app.ml.preprocessing.split_strategies.selector import (
-    SplitStrategySelector,
-)
+from app.ml.preprocessing.column_roles import ( ColumnRoleResolver )
+from app.ml.preprocessing.datetime import ( DatetimeProcessor )
+from app.ml.preprocessing.datetime_features import ( DatetimeFeatureExtractor )
+from app.ml.preprocessing.features import ( FeatureTargetSplitter )
+from app.ml.preprocessing.split_strategies.selector import ( SplitStrategySelector )
 from app.ml.training.trainer import ModelTrainer
-from app.schemas.execution import (
-    ExecutionStage,
-    ExecutionStatus,
-)
+from app.schemas.execution import ( ExecutionStage, ExecutionStatus )
 from app.schemas.experiment import (
     AlgorithmDefinition,
     DatasetFormat,
@@ -51,6 +26,7 @@ from app.schemas.experiment import (
     ProblemType,
 )
 from app.storage.local import LocalStorageProvider
+from app.ml.preprocessing.duplicates import DuplicateHandler
 
 
 def create_dataset(tmp_path):
@@ -186,6 +162,8 @@ def create_orchestrator(tmp_path):
         ),
         model_trainer=ModelTrainer(),
         artifact_generator=artifact_generator,
+
+        duplicate_handler=DuplicateHandler(),
     )
 
     return ExecutionOrchestrator(
