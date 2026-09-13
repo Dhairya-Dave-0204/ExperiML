@@ -4,7 +4,7 @@ from app.core.config import settings
 
 
 def test_storage_root_is_loaded():
-    assert settings.storage_root == "storage"
+    assert settings.storage_root == "../backend/uploads"
 
 
 def test_storage_root_is_relative_path():
