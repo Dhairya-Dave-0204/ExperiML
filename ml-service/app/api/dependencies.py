@@ -5,21 +5,16 @@ from app.execution.orchestrator import ExecutionOrchestrator
 from app.ml.artifacts.generator import ModelArtifactGenerator
 from app.ml.artifacts.metadata import ArtifactMetadataBuilder
 from app.ml.artifacts.model_serializer import ModelSerializer
-from app.ml.artifacts.preprocessing_serializer import (
-    PreprocessingPipelineSerializer,
-)
+from app.ml.artifacts.preprocessing_serializer import ( PreprocessingPipelineSerializer )
 from app.ml.datasets.loader import DatasetLoader
 from app.ml.preprocessing.column_roles import ColumnRoleResolver
 from app.ml.preprocessing.datetime import DatetimeProcessor
-from app.ml.preprocessing.datetime_features import (
-    DatetimeFeatureExtractor,
-)
+from app.ml.preprocessing.datetime_features import ( DatetimeFeatureExtractor )
 from app.ml.preprocessing.features import FeatureTargetSplitter
-from app.ml.preprocessing.split_strategies.selector import (
-    SplitStrategySelector,
-)
+from app.ml.preprocessing.split_strategies.selector import ( SplitStrategySelector )
 from app.ml.training.trainer import ModelTrainer
 from app.storage.local import LocalStorageProvider
+from app.ml.preprocessing.duplicates import DuplicateHandler
 
 
 internal_service_auth = verify_internal_service_key
@@ -42,6 +37,7 @@ def get_execution_orchestrator() -> ExecutionOrchestrator:
         metadata_builder=ArtifactMetadataBuilder(),
         storage_provider=storage_provider,
     )
+    duplicate_handler = DuplicateHandler()
 
     experiment_executor = ExperimentExecutor(
         dataset_loader=dataset_loader,
@@ -58,6 +54,7 @@ def get_execution_orchestrator() -> ExecutionOrchestrator:
         ),
         model_trainer=ModelTrainer(),
         artifact_generator=artifact_generator,
+        duplicate_handler=duplicate_handler,
     )
 
     return ExecutionOrchestrator(
