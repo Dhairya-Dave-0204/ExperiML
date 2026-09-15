@@ -97,7 +97,10 @@ async function main() {
   console.log("\nFastAPI execution response:");
   console.log(result);
 
-  console.log("\nTest completed successfully.");
+  const execution = await fastApiExecutionService.getExecution(executionId);
+
+  console.log("\nFastAPI execution status:");
+  console.log(JSON.stringify(execution, null, 2));
 }
 
 main()
