@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 import { prisma } from "#clients/prisma.client";
 
 import { ApiError } from "#utils/ApiError";
@@ -9,20 +11,26 @@ import {
 
 import { DATASET_STATUSES } from "#dataset/dataset.constants";
 
+import fastApiExecutionService from "#services/fastapi-execution.service";
+
 class ExperimentService {
   /*
    * ============================================================
    * CREATE EXPERIMENT
    * ============================================================
-   * Creates an Experiment definition.
+   *
+   * Creates an Experiment definition and submits its execution
+   * to the ML/FastAPI service.
    *
    * Current V1 behavior:
    * - The Project must belong to the authenticated user.
    * - The Dataset must belong to the Project.
    * - The Dataset must not be soft deleted.
    * - The Dataset must be READY.
-   * - The Experiment starts in CREATED state.
-   * - No ML execution is performed here.
+   * - Node generates and owns the execution ID.
+   * - The Experiment is persisted in QUEUED state.
+   * - FastAPI receives the execution request asynchronously.
+   * - If FastAPI submission fails, the Experiment is marked FAILED.
    */
 
   async createExperiment({
@@ -75,7 +83,8 @@ class ExperimentService {
     /*
      * 3. Dataset must be READY
      *
-     * Experiments can only be created against a Dataset that has completed its processing lifecycle.
+     * Experiments can only be created against a Dataset that
+     * has completed its processing lifecycle.
      */
 
     if (dataset.datasetStatus !== DATASET_STATUSES.READY) {
@@ -83,15 +92,23 @@ class ExperimentService {
     }
 
     /*
-     * 4. Create Experiment
+     * 4. Generate execution ID
      *
-     * Prisma generates the Experiment UUID.
+     * Node owns the execution identity because Node owns the
+     * Experiment lifecycle and persistence.
+     */
+
+    const executionId = crypto.randomUUID();
+
+    /*
+     * 5. Create Experiment
      *
-     * The Experiment starts in CREATED state because the current Node-only implementation
-     * does not execute ML training.
-     * 
-     * Metrics and execution timestamps remain unset until the future ML/FastAPI execution layer  
-     * handles training.
+     * The Experiment is persisted before FastAPI is called.
+     *
+     * This ensures that:
+     * - the Experiment exists before execution starts
+     * - the execution ID is persisted
+     * - Node remains authoritative for the Experiment record
      */
 
     const experiment = await prisma.experiment.create({
@@ -103,9 +120,49 @@ class ExperimentService {
         algorithmName,
         configuration,
         hyperparameters,
-        experimentStatus: EXPERIMENT_STATUSES.CREATED,
+        executionId,
+        experimentStatus: EXPERIMENT_STATUSES.QUEUED,
       },
     });
+
+    /*
+     * 6. Submit execution to FastAPI
+     *
+     * FastAPI handles the ML execution asynchronously.
+     *
+     * A successful submission returns 202 / QUEUED.
+     */
+
+    try {
+      await fastApiExecutionService.createExecution({
+        executionId,
+        projectId,
+        experimentId: experiment.id,
+        dataset,
+        problemType,
+        algorithmName,
+        configuration,
+        hyperparameters,
+      });
+    } catch (error) {
+      /*
+       * FastAPI submission failed.
+       *
+       * Node remains authoritative, so mark the Experiment
+       * as FAILED before propagating the error.
+       */
+
+      await prisma.experiment.update({
+        where: {
+          id: experiment.id,
+        },
+        data: {
+          experimentStatus: EXPERIMENT_STATUSES.FAILED,
+        },
+      });
+
+      throw error;
+    }
 
     return experiment;
   }
