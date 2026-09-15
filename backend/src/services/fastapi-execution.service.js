@@ -52,6 +52,14 @@ class FastApiExecutionService {
       status: response.data.status,
     };
   }
+
+  async getExecution(executionId) {
+    const response = await fastApiClient.get(
+      `/executions/${executionId}`,
+    );
+
+    return response.data;
+  }
 }
 
 export default new FastApiExecutionService();
