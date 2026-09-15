@@ -126,6 +126,7 @@ model Experiment {
   algorithmName    String           @map("algorithm_name") @db.Text
   configuration    Json
   hyperparameters  Json
+  executionId      String?          @unique @map("execution_id") @db.Uuid
   metrics          Json?
   experimentStatus ExperimentStatus @default(CREATED) @map("experiment_status")
   startedAt        DateTime?        @map("started_at") @db.Timestamptz(6)
