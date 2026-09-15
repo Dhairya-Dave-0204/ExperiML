@@ -25,7 +25,8 @@
     "#project/*": "./src/modules/project/*.js",
     "#dashboard/*": "./src/modules/dashboard/*.js",
     "#routes/*": "./src/routes/*.js",
-    "#utils/*": "./src/utils/*.js"
+    "#utils/*": "./src/utils/*.js",
+    "#services/*": "./src/services/*.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",

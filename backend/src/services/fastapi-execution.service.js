@@ -39,7 +39,12 @@ class FastApiExecutionService {
         hyperparameters: hyperparameters ?? {},
       },
 
-      configuration: configuration ?? {},
+      configuration: {
+        target_column: configuration?.targetColumn,
+        identifier_columns: configuration?.identifierColumns ?? [],
+        datetime_columns: configuration?.datetimeColumns ?? [],
+        remove_duplicates: configuration?.removeDuplicates ?? false,
+      },
     });
 
     return {
