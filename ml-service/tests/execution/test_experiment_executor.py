@@ -29,6 +29,7 @@ from app.schemas.experiment import (
 )
 from app.storage.local import LocalStorageProvider
 from app.ml.preprocessing.duplicates import DuplicateHandler
+from app.ml.preprocessing.target import TargetHandler
 
 
 def create_dataset(tmp_path):
@@ -89,6 +90,72 @@ def create_dataset(tmp_path):
         file_size=file_path.stat().st_size,
         mime_type="text/csv",
         checksum="test-checksum",
+    )
+
+def create_missing_target_dataset(tmp_path):
+    dataframe = pd.DataFrame(
+        {
+            "age": [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+            "income": [
+                30000,
+                32000,
+                34000,
+                36000,
+                38000,
+                40000,
+                42000,
+                44000,
+                46000,
+                48000,
+            ],
+            "city": [
+                "A",
+                "A",
+                "B",
+                "B",
+                "A",
+                "B",
+                "A",
+                "B",
+                "A",
+                "B",
+            ],
+            "target": [
+                0,
+                0,
+                0,
+                0,
+                None,
+                1,
+                1,
+                1,
+                1,
+                1,
+            ],
+        }
+    )
+
+    storage_key = "datasets/missing_target_test.csv"
+
+    file_path = tmp_path / storage_key
+    file_path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    dataframe.to_csv(
+        file_path,
+        index=False,
+    )
+
+    return DatasetReference(
+        id=uuid4(),
+        version=1,
+        format=DatasetFormat.CSV,
+        storage_key=storage_key,
+        file_size=file_path.stat().st_size,
+        mime_type="text/csv",
+        checksum="missing-target-test-checksum",
     )
 
 def create_duplicate_dataset(tmp_path):
@@ -171,6 +238,25 @@ def create_request(tmp_path):
         ),
     )
 
+def create_missing_target_request(tmp_path):
+    return ExperimentExecutionRequest(
+        execution_id=uuid4(),
+        execution_type="EXPERIMENT",
+        project_id=uuid4(),
+        experiment_id=uuid4(),
+        dataset=create_missing_target_dataset(tmp_path),
+        problem_type=ProblemType.CLASSIFICATION,
+        algorithm=AlgorithmDefinition(
+            name="logistic_regression",
+            hyperparameters={
+                "max_iter": 1000,
+            },
+        ),
+        configuration=ExperimentConfiguration(
+            target_column="target",
+        ),
+    )
+
 def create_duplicate_request(tmp_path, remove_duplicates):
     return ExperimentExecutionRequest(
         execution_id=uuid4(),
@@ -212,6 +298,7 @@ def create_executor(tmp_path):
         datetime_processor=DatetimeProcessor(),
         datetime_feature_extractor=DatetimeFeatureExtractor(),
         feature_target_splitter=FeatureTargetSplitter(),
+        target_handler=TargetHandler(),
         split_strategy_selector=SplitStrategySelector(),
         model_trainer=ModelTrainer(),
         artifact_generator=artifact_generator,
@@ -405,3 +492,26 @@ def test_prepare_keeps_duplicate_rows_when_disabled(
     )
 
     assert total_rows == 10
+
+def test_prepare_removes_rows_with_missing_target(
+    tmp_path,
+):
+    request = create_missing_target_request(tmp_path)
+
+    execution_manager.create(
+        request.execution_id
+    )
+
+    executor = create_executor(tmp_path)
+
+    prepared_data = executor.prepare(request)
+
+    total_rows = (
+        len(prepared_data.y_train)
+        + len(prepared_data.y_test)
+    )
+
+    assert total_rows == 9
+
+    assert prepared_data.y_train.notna().all()
+    assert prepared_data.y_test.notna().all()

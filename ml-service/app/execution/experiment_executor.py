@@ -16,6 +16,7 @@ from app.ml.training.trainer import ModelTrainer
 from app.schemas.execution import ExecutionStage
 from app.schemas.experiment import ExperimentExecutionRequest
 from app.ml.preprocessing.duplicates import DuplicateHandler
+from app.ml.preprocessing.target import TargetHandler
 
 
 class PreparedExperimentData:
@@ -44,6 +45,7 @@ class ExperimentExecutor:
         datetime_processor: DatetimeProcessor,
         datetime_feature_extractor: DatetimeFeatureExtractor,
         feature_target_splitter: FeatureTargetSplitter,
+        target_handler: TargetHandler,
         split_strategy_selector: SplitStrategySelector,
         model_trainer: ModelTrainer,
         artifact_generator: ModelArtifactGenerator,
@@ -54,6 +56,7 @@ class ExperimentExecutor:
         self.datetime_processor = datetime_processor
         self.datetime_feature_extractor = datetime_feature_extractor
         self.feature_target_splitter = feature_target_splitter
+        self.target_handler = target_handler
         self.split_strategy_selector = split_strategy_selector
         self.model_trainer = model_trainer
         self.artifact_generator = artifact_generator
@@ -123,13 +126,18 @@ class ExperimentExecutor:
         # print("Target missing values:", feature_target_data.target.isna().sum())
         # print("Feature missing values:",feature_target_data.features.isna().sum().sum())
 
+        cleaned_target_data = self.target_handler.remove_missing_target(
+            features=feature_target_data.features,
+            target=feature_target_data.target,
+        )
+
         split_strategy = self.split_strategy_selector.select(
             request.problem_type,
         )
 
         split_data: TrainTestData = split_strategy.split(
-            features=feature_target_data.features,
-            target=feature_target_data.target,
+            features=cleaned_target_data.features,
+            target=cleaned_target_data.target,
         )
 
         # print("X_train missing values:", split_data.X_train.isna().sum().sum())
