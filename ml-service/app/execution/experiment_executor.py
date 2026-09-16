@@ -119,6 +119,10 @@ class ExperimentExecutor:
             feature_columns=roles.features,
         )
 
+        # print("Target column:", roles.target)
+        # print("Target missing values:", feature_target_data.target.isna().sum())
+        # print("Feature missing values:",feature_target_data.features.isna().sum().sum())
+
         split_strategy = self.split_strategy_selector.select(
             request.problem_type,
         )
@@ -127,6 +131,11 @@ class ExperimentExecutor:
             features=feature_target_data.features,
             target=feature_target_data.target,
         )
+
+        # print("X_train missing values:", split_data.X_train.isna().sum().sum())
+        # print("X_test missing values:", split_data.X_test.isna().sum().sum())
+        # print("y_train missing values:", split_data.y_train.isna().sum())
+        # print("y_test missing values:", split_data.y_test.isna().sum())
 
         numerical_columns = split_data.X_train.select_dtypes(
             include="number"
