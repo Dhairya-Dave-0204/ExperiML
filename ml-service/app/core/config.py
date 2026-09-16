@@ -16,6 +16,7 @@ class Settings(BaseSettings):
 
     internal_service_key: str
 
+    uploads_root: str = ""
     storage_root: str = ""
 
     model_config = SettingsConfigDict(
