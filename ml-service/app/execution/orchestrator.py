@@ -44,9 +44,6 @@ class ExecutionOrchestrator:
             )
 
         except Exception as exc:
-            # import traceback
-            # traceback.print_exc()
-
             error = ExecutionError(
                 code="EXECUTION_FAILED",
                 message=str(exc),
