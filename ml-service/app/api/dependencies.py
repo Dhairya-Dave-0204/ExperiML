@@ -15,6 +15,7 @@ from app.ml.preprocessing.split_strategies.selector import ( SplitStrategySelect
 from app.ml.training.trainer import ModelTrainer
 from app.storage.local import LocalStorageProvider
 from app.ml.preprocessing.duplicates import DuplicateHandler
+from app.ml.preprocessing.target import TargetHandler
 
 
 internal_service_auth = verify_internal_service_key
@@ -43,15 +44,10 @@ def get_execution_orchestrator() -> ExecutionOrchestrator:
         dataset_loader=dataset_loader,
         role_resolver=ColumnRoleResolver(),
         datetime_processor=DatetimeProcessor(),
-        datetime_feature_extractor=(
-            DatetimeFeatureExtractor()
-        ),
-        feature_target_splitter=(
-            FeatureTargetSplitter()
-        ),
-        split_strategy_selector=(
-            SplitStrategySelector()
-        ),
+        datetime_feature_extractor=DatetimeFeatureExtractor(),
+        feature_target_splitter=FeatureTargetSplitter(),
+        target_handler = TargetHandler(),
+        split_strategy_selector=SplitStrategySelector(),
         model_trainer=ModelTrainer(),
         artifact_generator=artifact_generator,
         duplicate_handler=duplicate_handler,
