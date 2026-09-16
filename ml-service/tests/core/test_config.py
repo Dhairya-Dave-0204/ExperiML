@@ -1,13 +1,13 @@
-from pathlib import Path
-
 from app.core.config import settings
 
 
 def test_storage_root_is_loaded():
-    assert settings.storage_root == "../backend/uploads"
+    assert settings.storage_root == "../backend/storage"
 
 
 def test_storage_root_is_relative_path():
-    assert not Path(
-        settings.storage_root
-    ).is_absolute()
+    assert not settings.storage_root.startswith("/")
+
+
+def test_uploads_root_is_loaded():
+    assert settings.uploads_root == "../backend/uploads"
