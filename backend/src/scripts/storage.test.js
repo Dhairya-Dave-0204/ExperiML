@@ -1,3 +1,4 @@
+import assert from "assert/strict";
 import fs from "fs/promises";
 import path from "path";
 
@@ -30,6 +31,8 @@ const runStorageTest = async () => {
      */
     const exists = await storage.exists(tempFilePath);
 
+    assert.equal(exists, true);
+
     console.log("✅ File exists:", exists);
 
     /*
@@ -49,6 +52,8 @@ const runStorageTest = async () => {
      */
     const movedFileExists = await storage.exists(permanentPath);
 
+    assert.equal(movedFileExists, true);
+
     console.log("✅ Permanent file exists:", movedFileExists);
 
     /*
@@ -63,7 +68,84 @@ const runStorageTest = async () => {
      */
     const deletedFileExists = await storage.exists(permanentPath);
 
+    assert.equal(deletedFileExists, false);
+
     console.log("✅ File exists after deletion:", deletedFileExists);
+
+    /*
+     * 7. Test artifact storage-key resolution
+     *
+     * The storage key is provider-independent.
+     * The root determines the physical storage namespace.
+     */
+    const artifactStorageKey =
+      "projects/test-project/experiments/test-experiment/artifacts/model.joblib";
+
+    const resolvedArtifactPath = storage.resolveStoragePath(
+      artifactStorageKey,
+      storageConfig.artifactsPath,
+    );
+
+    const expectedArtifactPath = path.join(
+      storageConfig.artifactsPath,
+      "projects",
+      "test-project",
+      "experiments",
+      "test-experiment",
+      "artifacts",
+      "model.joblib",
+    );
+
+    assert.equal(resolvedArtifactPath, expectedArtifactPath);
+
+    console.log(
+      "✅ Artifact storage key resolved correctly:",
+      resolvedArtifactPath,
+    );
+
+    /*
+     * 8. Test prediction storage-key resolution
+     */
+    const predictionStorageKey =
+      "projects/test-project/experiments/test-experiment/predictions/input.csv";
+
+    const resolvedPredictionPath = storage.resolveStoragePath(
+      predictionStorageKey,
+      storageConfig.predictionInputsPath,
+    );
+
+    const expectedPredictionPath = path.join(
+      storageConfig.predictionInputsPath,
+      "projects",
+      "test-project",
+      "experiments",
+      "test-experiment",
+      "predictions",
+      "input.csv",
+    );
+
+    assert.equal(resolvedPredictionPath, expectedPredictionPath);
+
+    console.log(
+      "✅ Prediction storage key resolved correctly:",
+      resolvedPredictionPath,
+    );
+
+    /*
+     * 9. Test storage-root traversal protection
+     */
+    assert.throws(
+      () =>
+        storage.resolveStoragePath(
+          "../../outside.txt",
+          storageConfig.artifactsPath,
+        ),
+      {
+        message: "Storage key points outside the storage root",
+      },
+    );
+
+    console.log("✅ Storage path traversal correctly rejected");
 
     console.log("\n🎉 Storage provider test completed successfully");
   } catch (error) {

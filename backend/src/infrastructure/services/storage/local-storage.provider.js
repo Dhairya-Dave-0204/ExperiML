@@ -29,8 +29,7 @@ class LocalStorageProvider {
   }
 
   /**
-   * Move processed dataset file from temp storage to permanent storage.
-   * Dataset-specific method.
+   * Move processed dataset file from temp storage to permanent upload storage.
    *
    * Structure:
    * uploads/
@@ -58,35 +57,52 @@ class LocalStorageProvider {
   }
 
   /**
- * Convert an absolute permanent file path
- * into a provider-independent storage key.
- *
- * Example:
- * backend/uploads/projects/projectId/datasets/datasetId/data.csv
- *
- * becomes:
- * projects/projectId/datasets/datasetId/data.csv
- */
-getStorageKey(filePath) {
-  const relativePath = path.relative(
-    storageConfig.projectsPath,
-    filePath
-  );
+   * Convert an absolute dataset file path into a provider-independent storage key.
+   *
+   * Example:
+   * backend/uploads/projects/projectId/datasets/datasetId/data.csv
+   *
+   * becomes:
+   * projects/projectId/datasets/datasetId/data.csv
+   *
+   * This method is specifically for uploaded datasets.
+   */
+  getStorageKey(filePath) {
+    const relativePath = path.relative(storageConfig.projectsPath, filePath);
 
-  if (
-    relativePath.startsWith("..") ||
-    path.isAbsolute(relativePath)
-  ) {
-    throw new Error(
-      "File path is outside the projects storage directory"
-    );
+    if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
+      throw new Error("File path is outside the projects storage directory");
+    }
+
+    return path.join("projects", relativePath).split(path.sep).join("/");
   }
 
-  return path
-    .join("projects", relativePath)
-    .split(path.sep)
-    .join("/");
-}
+  /**
+   * Resolve a provider-independent storage key against a specific storage root.
+   *
+   * The root determines the storage namespace:
+   * uploads:
+   *   backend/uploads/projects/...
+   *
+   * system storage:
+   *   backend/storage/artifacts/...
+   *   backend/storage/predictions/...
+   *
+   * The storage key itself remains provider-independent.
+   */
+  resolveStoragePath(storageKey, rootPath) {
+    const resolvedRoot = path.resolve(rootPath);
+    const resolvedPath = path.resolve(resolvedRoot, storageKey);
+
+    if (
+      resolvedPath !== resolvedRoot &&
+      !resolvedPath.startsWith(`${resolvedRoot}${path.sep}`)
+    ) {
+      throw new Error("Storage key points outside the storage root");
+    }
+
+    return resolvedPath;
+  }
 
   /**
    * Generic file movement.
@@ -113,7 +129,7 @@ getStorageKey(filePath) {
   }
 
   /**
-   * Create a readable stream for a stored file.
+   * Create a readable stream for a physical file path.
    *
    * Used by:
    * - artifact download
@@ -126,11 +142,7 @@ getStorageKey(filePath) {
   }
 
   /**
-   * Delete a file.
-   *
-   * Used during:
-   * - processing failure
-   * - cleanup
+   * Delete a physical file.
    */
   async delete(filePath) {
     try {
@@ -139,10 +151,8 @@ getStorageKey(filePath) {
       /*
        * Ignore missing files.
        *
-       * Example:
-       * cleanup already performed.
+       * Example: cleanup already performed.
        */
-
       if (error.code !== "ENOENT") {
         throw error;
       }
@@ -150,7 +160,7 @@ getStorageKey(filePath) {
   }
 
   /**
-   * Check whether a file exists.
+   * Check whether a physical file exists.
    */
   async exists(filePath) {
     try {

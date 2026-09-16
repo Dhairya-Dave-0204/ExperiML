@@ -98,15 +98,15 @@ const main = async () => {
   /*
    * Cleanup artifacts created by this test.
    */
-  for (const artifact of firstArtifacts) {
-    await prisma.artifact.delete({
-      where: {
-        id: artifact.id,
-      },
-    });
-  }
+//   for (const artifact of firstArtifacts) {
+//     await prisma.artifact.delete({
+//       where: {
+//         id: artifact.id,
+//       },
+//     });
+//   }
 
-  console.log("\nTest artifacts deleted successfully.");
+//   console.log("\nTest artifacts deleted successfully.");
 };
 
 main()

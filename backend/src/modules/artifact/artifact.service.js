@@ -4,13 +4,14 @@ import { ApiError } from "#utils/ApiError";
 
 import { ARTIFACT_STATUS } from "#artifact/artifact.constants";
 
+import { storageConfig } from "#config/storage.config";
 import { fileStorageService } from "#infra-services/storage/file-storage.service";
 
 class ArtifactService {
   /**
    * Create an artifact from an ML execution result.
    *
-   * Internal use only.FastAPI provides the generated artifact metadata.
+   * Internal use only. FastAPI provides the generated artifact metadata.
    */
   async createFromExecutionResult({ experimentId, artifact }) {
     return prisma.artifact.create({
@@ -120,6 +121,7 @@ class ArtifactService {
    * Responsibilities:
    * - validate ownership
    * - validate artifact state
+   * - resolve storage key against artifact storage
    * - validate physical file existence
    * - create storage stream
    *
@@ -142,13 +144,18 @@ class ArtifactService {
       throw new ApiError(400, "Artifact is not available for download");
     }
 
-    const fileExists = await fileStorageService.exists(artifact.filePath);
+    const artifactFilePath = fileStorageService.resolveStoragePath(
+      artifact.filePath,
+      storageConfig.artifactsPath,
+    );
+
+    const fileExists = await fileStorageService.exists(artifactFilePath);
 
     if (!fileExists) {
       throw new ApiError(404, "Artifact file not found in storage");
     }
 
-    const stream = fileStorageService.createReadStream(artifact.filePath);
+    const stream = fileStorageService.createReadStream(artifactFilePath);
 
     return {
       artifact,
@@ -158,7 +165,7 @@ class ArtifactService {
   }
 
   /**
-   * Soft delete artifact. Physical deletion is intentionally deferred.
+   * Soft delete artifact. Physical deletion is intentionally deferred. 
    */
   async deleteArtifact({ userId, projectId, experimentId, artifactId }) {
     const artifact = await this.getArtifact({
