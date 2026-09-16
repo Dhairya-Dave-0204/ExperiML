@@ -43,7 +43,7 @@ async def analyze_dataset(
     request: DatasetAnalysisRequest,
 ) -> DatasetAnalysis:
     storage_provider = LocalStorageProvider(
-        settings.storage_root
+        settings.uploads_root
     )
 
     dataset_loader = DatasetLoader(
