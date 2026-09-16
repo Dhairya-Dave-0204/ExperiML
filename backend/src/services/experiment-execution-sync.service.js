@@ -35,12 +35,17 @@ class ExperimentExecutionSyncService {
       updateData.metrics = execution.result.metrics;
     }
 
-    return prisma.experiment.update({
+    const updatedExperiment = await prisma.experiment.update({
       where: {
         id: experiment.id,
       },
       data: updateData,
     });
+
+    return {
+      execution,
+      experiment: updatedExperiment,
+    };
   }
 
   mapExecutionStatus(executionStatus) {
