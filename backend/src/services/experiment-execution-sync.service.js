@@ -1,5 +1,6 @@
 import { prisma } from "#clients/prisma.client";
 import fastApiExecutionService from "#services/fastapi-execution.service";
+import artifactService from "#artifact/artifact.service";
 
 import { EXPERIMENT_STATUSES } from "#experiment/experiment.constants";
 
@@ -35,6 +36,13 @@ class ExperimentExecutionSyncService {
       updateData.metrics = execution.result.metrics;
     }
 
+    if (execution.result?.artifacts?.length) {
+      await this.synchronizeArtifacts({
+        experimentId: experiment.id,
+        artifacts: execution.result.artifacts,
+      });
+    }
+
     const updatedExperiment = await prisma.experiment.update({
       where: {
         id: experiment.id,
@@ -46,6 +54,27 @@ class ExperimentExecutionSyncService {
       execution,
       experiment: updatedExperiment,
     };
+  }
+
+  async synchronizeArtifacts({ experimentId, artifacts }) {
+    for (const artifact of artifacts) {
+      const existingArtifact = await prisma.artifact.findFirst({
+        where: {
+          experimentId,
+          artifactName: artifact.artifact_name,
+          deletedAt: null,
+        },
+      });
+
+      if (existingArtifact) {
+        continue;
+      }
+
+      await artifactService.createFromExecutionResult({
+        experimentId,
+        artifact,
+      });
+    }
   }
 
   mapExecutionStatus(executionStatus) {
