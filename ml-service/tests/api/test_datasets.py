@@ -15,8 +15,8 @@ client = TestClient(app)
 
 
 def test_analyze_dataset_success(tmp_path, monkeypatch):
-    storage_root = tmp_path / "storage"
-    storage_provider = LocalStorageProvider(storage_root)
+    uploads_root = tmp_path / "uploads"
+    storage_provider = LocalStorageProvider(uploads_root)
 
     dataset_id = uuid4()
     storage_key = f"projects/{uuid4()}/datasets/{dataset_id}/data.csv"
@@ -37,8 +37,8 @@ def test_analyze_dataset_success(tmp_path, monkeypatch):
 
     monkeypatch.setattr(
         settings,
-        "storage_root",
-        str(storage_root),
+        "uploads_root",
+        str(uploads_root),
     )
 
     response = client.post(
@@ -80,12 +80,12 @@ def test_analyze_dataset_success(tmp_path, monkeypatch):
 
 
 def test_analyze_dataset_not_found(tmp_path, monkeypatch):
-    storage_root = tmp_path / "storage"
+    uploads_root = tmp_path / "uploads"
 
     monkeypatch.setattr(
         settings,
-        "storage_root",
-        str(storage_root),
+        "uploads_root",
+        str(uploads_root),
     )
 
     dataset_id = uuid4()
