@@ -27,6 +27,7 @@ from app.schemas.experiment import (
 )
 from app.storage.local import LocalStorageProvider
 from app.ml.preprocessing.duplicates import DuplicateHandler
+from app.ml.preprocessing.target import TargetHandler
 
 
 def create_dataset(tmp_path):
@@ -151,18 +152,12 @@ def create_orchestrator(tmp_path):
         dataset_loader=dataset_loader,
         role_resolver=ColumnRoleResolver(),
         datetime_processor=DatetimeProcessor(),
-        datetime_feature_extractor=(
-            DatetimeFeatureExtractor()
-        ),
-        feature_target_splitter=(
-            FeatureTargetSplitter()
-        ),
-        split_strategy_selector=(
-            SplitStrategySelector()
-        ),
+        datetime_feature_extractor= DatetimeFeatureExtractor(),
+        feature_target_splitter= FeatureTargetSplitter(),
+        target_handler=TargetHandler(),
+        split_strategy_selector= SplitStrategySelector(),
         model_trainer=ModelTrainer(),
         artifact_generator=artifact_generator,
-
         duplicate_handler=DuplicateHandler(),
     )
 
