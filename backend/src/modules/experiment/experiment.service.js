@@ -12,6 +12,7 @@ import {
 import { DATASET_STATUSES } from "#dataset/dataset.constants";
 
 import fastApiExecutionService from "#services/fastapi-execution.service";
+import experimentExecutionPollerService from "#services/experiment-execution-poller.service";
 
 class ExperimentService {
   /*
@@ -30,6 +31,7 @@ class ExperimentService {
    * - Node generates and owns the execution ID.
    * - The Experiment is persisted in QUEUED state.
    * - FastAPI receives the execution request asynchronously.
+   * - Node starts polling FastAPI after successful submission.
    * - If FastAPI submission fails, the Experiment is marked FAILED.
    */
 
@@ -144,6 +146,21 @@ class ExperimentService {
         configuration,
         hyperparameters,
       });
+
+      /*
+       * 7. Start polling
+       *
+       * The poller runs asynchronously and periodically checks
+       * the FastAPI execution status.
+       *
+       * Do NOT await this call.
+       *
+       * The experiment creation request should return immediately
+       * with the Experiment in QUEUED state while polling continues
+       * in the background.
+       */
+
+      experimentExecutionPollerService.start(executionId);
     } catch (error) {
       /*
        * FastAPI submission failed.
@@ -172,7 +189,8 @@ class ExperimentService {
    * GET PROJECT EXPERIMENTS
    * ============================================================
    *
-   * Retrieves all non-deleted Experiments belonging to a Project owned by the authenticated user.
+   * Retrieves all non-deleted Experiments belonging to a
+   * Project owned by the authenticated user.
    */
 
   async getProjectExperiments({ projectId, userId }) {
@@ -250,7 +268,8 @@ class ExperimentService {
    * D8-B:
    * CREATED -> execution definition can be modified
    *
-   * QUEUED / TRAINING / COMPLETED / FAILED / CANCELLED -> only the name may be modified
+   * QUEUED / TRAINING / COMPLETED / FAILED / CANCELLED
+   * -> only the name may be modified
    *
    * The execution definition consists of:
    * - datasetId
@@ -259,7 +278,8 @@ class ExperimentService {
    * - configuration
    * - hyperparameters
    *
-   * Name remains editable after execution starts because changing it does not alter what was executed
+   * Name remains editable after execution starts because
+   * changing it does not alter what was executed
    */
 
   async updateExperiment({
@@ -385,7 +405,8 @@ class ExperimentService {
    *
    * Experiments use soft deletion.
    *
-   * Physical database record remains available so that historical experiment relationships remain intact
+   * Physical database record remains available so that historical
+   * experiment relationships remain intact.
    */
 
   async deleteExperiment({ projectId, experimentId, userId }) {
