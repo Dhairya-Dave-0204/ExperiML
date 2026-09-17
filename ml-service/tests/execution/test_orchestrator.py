@@ -1,256 +1,305 @@
 from uuid import uuid4
 
-import pandas as pd
-
-from app.execution.experiment_executor import ( ExperimentExecutor )
+from app.execution.orchestrator import ExecutionOrchestrator
 from app.execution.manager import execution_manager
-from app.execution.orchestrator import ( ExecutionOrchestrator )
-from app.ml.artifacts.generator import ( ModelArtifactGenerator )
-from app.ml.artifacts.metadata import ( ArtifactMetadataBuilder )
-from app.ml.artifacts.model_serializer import ( ModelSerializer )
-from app.ml.artifacts.preprocessing_serializer import ( PreprocessingPipelineSerializer )
-from app.ml.datasets.loader import DatasetLoader
-from app.ml.preprocessing.column_roles import ( ColumnRoleResolver )
-from app.ml.preprocessing.datetime import ( DatetimeProcessor )
-from app.ml.preprocessing.datetime_features import ( DatetimeFeatureExtractor )
-from app.ml.preprocessing.features import ( FeatureTargetSplitter )
-from app.ml.preprocessing.split_strategies.selector import ( SplitStrategySelector )
-from app.ml.training.trainer import ModelTrainer
-from app.schemas.execution import ( ExecutionStage, ExecutionStatus )
-from app.schemas.experiment import (
-    AlgorithmDefinition,
-    DatasetFormat,
-    DatasetReference,
-    ExperimentConfiguration,
-    ExperimentExecutionRequest,
-    ProblemType,
+from app.schemas.artifact import ArtifactResult, ArtifactType
+from app.schemas.execution import (
+    ExecutionResult,
+    ExecutionStage,
+    ExecutionStatus,
 )
-from app.storage.local import LocalStorageProvider
-from app.ml.preprocessing.duplicates import DuplicateHandler
-from app.ml.preprocessing.target import TargetHandler
 
 
-def create_dataset(tmp_path):
-    dataframe = pd.DataFrame(
-        {
-            "age": [
-                20,
-                21,
-                22,
-                23,
-                24,
-                25,
-                26,
-                27,
-                28,
-                29,
-            ],
-            "income": [
-                30000,
-                32000,
-                34000,
-                36000,
-                38000,
-                40000,
-                42000,
-                44000,
-                46000,
-                48000,
-            ],
-            "city": [
-                "A",
-                "A",
-                "B",
-                "B",
-                "A",
-                "B",
-                "A",
-                "B",
-                "A",
-                "B",
-            ],
-            "target": [
-                0,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1,
-                1,
-            ],
-        }
-    )
+class FakeExperimentExecutor:
+    def __init__(self, result=None, error=None):
+        self.result = result
+        self.error = error
 
-    storage_key = "datasets/test.csv"
+    def execute(self, request):
+        if self.error:
+            raise self.error
 
-    file_path = tmp_path / storage_key
-    file_path.parent.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
-
-    dataframe.to_csv(
-        file_path,
-        index=False,
-    )
-
-    return DatasetReference(
-        id=uuid4(),
-        version=1,
-        format=DatasetFormat.CSV,
-        storage_key=storage_key,
-        file_size=file_path.stat().st_size,
-        mime_type="text/csv",
-        checksum="test-checksum",
-    )
+        return self.result
 
 
-def create_request(tmp_path):
-    return ExperimentExecutionRequest(
-        execution_id=uuid4(),
-        execution_type="EXPERIMENT",
-        project_id=uuid4(),
-        experiment_id=uuid4(),
-        dataset=create_dataset(tmp_path),
-        problem_type=ProblemType.CLASSIFICATION,
-        algorithm=AlgorithmDefinition(
-            name="logistic_regression",
-            hyperparameters={
-                "max_iter": 1000,
-            },
-        ),
-        configuration=ExperimentConfiguration(
-            target_column="target",
-        ),
-    )
+class FakePredictionExecutor:
+    def __init__(self, result=None, error=None):
+        self.result = result
+        self.error = error
+
+    def execute(self, request):
+        if self.error:
+            raise self.error
+
+        return self.result
 
 
-def create_orchestrator(tmp_path):
-    storage_provider = LocalStorageProvider(
-        tmp_path
-    )
-
-    dataset_loader = DatasetLoader(
-        storage_provider=storage_provider,
-    )
-
-    artifact_generator = ModelArtifactGenerator(
-        serializer=ModelSerializer(),
-        preprocessing_serializer=(
-            PreprocessingPipelineSerializer()
-        ),
-        metadata_builder=(
-            ArtifactMetadataBuilder()
-        ),
-        storage_provider=storage_provider,
-    )
-
-    experiment_executor = ExperimentExecutor(
-        dataset_loader=dataset_loader,
-        role_resolver=ColumnRoleResolver(),
-        datetime_processor=DatetimeProcessor(),
-        datetime_feature_extractor= DatetimeFeatureExtractor(),
-        feature_target_splitter= FeatureTargetSplitter(),
-        target_handler=TargetHandler(),
-        split_strategy_selector= SplitStrategySelector(),
-        model_trainer=ModelTrainer(),
-        artifact_generator=artifact_generator,
-        duplicate_handler=DuplicateHandler(),
-    )
-
+def create_orchestrator(
+    experiment_result=None,
+    prediction_result=None,
+    experiment_error=None,
+    prediction_error=None,
+):
     return ExecutionOrchestrator(
-        experiment_executor=experiment_executor,
+        experiment_executor=FakeExperimentExecutor(
+            result=experiment_result,
+            error=experiment_error,
+        ),
+        prediction_executor=FakePredictionExecutor(
+            result=prediction_result,
+            error=prediction_error,
+        ),
     )
 
 
-def test_successful_execution_updates_state(
-    tmp_path,
-):
-    request = create_request(tmp_path)
+def test_execute_experiment_success():
+    execution_id = uuid4()
 
-    execution_manager.create(
-        request.execution_id
+    execution_manager.create(execution_id)
+
+    experiment_artifact = ArtifactResult(
+        artifact_name="model.joblib",
+        artifact_type=ArtifactType.MODEL,
+        file_format="joblib",
+        original_file_name="model.joblib",
+        storage_key="projects/test/model.joblib",
+        file_size=100,
+        mime_type="application/octet-stream",
+        checksum="test-checksum",
+        metadata={},
     )
+
+    experiment_result = {
+        "metrics": {
+            "accuracy": 0.95,
+        },
+        "artifacts": [
+            experiment_artifact,
+        ],
+        "feature_names": [
+            "feature_1",
+            "feature_2",
+        ],
+    }
 
     orchestrator = create_orchestrator(
-        tmp_path
+        experiment_result=experiment_result,
     )
 
-    state = orchestrator.execute_experiment(
+    request = type(
+        "ExperimentRequest",
+        (),
+        {
+            "execution_id": execution_id,
+        },
+    )()
+
+    result = orchestrator.execute_experiment(
         request
     )
 
-    assert (
-        state.status
-        == ExecutionStatus.SUCCEEDED
-    )
+    assert result.status == ExecutionStatus.SUCCEEDED
+    assert result.result.metrics == {
+        "accuracy": 0.95,
+    }
+    assert len(result.result.artifacts) == 1
 
-    assert (
-        state.stage
-        == ExecutionStage.COMPLETED
-    )
+    artifact = result.result.artifacts[0]
 
-    assert state.started_at is not None
-    assert state.completed_at is not None
+    assert artifact.artifact_name == "model.joblib"
+    assert artifact.artifact_type == ArtifactType.MODEL
 
-    assert state.result is not None
-
-    assert state.result.metrics is not None
-
-    assert len(
-        state.result.artifacts
-    ) == 2
-
-    assert state.error is None
+    assert result.result.metadata == {
+        "feature_names": [
+            "feature_1",
+            "feature_2",
+        ],
+    }
 
 
-def test_failed_execution_updates_state(
-    tmp_path,
-):
-    request = create_request(tmp_path)
+def test_execute_experiment_failure():
+    execution_id = uuid4()
 
-    request.dataset = DatasetReference(
-        id=request.dataset.id,
-        version=request.dataset.version,
-        format=request.dataset.format,
-        storage_key="datasets/missing.csv",
-        file_size=request.dataset.file_size,
-        mime_type=request.dataset.mime_type,
-        checksum=request.dataset.checksum,
-    )
-
-    execution_manager.create(
-        request.execution_id
-    )
+    execution_manager.create(execution_id)
 
     orchestrator = create_orchestrator(
-        tmp_path
+        experiment_error=ValueError(
+            "Training failed"
+        ),
     )
 
-    state = orchestrator.execute_experiment(
+    request = type(
+        "ExperimentRequest",
+        (),
+        {
+            "execution_id": execution_id,
+        },
+    )()
+
+    result = orchestrator.execute_experiment(
         request
     )
 
-    assert (
-        state.status
-        == ExecutionStatus.FAILED
+    assert result.status == ExecutionStatus.FAILED
+    assert result.error is not None
+    assert result.error.code == "EXECUTION_FAILED"
+    assert result.error.message == "Training failed"
+
+
+def test_execute_prediction_success():
+    execution_id = uuid4()
+
+    execution_manager.create(execution_id)
+
+    prediction_result = ExecutionResult(
+        metrics=None,
+        artifacts=[],
+        metadata={
+            "rows_processed": 1,
+        },
     )
 
-    assert state.completed_at is not None
-
-    assert state.error is not None
-
-    assert (
-        state.error.code
-        == "EXECUTION_FAILED"
+    orchestrator = create_orchestrator(
+        prediction_result=prediction_result,
     )
 
-    assert (
-        state.error.stage
-        == ExecutionStage.DATA_LOADING
+    request = type(
+        "PredictionRequest",
+        (),
+        {
+            "execution_id": execution_id,
+        },
+    )()
+
+    result = orchestrator.execute_prediction(
+        request
     )
 
-    assert state.result is None
+    assert result.status == ExecutionStatus.SUCCEEDED
+    assert result.result.metrics is None
+    assert result.result.artifacts == []
+    assert result.result.metadata == {
+        "rows_processed": 1,
+    }
+
+
+def test_execute_prediction_failure():
+    execution_id = uuid4()
+
+    execution_manager.create(execution_id)
+
+    orchestrator = create_orchestrator(
+        prediction_error=ValueError(
+            "Prediction failed"
+        ),
+    )
+
+    request = type(
+        "PredictionRequest",
+        (),
+        {
+            "execution_id": execution_id,
+        },
+    )()
+
+    result = orchestrator.execute_prediction(
+        request
+    )
+
+    assert result.status == ExecutionStatus.FAILED
+    assert result.error is not None
+    assert result.error.code == "EXECUTION_FAILED"
+    assert result.error.message == "Prediction failed"
+
+
+def test_execute_experiment_sets_running_before_execution():
+    execution_id = uuid4()
+
+    execution_manager.create(execution_id)
+
+    experiment_result = {
+        "metrics": {},
+        "artifacts": [],
+        "feature_names": [],
+    }
+
+    orchestrator = create_orchestrator(
+        experiment_result=experiment_result,
+    )
+
+    request = type(
+        "ExperimentRequest",
+        (),
+        {
+            "execution_id": execution_id,
+        },
+    )()
+
+    result = orchestrator.execute_experiment(
+        request
+    )
+
+    assert result.status == ExecutionStatus.SUCCEEDED
+    assert result.started_at is not None
+
+
+def test_execute_prediction_sets_running_before_execution():
+    execution_id = uuid4()
+
+    execution_manager.create(execution_id)
+
+    prediction_result = ExecutionResult(
+        metrics=None,
+        artifacts=[],
+        metadata={
+            "rows_processed": 1,
+        },
+    )
+
+    orchestrator = create_orchestrator(
+        prediction_result=prediction_result,
+    )
+
+    request = type(
+        "PredictionRequest",
+        (),
+        {
+            "execution_id": execution_id,
+        },
+    )()
+
+    result = orchestrator.execute_prediction(
+        request
+    )
+
+    assert result.status == ExecutionStatus.SUCCEEDED
+    assert result.started_at is not None
+
+
+def test_get_current_stage_returns_current_stage():
+    execution_id = uuid4()
+
+    execution_manager.create(execution_id)
+    execution_manager.set_running(execution_id)
+    execution_manager.set_stage(
+        execution_id,
+        ExecutionStage.INFERENCE,
+    )
+
+    orchestrator = create_orchestrator()
+
+    stage = orchestrator._get_current_stage(
+        execution_id
+    )
+
+    assert stage == ExecutionStage.INFERENCE
+
+
+def test_get_current_stage_returns_none_for_missing_execution():
+    orchestrator = create_orchestrator()
+
+    stage = orchestrator._get_current_stage(
+        uuid4()
+    )
+
+    assert stage is None
