@@ -63,6 +63,7 @@ def get_execution_orchestrator() -> ExecutionOrchestrator:
 
     return ExecutionOrchestrator(
         experiment_executor=experiment_executor,
+        prediction_executor=get_prediction_executor(),
     )
 
 
