@@ -180,6 +180,7 @@ model Artifact {
 model Prediction {
   id               String           @id @default(uuid()) @db.Uuid
   experimentId     String           @map("experiment_id") @db.Uuid
+  executionId      String?          @unique @map("execution_id") @db.Uuid
   outputArtifactId String?          @map("output_artifact_id") @db.Uuid
   name             String           @db.Text
   predictionType   PredictionType   @map("prediction_type")
@@ -189,7 +190,7 @@ model Prediction {
   fileSize         BigInt           @map("file_size") @db.BigInt
   mimeType         String           @map("mime_type") @db.Text
   checksum         String           @db.Text
-  rowsProcessed    Int              @map("rows_processed")
+  rowsProcessed    Int?             @map("rows_processed")
   metadata         Json?
   predictionStatus PredictionStatus @default(CREATED) @map("prediction_status")
   startedAt        DateTime?        @map("started_at") @db.Timestamptz(6)
@@ -305,7 +306,6 @@ enum PredictionStatus {
   RUNNING
   COMPLETED
   FAILED
-  CANCELLED
 
   @@map("prediction_status")
 }
