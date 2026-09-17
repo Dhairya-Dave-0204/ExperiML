@@ -135,11 +135,11 @@ def create_executor(dataframe):
 
     return (
         PredictionExecutor(
-            dataset_loader=dataset_loader,
+            prediction_input_loader=dataset_loader,
             model_serializer=model_serializer,
             preprocessing_serializer=preprocessing_serializer,
             metadata_builder=ArtifactMetadataBuilder(),
-            storage_provider=storage_provider,
+            artifact_storage_provider=storage_provider,
         ),
         storage_provider,
     )

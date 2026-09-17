@@ -22,17 +22,17 @@ from app.storage.base import StorageProvider
 class PredictionExecutor:
     def __init__(
         self,
-        dataset_loader: DatasetLoader,
+        prediction_input_loader: DatasetLoader,
         model_serializer: ModelSerializer,
         preprocessing_serializer: PreprocessingPipelineSerializer,
         metadata_builder: ArtifactMetadataBuilder,
-        storage_provider: StorageProvider,
+        artifact_storage_provider: StorageProvider,
     ):
-        self.dataset_loader = dataset_loader
+        self.prediction_input_loader = prediction_input_loader
         self.model_serializer = model_serializer
         self.preprocessing_serializer = preprocessing_serializer
         self.metadata_builder = metadata_builder
-        self.storage_provider = storage_provider
+        self.artifact_storage_provider = artifact_storage_provider
 
     def execute(
         self,
@@ -40,7 +40,7 @@ class PredictionExecutor:
     ) -> ExecutionResult:
         self._validate_request(request)
 
-        prediction_input = self.dataset_loader.load(
+        prediction_input = self.prediction_input_loader.load(
             request.input
         )
 
@@ -121,12 +121,16 @@ class PredictionExecutor:
         self,
         storage_key: str,
     ) -> Any:
-        if not self.storage_provider.exists(storage_key):
+        if not self.artifact_storage_provider.exists(
+            storage_key
+        ):
             raise FileNotFoundError(
                 f"Model artifact not found: {storage_key}"
             )
 
-        with self.storage_provider.open(storage_key) as source:
+        with self.artifact_storage_provider.open(
+            storage_key
+        ) as source:
             data = source.read()
 
         with TemporaryDirectory() as temp_dir:
@@ -139,13 +143,17 @@ class PredictionExecutor:
         self,
         storage_key: str,
     ):
-        if not self.storage_provider.exists(storage_key):
+        if not self.artifact_storage_provider.exists(
+            storage_key
+        ):
             raise FileNotFoundError(
                 "Preprocessing pipeline artifact not found: "
                 f"{storage_key}"
             )
 
-        with self.storage_provider.open(storage_key) as source:
+        with self.artifact_storage_provider.open(
+            storage_key
+        ) as source:
             data = source.read()
 
         with TemporaryDirectory() as temp_dir:
@@ -214,7 +222,7 @@ class PredictionExecutor:
             )
 
             with path.open("rb") as source:
-                self.storage_provider.save(
+                self.artifact_storage_provider.save(
                     storage_key,
                     source,
                 )
