@@ -70,6 +70,13 @@ async def _run_execution(
 
         return
 
+    if request.execution_type == "PREDICTION":
+        orchestrator.execute_prediction(
+            request
+        )
+
+        return
+
     raise ValueError(
         f"Unsupported execution type: "
         f"{request.execution_type}"
@@ -93,4 +100,5 @@ async def get_execution(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Execution not found",
         )
+
     return state
