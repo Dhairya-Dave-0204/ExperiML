@@ -102,7 +102,7 @@ const createPrediction = async ({
     where: {
       experimentId,
 
-      status: {
+      predictionStatus: {
         in: [PREDICTION_STATUS.CREATED, PREDICTION_STATUS.RUNNING],
       },
 
@@ -130,7 +130,7 @@ const createPrediction = async ({
 
       experimentId,
 
-      status: PREDICTION_STATUS.CREATED,
+      predictionStatus: PREDICTION_STATUS.CREATED,
     },
   });
 
@@ -210,7 +210,7 @@ const createPrediction = async ({
       },
 
       data: {
-        status: PREDICTION_STATUS.FAILED,
+        predictionStatus: PREDICTION_STATUS.FAILED,
       },
     });
 
@@ -240,7 +240,7 @@ const createPrediction = async ({
       },
 
       data: {
-        status: PREDICTION_STATUS.FAILED,
+        predictionStatus: PREDICTION_STATUS.FAILED,
       },
     });
 
@@ -273,7 +273,7 @@ const createPrediction = async ({
       },
 
       data: {
-        status: PREDICTION_STATUS.FAILED,
+        predictionStatus: PREDICTION_STATUS.FAILED,
       },
     });
 
@@ -338,7 +338,7 @@ const createPrediction = async ({
 
       data: {
         executionId,
-        status: PREDICTION_STATUS.RUNNING,
+        predictionStatus: PREDICTION_STATUS.RUNNING,
       },
     });
 
@@ -358,7 +358,7 @@ const createPrediction = async ({
       },
 
       data: {
-        status: PREDICTION_STATUS.FAILED,
+        predictionStatus: PREDICTION_STATUS.FAILED,
       },
     });
 
@@ -454,7 +454,7 @@ const updatePredictionStatus = async ({ predictionId, status, data = {} }) => {
     },
 
     data: {
-      status,
+      predictionStatus: status,
 
       ...data,
     },
