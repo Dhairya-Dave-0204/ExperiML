@@ -132,7 +132,74 @@ const runStorageTest = async () => {
     );
 
     /*
-     * 9. Test storage-root traversal protection
+     * 9. Test generic storage-key generation
+     *
+     * The storage provider should generate a
+     * provider-independent key from any storage root.
+     */
+
+    /*
+     * 9a. Prediction input storage key
+     */
+    const predictionInputPath = path.join(
+      storageConfig.predictionInputsPath,
+      "projects",
+      "test-project",
+      "experiments",
+      "test-experiment",
+      "predictions",
+      "test-prediction",
+      "input.csv",
+    );
+
+    const predictionInputStorageKey = storage.getStorageKeyFromRoot(
+      predictionInputPath,
+      storageConfig.predictionInputsPath,
+    );
+
+    const expectedPredictionInputStorageKey =
+      "projects/test-project/experiments/test-experiment/predictions/test-prediction/input.csv";
+
+    assert.equal(predictionInputStorageKey, expectedPredictionInputStorageKey);
+
+    console.log(
+      "✅ Generic prediction storage key generated correctly:",
+      predictionInputStorageKey,
+    );
+
+    /*
+     * 9b. Artifact storage key
+     */
+    const artifactPath = path.join(
+      storageConfig.artifactsPath,
+      "projects",
+      "test-project",
+      "experiments",
+      "test-experiment",
+      "artifacts",
+      "model.joblib",
+    );
+
+    const artifactStorageKeyFromRoot = storage.getStorageKeyFromRoot(
+      artifactPath,
+      storageConfig.artifactsPath,
+    );
+
+    const expectedArtifactStorageKeyFromRoot =
+      "projects/test-project/experiments/test-experiment/artifacts/model.joblib";
+
+    assert.equal(
+      artifactStorageKeyFromRoot,
+      expectedArtifactStorageKeyFromRoot,
+    );
+
+    console.log(
+      "✅ Generic artifact storage key generated correctly:",
+      artifactStorageKeyFromRoot,
+    );
+
+    /*
+     * 10. Test storage-root traversal protection
      */
     assert.throws(
       () =>
