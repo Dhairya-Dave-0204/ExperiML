@@ -1,10 +1,15 @@
+import crypto from "crypto";
 import path from "path";
 
 import { prisma } from "#clients/prisma.client";
 import { storageConfig } from "#config/storage.config";
 import { fileStorageService } from "#infra-services/storage/file-storage.service";
+import fastApiExecutionService from "#services/fastapi-execution.service";
 
+import { ARTIFACT_STATUS } from "#artifact/artifact.constants";
 import { PREDICTION_STATUS } from "#prediction/prediction.constants";
+
+import { generateFileChecksum } from "#utils/checksum.util";
 
 import { ApiError } from "#utils/ApiError";
 
@@ -48,12 +53,15 @@ const verifyExperimentOwnership = async ({
  *
  * Flow:
  * 1. Verify ownership
- * 2. Check active prediction
- * 3. Create Prediction record
- * 4. Store input file
- * 5. Update input metadata
- *
- * FastAPI execution is not triggered yet.
+ * 2. Verify experiment is completed
+ * 3. Check active prediction
+ * 4. Create Prediction record
+ * 5. Store input file
+ * 6. Find model artifact
+ * 7. Find preprocessing artifact
+ * 8. Generate execution ID
+ * 9. Trigger FastAPI prediction execution
+ * 10. Move prediction to RUNNING
  */
 const createPrediction = async ({
   projectId,
@@ -62,11 +70,21 @@ const createPrediction = async ({
   data,
   file,
 }) => {
-  await verifyExperimentOwnership({
+  const experiment = await verifyExperimentOwnership({
     projectId,
     experimentId,
     userId,
   });
+
+  /*
+   * Prediction is only allowed against a completed experiment.
+   */
+  if (experiment.experimentStatus !== "COMPLETED") {
+    throw new ApiError(
+      400,
+      "Prediction is only allowed for a completed experiment",
+    );
+  }
 
   if (!file) {
     throw new ApiError(400, "Prediction input file is required");
@@ -118,6 +136,7 @@ const createPrediction = async ({
   try {
     /*
      * Prediction input storage:
+     *
      * storage/
      *   predictions/
      *      projects/
@@ -149,6 +168,8 @@ const createPrediction = async ({
       destinationPath,
     });
 
+    const checksum = await generateFileChecksum(destinationPath);
+
     await prisma.prediction.update({
       where: {
         id: prediction.id,
@@ -164,6 +185,8 @@ const createPrediction = async ({
         fileSize: BigInt(file.size),
 
         mimeType: file.mimetype,
+
+        checksum,
       },
     });
   } catch (error) {
@@ -186,11 +209,148 @@ const createPrediction = async ({
   }
 
   /*
-   * Future:
-   * Trigger FastAPI prediction execution here.
+   * Find the trained model artifact.
+   */
+  const modelArtifact = await prisma.artifact.findFirst({
+    where: {
+      experimentId,
+      artifactType: "MODEL",
+      artifactStatus: ARTIFACT_STATUS.AVAILABLE,
+      deletedAt: null,
+    },
+
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  if (!modelArtifact) {
+    await prisma.prediction.update({
+      where: {
+        id: prediction.id,
+      },
+
+      data: {
+        status: PREDICTION_STATUS.FAILED,
+      },
+    });
+
+    throw new ApiError(
+      400,
+      "Completed experiment does not have an available model artifact",
+    );
+  }
+
+  /*
+   * Find the fitted preprocessing pipeline artifact.
+   */
+  const preprocessingArtifact = await prisma.artifact.findFirst({
+    where: {
+      experimentId,
+      artifactType: "PREPROCESSING_PIPELINE",
+      artifactStatus: ARTIFACT_STATUS.AVAILABLE,
+      deletedAt: null,
+    },
+
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  if (!preprocessingArtifact) {
+    await prisma.prediction.update({
+      where: {
+        id: prediction.id,
+      },
+
+      data: {
+        status: PREDICTION_STATUS.FAILED,
+      },
+    });
+
+    throw new ApiError(
+      400,
+      "Completed experiment does not have an available preprocessing pipeline",
+    );
+  }
+
+  /*
+   * Generate the execution ID.
    *
-   * Current state:
-   * CREATED
+   * FastAPI uses this ID to track the asynchronous
+   * prediction execution.
+   */
+  const executionId = crypto.randomUUID();
+
+  try {
+    /*
+     * Submit prediction execution to FastAPI.
+     */
+    await fastApiExecutionService.createPredictionExecution({
+      executionId,
+      projectId,
+      experimentId,
+      predictionId: prediction.id,
+      predictionType: data.predictionType,
+
+      input: {
+        id: prediction.id,
+        filePath: destinationPath,
+        inputFormat: extension.replace(".", "").toUpperCase(),
+        fileSize: BigInt(file.size),
+        mimeType: file.mimetype,
+        checksum,
+      },
+
+      modelArtifact: {
+        id: modelArtifact.id,
+        storageKey: modelArtifact.filePath,
+        fileFormat: modelArtifact.fileFormat,
+        checksum: modelArtifact.checksum,
+      },
+
+      preprocessingArtifact: {
+        id: preprocessingArtifact.id,
+        storageKey: preprocessingArtifact.filePath,
+        fileFormat: preprocessingArtifact.fileFormat,
+        checksum: preprocessingArtifact.checksum,
+      },
+    });
+
+    /*
+     * FastAPI accepted the execution.
+     *
+     * Node now owns the prediction lifecycle.
+     */
+    await prisma.prediction.update({
+      where: {
+        id: prediction.id,
+      },
+
+      data: {
+        executionId,
+        status: PREDICTION_STATUS.RUNNING,
+      },
+    });
+  } catch (error) {
+    /*
+     * FastAPI execution submission failed.
+     */
+    await prisma.prediction.update({
+      where: {
+        id: prediction.id,
+      },
+
+      data: {
+        status: PREDICTION_STATUS.FAILED,
+      },
+    });
+
+    throw new ApiError(500, "Failed to start prediction execution");
+  }
+
+  /*
+   * Return the latest prediction state.
    */
   return prisma.prediction.findUnique({
     where: {
