@@ -6,6 +6,7 @@ import path from "path";
 import { prisma } from "#clients/prisma.client";
 import { fileStorageService } from "#infra-services/storage/file-storage.service";
 import fastApiExecutionService from "#services/fastapi-execution.service";
+import predictionExecutionPollerService from "#services/prediction-execution-poller.service";
 
 import { ARTIFACT_STATUS } from "#artifact/artifact.constants";
 import { PREDICTION_STATUS } from "#prediction/prediction.constants";
@@ -31,6 +32,8 @@ const runPredictionChecksumTest = async () => {
 
   const originalCreatePredictionExecution =
     fastApiExecutionService.createPredictionExecution;
+
+  const originalPredictionPollerStart = predictionExecutionPollerService.start;
 
   const calls = {
     predictionUpdates: [],
@@ -162,6 +165,17 @@ const runPredictionChecksumTest = async () => {
       };
     };
 
+    /*
+     * Mock the prediction execution poller.
+     *
+     * This test only verifies checksum behavior.
+     * Polling is covered by the dedicated poller test.
+     *
+     * Without this mock, createPrediction() would start
+     * the real poller and it would attempt to contact FastAPI.
+     */
+    predictionExecutionPollerService.start = async () => {};
+
     const file = {
       originalname: "prediction-input.csv",
       path: "temp/prediction-input.csv",
@@ -275,6 +289,11 @@ const runPredictionChecksumTest = async () => {
      */
     fastApiExecutionService.createPredictionExecution =
       originalCreatePredictionExecution;
+
+    /*
+     * Restore prediction poller.
+     */
+    predictionExecutionPollerService.start = originalPredictionPollerStart;
   }
 };
 
