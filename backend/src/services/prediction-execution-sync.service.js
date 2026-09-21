@@ -18,10 +18,13 @@ class PredictionExecutionSyncService {
       throw new Error(`Prediction not found for execution: ${executionId}`);
     }
 
-    const predictionStatus = this.mapExecutionStatus(execution.status);
+    const predictionStatus = this.mapExecutionStatus(
+      execution.status,
+      prediction.predictionStatus,
+    );
 
     const updateData = {
-      status: predictionStatus,
+      predictionStatus,
     };
 
     if (execution.started_at) {
@@ -86,9 +89,20 @@ class PredictionExecutionSyncService {
     });
   }
 
-  mapExecutionStatus(executionStatus) {
+  mapExecutionStatus(executionStatus, currentPredictionStatus) {
     switch (executionStatus) {
       case "QUEUED":
+        /*
+         * Node marks the prediction as RUNNING immediately after
+         * FastAPI accepts the execution.
+         *
+         * Therefore, a later QUEUED response from FastAPI must
+         * not move the Node prediction backwards to CREATED.
+         */
+        if (currentPredictionStatus === PREDICTION_STATUS.RUNNING) {
+          return PREDICTION_STATUS.RUNNING;
+        }
+
         return PREDICTION_STATUS.CREATED;
 
       case "RUNNING":
