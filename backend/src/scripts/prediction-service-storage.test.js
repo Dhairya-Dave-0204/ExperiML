@@ -33,8 +33,7 @@ const runPredictionStorageTest = async () => {
   const originalCreatePredictionExecution =
     fastApiExecutionService.createPredictionExecution;
 
-  const originalPredictionPollerStart =
-    predictionExecutionPollerService.start;
+  const originalPredictionPollerStart = predictionExecutionPollerService.start;
 
   const calls = {
     ensureDirectory: null,
@@ -101,7 +100,7 @@ const runPredictionStorageTest = async () => {
      */
     prisma.prediction.findUnique = async () => ({
       id: "prediction-id",
-      status: PREDICTION_STATUS.RUNNING,
+      predictionStatus: PREDICTION_STATUS.RUNNING,
     });
 
     /*
@@ -235,10 +234,7 @@ const runPredictionStorageTest = async () => {
     /*
      * Expected physical input file.
      */
-    const expectedDestinationPath = path.join(
-      expectedDirectory,
-      "input.csv",
-    );
+    const expectedDestinationPath = path.join(expectedDirectory, "input.csv");
 
     /*
      * Verify directory path.
@@ -257,7 +253,7 @@ const runPredictionStorageTest = async () => {
      * Verify prediction creation.
      */
     assert.equal(
-      calls.predictionCreateData.status,
+      calls.predictionCreateData.predictionStatus,
       PREDICTION_STATUS.CREATED,
     );
 
@@ -276,27 +272,15 @@ const runPredictionStorageTest = async () => {
     /*
      * Verify stored input metadata.
      */
-    assert.equal(
-      inputMetadataUpdate.inputFileName,
-      file.originalname,
-    );
+    assert.equal(inputMetadataUpdate.inputFileName, file.originalname);
 
-    assert.equal(
-      inputMetadataUpdate.inputFilePath,
-      expectedDestinationPath,
-    );
+    assert.equal(inputMetadataUpdate.inputFilePath, expectedDestinationPath);
 
     assert.equal(inputMetadataUpdate.inputFormat, "CSV");
 
-    assert.equal(
-      inputMetadataUpdate.fileSize,
-      BigInt(file.size),
-    );
+    assert.equal(inputMetadataUpdate.fileSize, BigInt(file.size));
 
-    assert.equal(
-      inputMetadataUpdate.mimeType,
-      file.mimetype,
-    );
+    assert.equal(inputMetadataUpdate.mimeType, file.mimetype);
 
     /*
      * Verify the checksum generated from the actual
@@ -306,37 +290,25 @@ const runPredictionStorageTest = async () => {
       expectedDestinationPath,
     );
 
-    assert.equal(
-      inputMetadataUpdate.checksum,
-      expectedChecksum,
-    );
+    assert.equal(inputMetadataUpdate.checksum, expectedChecksum);
 
     /*
      * Verify the same checksum is passed to FastAPI.
      */
-    assert.equal(
-      calls.predictionExecution.input.checksum,
-      expectedChecksum,
-    );
+    assert.equal(calls.predictionExecution.input.checksum, expectedChecksum);
 
     /*
      * Verify the prediction execution received
      * the correct input reference.
      */
-    assert.equal(
-      calls.predictionExecution.input.id,
-      "prediction-id",
-    );
+    assert.equal(calls.predictionExecution.input.id, "prediction-id");
 
     assert.equal(
       calls.predictionExecution.input.filePath,
       expectedDestinationPath,
     );
 
-    assert.equal(
-      calls.predictionExecution.input.inputFormat,
-      "CSV",
-    );
+    assert.equal(calls.predictionExecution.input.inputFormat, "CSV");
 
     /*
      * Verify artifact references.
@@ -354,15 +326,9 @@ const runPredictionStorageTest = async () => {
     /*
      * Verify final prediction state.
      */
-    assert.equal(
-      result.id,
-      "prediction-id",
-    );
+    assert.equal(result.id, "prediction-id");
 
-    assert.equal(
-      result.status,
-      PREDICTION_STATUS.RUNNING,
-    );
+    assert.equal(result.predictionStatus, PREDICTION_STATUS.RUNNING);
 
     console.log("✅ Prediction input directory is correct:");
     console.log(calls.ensureDirectory);
@@ -375,14 +341,9 @@ const runPredictionStorageTest = async () => {
 
     console.log("✅ Prediction checksum passed correctly to FastAPI");
 
-    console.log(
-      "🎉 Prediction service storage test completed successfully",
-    );
+    console.log("🎉 Prediction service storage test completed successfully");
   } catch (error) {
-    console.error(
-      "❌ Prediction service storage test failed:",
-      error,
-    );
+    console.error("❌ Prediction service storage test failed:", error);
 
     process.exitCode = 1;
   } finally {
@@ -421,8 +382,7 @@ const runPredictionStorageTest = async () => {
     fastApiExecutionService.createPredictionExecution =
       originalCreatePredictionExecution;
 
-    predictionExecutionPollerService.start =
-      originalPredictionPollerStart;
+    predictionExecutionPollerService.start = originalPredictionPollerStart;
   }
 };
 
