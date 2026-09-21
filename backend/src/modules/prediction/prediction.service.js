@@ -5,6 +5,7 @@ import { prisma } from "#clients/prisma.client";
 import { storageConfig } from "#config/storage.config";
 import { fileStorageService } from "#infra-services/storage/file-storage.service";
 import fastApiExecutionService from "#services/fastapi-execution.service";
+import predictionExecutionPollerService from "#services/prediction-execution-poller.service";
 
 import { ARTIFACT_STATUS } from "#artifact/artifact.constants";
 import { PREDICTION_STATUS } from "#prediction/prediction.constants";
@@ -339,6 +340,13 @@ const createPrediction = async ({
         executionId,
         status: PREDICTION_STATUS.RUNNING,
       },
+    });
+
+    predictionExecutionPollerService.start(executionId).catch((error) => {
+      console.error(
+        `Prediction execution polling failed for ${executionId}:`,
+        error,
+      );
     });
   } catch (error) {
     /*
