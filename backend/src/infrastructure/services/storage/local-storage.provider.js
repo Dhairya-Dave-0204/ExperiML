@@ -56,6 +56,16 @@ class LocalStorageProvider {
     return finalFilePath;
   }
 
+  getStorageKeyFromRoot(filePath, rootPath) {
+    const relativePath = path.relative(rootPath, filePath);
+
+    if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
+      throw new Error("File path is outside the storage root");
+    }
+
+    return relativePath.split(path.sep).join("/");
+  }
+
   /**
    * Convert an absolute dataset file path into a provider-independent storage key.
    *
@@ -68,11 +78,10 @@ class LocalStorageProvider {
    * This method is specifically for uploaded datasets.
    */
   getStorageKey(filePath) {
-    const relativePath = path.relative(storageConfig.projectsPath, filePath);
-
-    if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
-      throw new Error("File path is outside the projects storage directory");
-    }
+    const relativePath = this.getStorageKeyFromRoot(
+      filePath,
+      storageConfig.projectsPath,
+    );
 
     return path.join("projects", relativePath).split(path.sep).join("/");
   }
