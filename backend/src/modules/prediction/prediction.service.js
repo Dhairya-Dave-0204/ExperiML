@@ -120,15 +120,21 @@ const createPrediction = async ({
      * Prediction input storage:
      * storage/
      *   predictions/
-     *      projectId/
-     *          experimentId/
-     *              predictionId/
-     *                  input.csv
+     *      projects/
+     *          projectId/
+     *              experiments/
+     *                  experimentId/
+     *                      predictions/
+     *                          predictionId/
+     *                              input.csv
      */
     const predictionDirectory = path.join(
       storageConfig.predictionInputsPath,
+      "projects",
       projectId,
+      "experiments",
       experimentId,
+      "predictions",
       prediction.id,
     );
 
@@ -251,7 +257,7 @@ const getPredictionById = async ({
 /*
  * Internal lifecycle update.
  *
- * Used later by: 
+ * Used later by:
  * - FastAPI integration
  * - background processing
  */
