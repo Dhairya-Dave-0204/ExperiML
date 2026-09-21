@@ -6,6 +6,7 @@ import { prisma } from "#clients/prisma.client";
 import { storageConfig } from "#config/storage.config";
 import { fileStorageService } from "#infra-services/storage/file-storage.service";
 import fastApiExecutionService from "#services/fastapi-execution.service";
+import predictionExecutionPollerService from "#services/prediction-execution-poller.service";
 
 import { ARTIFACT_STATUS } from "#artifact/artifact.constants";
 import { PREDICTION_STATUS } from "#prediction/prediction.constants";
@@ -31,6 +32,8 @@ const runPredictionStorageTest = async () => {
 
   const originalCreatePredictionExecution =
     fastApiExecutionService.createPredictionExecution;
+
+  const originalPredictionPollerStart = predictionExecutionPollerService.start;
 
   const calls = {
     ensureDirectory: null,
@@ -185,6 +188,17 @@ const runPredictionStorageTest = async () => {
         status: "QUEUED",
       };
     };
+
+    /*
+     * Mock the prediction execution poller.
+     *
+     * The storage test is not responsible for testing
+     * polling behavior. The poller has its own dedicated test.
+     *
+     * Without this mock, createPrediction() would start the
+     * real poller and it would attempt to contact FastAPI.
+     */
+    predictionExecutionPollerService.start = async () => {};
 
     const file = {
       originalname: "prediction-input.csv",
@@ -364,6 +378,8 @@ const runPredictionStorageTest = async () => {
 
     fastApiExecutionService.createPredictionExecution =
       originalCreatePredictionExecution;
+
+    predictionExecutionPollerService.start = originalPredictionPollerStart;
   }
 };
 
