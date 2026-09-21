@@ -133,6 +133,14 @@ const createPrediction = async ({
     },
   });
 
+  /*
+   * These values are needed both while storing the input
+   * and later when building the FastAPI execution request.
+   */
+  let extension;
+  let destinationPath;
+  let checksum;
+
   try {
     /*
      * Prediction input storage:
@@ -159,16 +167,16 @@ const createPrediction = async ({
 
     await fileStorageService.ensureDirectory(predictionDirectory);
 
-    const extension = path.extname(file.originalname);
+    extension = path.extname(file.originalname);
 
-    const destinationPath = path.join(predictionDirectory, `input${extension}`);
+    destinationPath = path.join(predictionDirectory, `input${extension}`);
 
     await fileStorageService.moveFile({
       sourcePath: file.path,
       destinationPath,
     });
 
-    const checksum = await generateFileChecksum(destinationPath);
+    checksum = await generateFileChecksum(destinationPath);
 
     await prisma.prediction.update({
       where: {
