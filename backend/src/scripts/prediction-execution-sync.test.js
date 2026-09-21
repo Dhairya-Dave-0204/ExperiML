@@ -11,6 +11,7 @@ const run = async () => {
     id: "prediction-1",
     experimentId: "experiment-1",
     executionId: "execution-1",
+    predictionStatus: "RUNNING",
   };
 
   // --------------------------------------------------
@@ -42,12 +43,50 @@ const run = async () => {
   const runningResult =
     await predictionExecutionSyncService.synchronize("execution-1");
 
-  assert.strictEqual(runningUpdate.status, "RUNNING");
+  assert.strictEqual(runningUpdate.predictionStatus, "RUNNING");
+
   assert.strictEqual(
     runningUpdate.startedAt.toISOString(),
     "2026-09-21T10:00:00.000Z",
   );
-  assert.strictEqual(runningResult.prediction.status, "RUNNING");
+
+  assert.strictEqual(runningResult.prediction.predictionStatus, "RUNNING");
+
+  // --------------------------------------------------
+  // QUEUED while Node prediction is already RUNNING
+  // --------------------------------------------------
+
+  fastApiExecutionService.getExecution = async () => ({
+    execution_id: "execution-1",
+    status: "QUEUED",
+    started_at: null,
+    completed_at: null,
+    result: null,
+    error: null,
+  });
+
+  let queuedUpdate;
+
+  prisma.prediction.findUnique = async () => ({
+    ...prediction,
+    predictionStatus: "RUNNING",
+  });
+
+  prisma.prediction.update = async ({ data }) => {
+    queuedUpdate = data;
+
+    return {
+      ...prediction,
+      ...data,
+    };
+  };
+
+  const queuedResult =
+    await predictionExecutionSyncService.synchronize("execution-1");
+
+  assert.strictEqual(queuedUpdate.predictionStatus, "RUNNING");
+
+  assert.strictEqual(queuedResult.prediction.predictionStatus, "RUNNING");
 
   // --------------------------------------------------
   // SUCCEEDED
@@ -95,6 +134,11 @@ const run = async () => {
 
   let completedUpdate;
 
+  prisma.prediction.findUnique = async () => ({
+    ...prediction,
+    predictionStatus: "RUNNING",
+  });
+
   prisma.prediction.update = async ({ data }) => {
     completedUpdate = data;
 
@@ -107,7 +151,7 @@ const run = async () => {
   const completedResult =
     await predictionExecutionSyncService.synchronize("execution-1");
 
-  assert.strictEqual(completedUpdate.status, "COMPLETED");
+  assert.strictEqual(completedUpdate.predictionStatus, "COMPLETED");
 
   assert.strictEqual(completedUpdate.outputArtifactId, "artifact-1");
 
@@ -122,7 +166,7 @@ const run = async () => {
     "2026-09-21T10:00:05.000Z",
   );
 
-  assert.strictEqual(completedResult.prediction.status, "COMPLETED");
+  assert.strictEqual(completedResult.prediction.predictionStatus, "COMPLETED");
 
   // --------------------------------------------------
   // FAILED
@@ -143,6 +187,11 @@ const run = async () => {
 
   let failedUpdate;
 
+  prisma.prediction.findUnique = async () => ({
+    ...prediction,
+    predictionStatus: "RUNNING",
+  });
+
   prisma.prediction.update = async ({ data }) => {
     failedUpdate = data;
 
@@ -155,14 +204,14 @@ const run = async () => {
   const failedResult =
     await predictionExecutionSyncService.synchronize("execution-1");
 
-  assert.strictEqual(failedUpdate.status, "FAILED");
+  assert.strictEqual(failedUpdate.predictionStatus, "FAILED");
 
   assert.strictEqual(
     failedUpdate.completedAt.toISOString(),
     "2026-09-21T10:00:03.000Z",
   );
 
-  assert.strictEqual(failedResult.prediction.status, "FAILED");
+  assert.strictEqual(failedResult.prediction.predictionStatus, "FAILED");
 
   // --------------------------------------------------
   // Missing prediction
@@ -179,6 +228,7 @@ const run = async () => {
   }
 
   assert.ok(missingPredictionError);
+
   assert.match(
     missingPredictionError.message,
     /Prediction not found for execution/,
