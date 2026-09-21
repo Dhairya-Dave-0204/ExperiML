@@ -6,11 +6,9 @@ import { PREDICTION_TYPE } from "#prediction/prediction.constants";
  * Route parameter validation
  *
  * Used for:
- *
  * /projects/:projectId/experiments/:experimentId/predictions
  *
  * and:
- *
  * /projects/:projectId/experiments/:experimentId/predictions/:predictionId
  */
 export const predictionParamsSchema = z.object({
@@ -26,7 +24,8 @@ export const predictionIdParamsSchema = predictionParamsSchema.extend({
 /*
  * Prediction creation validation
  *
- * Represents a prediction execution request.
+ * V1 supports SINGLE predictions only.
+ * BATCH is reserved for a future implementation.
  */
 export const createPredictionSchema = z.object({
   name: z
@@ -36,6 +35,6 @@ export const createPredictionSchema = z.object({
     .max(100, "Prediction name cannot exceed 100 characters"),
 
   predictionType: z
-    .enum([PREDICTION_TYPE.SINGLE, PREDICTION_TYPE.BATCH])
+    .literal(PREDICTION_TYPE.SINGLE)
     .default(PREDICTION_TYPE.SINGLE),
 });
