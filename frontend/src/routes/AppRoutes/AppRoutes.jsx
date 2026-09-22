@@ -2,7 +2,7 @@ import { Route } from "react-router-dom";
 
 import { AppLayout } from "@/layout/layout.index";
 import { ROUTES } from "@/constants/routes";
-import { Dashboard, Settings } from "@/pages/page.index";
+import { Dashboard, Settings, ProjectOverview } from "@/pages/page.index";
 
 const AppRoutes = (
   <Route element={<AppLayout />}>
@@ -14,6 +14,8 @@ const AppRoutes = (
     />
 
     <Route path={ROUTES.SETTINGS} element={<Settings />} />
+
+    <Route path={ROUTES.PROJECT_OVERVIEW} element={<ProjectOverview />} />
   </Route>
 );
 
