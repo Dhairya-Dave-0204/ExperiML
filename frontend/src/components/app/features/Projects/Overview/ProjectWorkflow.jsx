@@ -71,7 +71,7 @@ const ProjectWorkflow = ({ projectId, workflow }) => {
                 </button>
 
                 {index < workflow.length - 1 && (
-                  <div className="absolute right-[-18px] top-5 hidden md:block">
+                  <div className="absolute -right-4.5 top-5 hidden md:block">
                     <ChevronRight className="w-4 h-4 text-border" />
                   </div>
                 )}
