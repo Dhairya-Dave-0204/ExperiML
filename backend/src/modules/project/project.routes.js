@@ -4,6 +4,7 @@ import {
   createProject,
   getProjects,
   getProjectById,
+  getProjectOverview,
   updateProject,
   deleteProject,
 } from "./project.controller.js";
@@ -89,5 +90,18 @@ router.patch(
  */
 
 router.delete("/:id", validate(projectIdSchema, "params"), deleteProject);
+
+/*
+ * ===============================================
+ * Get Project Overview * GET /api/v1/projects/:id/overview
+ * ===============================================
+ *
+ */
+
+router.get(
+  "/:id/overview",
+  validate(projectIdSchema, "params"),
+  getProjectOverview,
+);
 
 export default router;

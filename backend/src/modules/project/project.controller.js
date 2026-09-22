@@ -4,6 +4,7 @@ import {
   getProjectById as getProjectByIdService,
   updateProject as updateProjectService,
   deleteProject as deleteProjectService,
+  getProjectOverview as getProjectOverviewService,
 } from "./project.service.js";
 
 import { ApiResponse } from "#utils/ApiResponse";
@@ -88,10 +89,32 @@ const deleteProject = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, project, "Project deleted successfully."));
 });
 
+/*
+ * ===============================================
+ * Get Project Overview * GET /api/v1/projects/:id/overview
+ * ===============================================
+ *
+ */
+
+const getProjectOverview = asyncHandler(async (req, res) => {
+  const overview = await getProjectOverviewService(req.user.id, req.params.id);
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        overview,
+        "Project overview retrieved successfully.",
+      ),
+    );
+});
+
 export {
   createProject,
   getProjects,
   getProjectById,
+  getProjectOverview,
   updateProject,
   deleteProject,
 };

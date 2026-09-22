@@ -1,4 +1,4 @@
-import prisma from "#clients/prisma.client";
+import { prisma } from "#clients/prisma.client";
 
 async function testDatabaseConnection() {
   try {

@@ -5,7 +5,10 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node src/scripts/test-runner.js unit",
+    "test:unit": "node src/scripts/test-runner.js unit",
+    "test:integration": "node src/scripts/test-runner.js integration",
+    "test:all": "node src/scripts/test-runner.js all",
     "server": "nodemon ./src/server.js"
   },
   "author": "Dhairya Dave",
