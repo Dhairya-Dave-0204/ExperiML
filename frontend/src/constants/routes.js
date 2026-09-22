@@ -20,4 +20,20 @@ export const ROUTES = {
   APP: "/app",
   PROJECTS: "/app/projects",
   SETTINGS: "/app/settings",
+
+  // Project routes
+  PROJECT_TABS: {
+    OVERVIEW: "overview",
+    DATASETS: "datasets",
+    EXPERIMENTS: "experiments",
+    MODELS: "models",
+    PREDICTIONS: "predictions",
+  },
+
+  PROJECT_OVERVIEW: "/app/projects/:projectId/overview",
+
+  PROJECT_TAB: (projectId, tab) => `/app/projects/${projectId}/${tab}`,
+
+  PROJECT_DATASET: (projectId, datasetId) =>
+    `/app/projects/${projectId}/datasets/${datasetId}`,
 };
