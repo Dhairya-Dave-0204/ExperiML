@@ -94,3 +94,11 @@ export { default as SettingsSecurity } from "./app/features/Settings/SettingsSec
 export { default as SettingsDangerZone } from "./app/features/Settings/SettingsDangerZone/SettingsDangerZone";
 export { default as ChangePasswordDialog } from "./app/features/Settings/ChangePasswordDialog/ChangePasswordDialog";
 export { default as DeleteAccountDialog } from "./app/features/Settings/DeleteAccountDialog/DeleteAccountDialog";
+
+// Core application Project overview components
+export { default as ProjectHeader } from "./app/features/Projects/ProjectHeader";
+export { default as ProjectNavigation } from "./app/features/Projects/ProjectNavigation";
+export { default as CurrentExperiment } from "./app/features/Projects/Overview/CurrentExperiment";
+export { default as ProjectInformation } from "./app/features/Projects/Overview/ProjectInformation";
+export { default as ProjectSummary } from "./app/features/Projects/Overview/ProjectSummary";
+export { default as ProjectWorkflow } from "./app/features/Projects/Overview/ProjectWorkflow";
