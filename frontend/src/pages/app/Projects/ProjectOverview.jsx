@@ -12,26 +12,19 @@ import {
   Plus,
 } from "lucide-react";
 
-/* ================================================================
-   PROJECT ROUTES
-   ================================================================ */
-
-const PROJECT_TABS = {
-  OVERVIEW: "overview",
-  DATASETS: "datasets",
-  EXPERIMENTS: "experiments",
-  MODELS: "models",
-  PREDICTIONS: "predictions",
-};
-
-const projectWorkspacePath = (projectId, tab = PROJECT_TABS.OVERVIEW) =>
-  `/app/projects/${projectId}/${tab}`;
-
-const projectsListPath = () => "/app/projects";
+import {
+  PROJECT_TABS,
+  projectWorkspacePath,
+  projectsListPath,
+} from "@/constants/routes";
 
 /* ================================================================
-   MOCK PROJECT DATA
-   UI ONLY — replace with backend data later.
+   UI MOCK DATA
+   ---------------------------------------------------------------
+   Temporary data for UI prototyping.
+
+   This will be replaced with projectService data during the
+   backend-integration phase.
    ================================================================ */
 
 const PROJECT = {
@@ -42,37 +35,6 @@ const PROJECT = {
   updated: "17 Sept 2026",
   problemType: "Classification",
 };
-
-/* ================================================================
-   PROJECT NAVIGATION
-   ================================================================ */
-
-const NAV_TABS = [
-  {
-    key: PROJECT_TABS.OVERVIEW,
-    label: "Overview",
-  },
-  {
-    key: PROJECT_TABS.DATASETS,
-    label: "Datasets",
-  },
-  {
-    key: PROJECT_TABS.EXPERIMENTS,
-    label: "Experiments",
-  },
-  {
-    key: PROJECT_TABS.MODELS,
-    label: "Models",
-  },
-  {
-    key: PROJECT_TABS.PREDICTIONS,
-    label: "Predictions",
-  },
-];
-
-/* ================================================================
-   PROJECT SUMMARY
-   ================================================================ */
 
 const SUMMARY = [
   {
@@ -97,10 +59,6 @@ const SUMMARY = [
   },
 ];
 
-/* ================================================================
-   CURRENT EXPERIMENT
-   ================================================================ */
-
 const CURRENT_EXPERIMENT = {
   name: "Customer Churn — Random Forest Experiment",
   dataset: "customer_churn_v2",
@@ -110,9 +68,28 @@ const CURRENT_EXPERIMENT = {
   started: "12 minutes ago",
 };
 
-/* ================================================================
-   PROJECT WORKFLOW
-   ================================================================ */
+const NAV_TABS = [
+  {
+    key: PROJECT_TABS.OVERVIEW,
+    label: "Overview",
+  },
+  {
+    key: PROJECT_TABS.DATASETS,
+    label: "Datasets",
+  },
+  {
+    key: PROJECT_TABS.EXPERIMENTS,
+    label: "Experiments",
+  },
+  {
+    key: PROJECT_TABS.MODELS,
+    label: "Models",
+  },
+  {
+    key: PROJECT_TABS.PREDICTIONS,
+    label: "Predictions",
+  },
+];
 
 const WORKFLOW = [
   {
@@ -146,7 +123,7 @@ const WORKFLOW = [
 ];
 
 /* ================================================================
-   STATUS STYLES
+   STATUS
    ================================================================ */
 
 const STATUS_STYLES = {
@@ -159,19 +136,20 @@ const STATUS_STYLES = {
   CANCELLED: "border border-border bg-surface-soft text-text-secondary",
 };
 
-/* ================================================================
-   STATUS PILL
-   ================================================================ */
-
 function StatusPill({ status }) {
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide ${
-        STATUS_STYLES[status] ?? "bg-surface-soft text-text-secondary"
+        STATUS_STYLES[status] ??
+        "bg-surface-soft text-text-secondary"
       }`}
     >
       {status === "TRAINING" || status === "PROCESSING" ? (
-        <Loader2 size={11} strokeWidth={2.5} className="animate-spin" />
+        <Loader2
+          size={11}
+          strokeWidth={2.5}
+          className="animate-spin"
+        />
       ) : null}
 
       {status}
@@ -183,7 +161,12 @@ function StatusPill({ status }) {
    SECTION CARD
    ================================================================ */
 
-function SectionCard({ title, description, action, children }) {
+function SectionCard({
+  title,
+  description,
+  action,
+  children,
+}) {
   return (
     <section className="border rounded-2xl border-border bg-surface">
       <div className="flex flex-wrap items-start justify-between gap-3 px-5 py-4 border-b border-border sm:px-6">
@@ -193,7 +176,9 @@ function SectionCard({ title, description, action, children }) {
           </h2>
 
           {description && (
-            <p className="mt-0.5 text-xs text-text-secondary">{description}</p>
+            <p className="mt-0.5 text-xs text-text-secondary">
+              {description}
+            </p>
           )}
         </div>
 
@@ -216,11 +201,21 @@ function ProjectSummary() {
         <div
           key={label}
           className={`flex items-center gap-3 px-5 py-5 ${
-            index > 0 ? "border-l-0 border-border sm:border-l" : ""
-          } ${index >= 2 ? "border-t sm:border-t-0" : ""}`}
+            index > 0
+              ? "border-l-0 border-border sm:border-l"
+              : ""
+          } ${
+            index >= 2
+              ? "border-t border-border sm:border-t-0"
+              : ""
+          }`}
         >
           <div className="flex items-center justify-center rounded-lg h-9 w-9 shrink-0 bg-surface-soft">
-            <Icon size={16} strokeWidth={1.8} className="text-text-secondary" />
+            <Icon
+              size={16}
+              strokeWidth={1.8}
+              className="text-text-secondary"
+            />
           </div>
 
           <div className="min-w-0">
@@ -228,7 +223,9 @@ function ProjectSummary() {
               {value}
             </div>
 
-            <div className="mt-1 text-xs text-text-secondary">{label}</div>
+            <div className="mt-1 text-xs text-text-secondary">
+              {label}
+            </div>
           </div>
         </div>
       ))}
@@ -250,7 +247,9 @@ function CurrentExperiment({ onView }) {
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2 mb-2">
-              <StatusPill status={CURRENT_EXPERIMENT.status} />
+              <StatusPill
+                status={CURRENT_EXPERIMENT.status}
+              />
 
               <span className="text-xs text-text-secondary">
                 Started {CURRENT_EXPERIMENT.started}
@@ -310,52 +309,62 @@ function ProjectWorkflow({ onNavigate }) {
       description="The main stages of your machine learning project."
     >
       <div className="divide-y divide-border">
-        {WORKFLOW.map(({ label, description, completed, icon: Icon, tab }) => (
-          <button
-            key={label}
-            type="button"
-            onClick={() => onNavigate(tab)}
-            className="flex items-center w-full gap-4 px-5 py-4 text-left transition-colors group hover:bg-surface-soft sm:px-6"
-          >
-            <div className="flex items-center justify-center rounded-lg h-9 w-9 shrink-0 bg-surface-soft">
-              <Icon
-                size={16}
-                strokeWidth={1.8}
-                className="text-text-secondary"
-              />
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-text">{label}</span>
-
-                {completed ? (
-                  <CheckCircle2
-                    size={14}
-                    strokeWidth={2}
-                    className="text-success"
-                  />
-                ) : (
-                  <Circle
-                    size={14}
-                    strokeWidth={1.8}
-                    className="text-text-secondary"
-                  />
-                )}
+        {WORKFLOW.map(
+          ({
+            label,
+            description,
+            completed,
+            icon: Icon,
+            tab,
+          }) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => onNavigate(tab)}
+              className="flex items-center w-full gap-4 px-5 py-4 text-left transition-colors group hover:bg-surface-soft sm:px-6"
+            >
+              <div className="flex items-center justify-center rounded-lg h-9 w-9 shrink-0 bg-surface-soft">
+                <Icon
+                  size={16}
+                  strokeWidth={1.8}
+                  className="text-text-secondary"
+                />
               </div>
 
-              <p className="mt-0.5 text-xs text-text-secondary">
-                {description}
-              </p>
-            </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-text">
+                    {label}
+                  </span>
 
-            <ChevronRight
-              size={15}
-              strokeWidth={1.8}
-              className="shrink-0 text-text-secondary transition-transform group-hover:translate-x-0.5"
-            />
-          </button>
-        ))}
+                  {completed ? (
+                    <CheckCircle2
+                      size={14}
+                      strokeWidth={2}
+                      className="text-success"
+                    />
+                  ) : (
+                    <Circle
+                      size={14}
+                      strokeWidth={1.8}
+                      className="text-text-secondary"
+                    />
+                  )}
+                </div>
+
+                <p className="mt-0.5 text-xs text-text-secondary">
+                  {description}
+                </p>
+              </div>
+
+              <ChevronRight
+                size={15}
+                strokeWidth={1.8}
+                className="shrink-0 text-text-secondary transition-transform group-hover:translate-x-0.5"
+              />
+            </button>
+          )
+        )}
       </div>
     </SectionCard>
   );
@@ -373,7 +382,9 @@ function ProjectInformation() {
     >
       <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
         <div className="px-5 py-4 sm:px-6">
-          <div className="text-xs text-text-secondary">Problem type</div>
+          <div className="text-xs text-text-secondary">
+            Problem type
+          </div>
 
           <div className="mt-1 text-sm font-semibold text-text">
             {PROJECT.problemType}
@@ -381,7 +392,9 @@ function ProjectInformation() {
         </div>
 
         <div className="px-5 py-4 sm:px-6">
-          <div className="text-xs text-text-secondary">Created</div>
+          <div className="text-xs text-text-secondary">
+            Created
+          </div>
 
           <div className="mt-1 text-sm font-semibold text-text">
             {PROJECT.created}
@@ -389,7 +402,9 @@ function ProjectInformation() {
         </div>
 
         <div className="px-5 py-4 sm:px-6">
-          <div className="text-xs text-text-secondary">Last updated</div>
+          <div className="text-xs text-text-secondary">
+            Last updated
+          </div>
 
           <div className="mt-1 text-sm font-semibold text-text">
             {PROJECT.updated}
@@ -401,24 +416,30 @@ function ProjectInformation() {
 }
 
 /* ================================================================
-   PROJECT OVERVIEW PAGE
+   PROJECT OVERVIEW
    ================================================================ */
 
-export default function ProjectOverview() {
+function ProjectOverview() {
   const { projectId } = useParams();
   const navigate = useNavigate();
 
-  const navigateToProjectTab = (tab) => {
-    navigate(projectWorkspacePath(projectId, tab));
-  };
+  function navigateToProjectTab(tab) {
+    navigate(
+      projectWorkspacePath(projectId, tab)
+    );
+  }
 
-  const handleCreateExperiment = () => {
-    navigateToProjectTab(PROJECT_TABS.EXPERIMENTS);
-  };
+  function handleCreateExperiment() {
+    navigateToProjectTab(
+      PROJECT_TABS.EXPERIMENTS
+    );
+  }
 
-  const handleViewExperiment = () => {
-    navigateToProjectTab(PROJECT_TABS.EXPERIMENTS);
-  };
+  function handleViewExperiment() {
+    navigateToProjectTab(
+      PROJECT_TABS.EXPERIMENTS
+    );
+  }
 
   return (
     <div className="flex-1 min-h-full">
@@ -428,8 +449,6 @@ export default function ProjectOverview() {
 
       <header className="px-4 py-5 border-b border-border sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
-          {/* Breadcrumb */}
-
           <nav
             aria-label="Breadcrumb"
             className="flex items-center gap-1.5 text-xs text-text-secondary"
@@ -441,12 +460,15 @@ export default function ProjectOverview() {
               Projects
             </NavLink>
 
-            <ChevronRight size={13} strokeWidth={2} />
+            <ChevronRight
+              size={13}
+              strokeWidth={2}
+            />
 
-            <span className="truncate text-text">{PROJECT.name}</span>
+            <span className="truncate text-text">
+              {PROJECT.name}
+            </span>
           </nav>
-
-          {/* Project identity */}
 
           <div className="flex flex-col gap-4 mt-5 sm:flex-row sm:items-end sm:justify-between">
             <div className="min-w-0">
@@ -474,7 +496,11 @@ export default function ProjectOverview() {
               onClick={handleCreateExperiment}
               className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white transition-colors duration-150 rounded-lg w-fit shrink-0 bg-primary hover:bg-primary-dark"
             >
-              <Plus size={16} strokeWidth={2.25} />
+              <Plus
+                size={16}
+                strokeWidth={2.25}
+              />
+
               Create Experiment
             </button>
           </div>
@@ -494,8 +520,14 @@ export default function ProjectOverview() {
             {NAV_TABS.map((tab) => (
               <NavLink
                 key={tab.key}
-                to={projectWorkspacePath(projectId, tab.key)}
-                end={tab.key === PROJECT_TABS.OVERVIEW}
+                to={projectWorkspacePath(
+                  projectId,
+                  tab.key
+                )}
+                end={
+                  tab.key ===
+                  PROJECT_TABS.OVERVIEW
+                }
                 className={({ isActive }) =>
                   `shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-150 ${
                     isActive
@@ -517,19 +549,15 @@ export default function ProjectOverview() {
 
       <main className="px-4 py-6 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto space-y-6">
-          {/* Project summary */}
-
           <ProjectSummary />
 
-          {/* Current experiment */}
+          <CurrentExperiment
+            onView={handleViewExperiment}
+          />
 
-          <CurrentExperiment onView={handleViewExperiment} />
-
-          {/* Workflow */}
-
-          <ProjectWorkflow onNavigate={navigateToProjectTab} />
-
-          {/* Project information */}
+          <ProjectWorkflow
+            onNavigate={navigateToProjectTab}
+          />
 
           <ProjectInformation />
         </div>
@@ -537,3 +565,5 @@ export default function ProjectOverview() {
     </div>
   );
 }
+
+export default ProjectOverview;
