@@ -8,11 +8,9 @@ const ProjectInformation = ({ project, projectId }) => {
 
       <div className="bg-white border rounded-xl border-border">
         <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-          <InfoItem label="Problem type" value={project.problemType} />
+          <InfoItem label="Created" value={formatDate(project.createdAt)} />
 
-          <InfoItem label="Created" value={project.created} />
-
-          <InfoItem label="Last updated" value={project.updated} />
+          <InfoItem label="Last updated" value={formatDate(project.updatedAt)} />
 
           <InfoItem label="Project ID" value={projectId || "—"} mono />
         </div>
@@ -50,6 +48,18 @@ const InfoItem = ({ label, value, mono = false }) => {
       </p>
     </div>
   );
+};
+
+const formatDate = (date) => {
+  if (!date) {
+    return "—";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(date));
 };
 
 export default ProjectInformation;

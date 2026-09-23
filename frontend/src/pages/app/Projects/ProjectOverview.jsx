@@ -94,7 +94,7 @@ const ProjectOverview = () => {
 
         <ProjectNavigation projectId={projectId} />
 
-        <ProjectSummary />
+        <ProjectSummary summary={overviewData.summary}/>
 
         <ProjectInformation 
           project={overviewData.project}
