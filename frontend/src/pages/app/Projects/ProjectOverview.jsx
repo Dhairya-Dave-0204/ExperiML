@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { ROUTES } from "@/constants/routes";
+import projectService from "@/services/project/projectService";
 
 import {
   ProjectHeader,
@@ -11,79 +13,82 @@ import {
   ProjectInformation,
 } from "@/components/components.index";
 
-// -----------------------------------------------------------------------------
-// Mock project data
-// Replace with backend data later.
-// -----------------------------------------------------------------------------
-
-const PROJECT = {
-  name: "Customer Churn Prediction",
-  description:
-    "Predict customer churn using historical customer behavior data.",
-  created: "Aug 3, 2026",
-  updated: "17 Sept 2026",
-  problemType: "Classification",
-};
-
-// -----------------------------------------------------------------------------
-// Mock current experiment
-// Replace with backend data later.
-// -----------------------------------------------------------------------------
-
-const CURRENT_EXPERIMENT = {
-  name: "Customer Churn — Random Forest Experiment",
-  dataset: "customer_churn_v2",
-  algorithm: "Random Forest",
-  problemType: "Classification",
-  status: "TRAINING",
-  started: "12 minutes ago",
-};
-
-// -----------------------------------------------------------------------------
-// Mock workflow state
-// Replace with backend-driven state later.
-// -----------------------------------------------------------------------------
-
-const WORKFLOW = [
-  {
-    id: ROUTES.PROJECT_TABS.DATASETS,
-    label: "Datasets",
-    description: "Upload and analyze your data",
-    completed: true,
-  },
-  {
-    id: ROUTES.PROJECT_TABS.EXPERIMENTS,
-    label: "Experiments",
-    description: "Configure and run ML experiments",
-    completed: true,
-  },
-  {
-    id: ROUTES.PROJECT_TABS.MODELS,
-    label: "Models",
-    description: "Review trained models and results",
-    completed: true,
-  },
-  {
-    id: ROUTES.PROJECT_TABS.PREDICTIONS,
-    label: "Predictions",
-    description: "Generate predictions from trained models",
-    completed: false,
-  },
-];
-
 const ProjectOverview = () => {
   const navigate = useNavigate();
   const { projectId } = useParams();
+
+  const [overviewData, setOverviewData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProjectOverview = async () => {
+      if (!projectId) {
+        setError("Project ID is missing.");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const data = await projectService.getProjectOverview(projectId);
+
+        setOverviewData(data);
+      } catch (error) {
+        console.error("Failed to fetch project overview:", error);
+
+        setError(
+          error?.response?.data?.message || "Failed to load project overview.",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProjectOverview();
+  }, [projectId]);
 
   const handleCreateExperiment = () => {
     navigate(ROUTES.PROJECT_TAB(projectId, ROUTES.PROJECT_TABS.EXPERIMENTS));
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-full bg-surface">
+        <p className="text-sm text-text-secondary">
+          Loading project overview...
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-full bg-surface">
+        <div className="text-center">
+          <p className="text-sm font-medium text-danger">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!overviewData) {
+    return (
+      <div className="flex items-center justify-center min-h-full bg-surface">
+        <p className="text-sm text-text-secondary">
+          Project overview is unavailable.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-full bg-surface">
       <div className="px-6 py-8 mx-auto max-w-7xl lg:px-8">
         <ProjectHeader
-          project={PROJECT}
+          project={overviewData.project}
           onCreateExperiment={handleCreateExperiment}
         />
 
@@ -91,14 +96,10 @@ const ProjectOverview = () => {
 
         <ProjectSummary />
 
-        <CurrentExperiment
+        <ProjectInformation 
+          project={overviewData.project}
           projectId={projectId}
-          experiment={CURRENT_EXPERIMENT}
         />
-
-        <ProjectWorkflow projectId={projectId} workflow={WORKFLOW} />
-
-        <ProjectInformation project={PROJECT} projectId={projectId} />
       </div>
     </div>
   );
