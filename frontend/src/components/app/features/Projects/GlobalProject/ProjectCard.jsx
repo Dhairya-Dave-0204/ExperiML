@@ -1,9 +1,84 @@
-import React from 'react'
+import {
+  ArrowRight,
+  Boxes,
+  CalendarDays,
+  Database,
+  FlaskConical,
+  MoreVertical,
+} from "lucide-react";
 
-function ProjectCard() {
+const ProjectCard = ({ project, onOpen }) => {
   return (
-    <div>ProjectCard</div>
-  )
-}
+    <article className="flex min-h-[350px] flex-col rounded-2xl border border-border bg-white p-6 transition-shadow hover:shadow-sm">
+      {/* Card header */}
+      <div className="flex items-start justify-between">
+        <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-primary-light text-primary">
+          <Boxes className="w-5 h-5" />
+        </div>
 
-export default ProjectCard
+        <button
+          type="button"
+          aria-label={`More actions for ${project.name}`}
+          className="inline-flex items-center justify-center w-8 h-8 transition-colors rounded-lg text-text-secondary hover:bg-surface-soft hover:text-text"
+        >
+          <MoreVertical className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Project information */}
+      <div className="flex-1 mt-6">
+        <h3 className="text-base font-semibold tracking-tight font-heading text-text">
+          {project.name}
+        </h3>
+
+        <p className="mt-2.5 line-clamp-3 text-sm leading-6 text-text-secondary">
+          {project.description}
+        </p>
+
+        {/* Project statistics */}
+        <div className="flex items-center justify-between pt-5 border-t mt-7 border-border">
+          <div className="flex items-center gap-2 text-text-secondary">
+            <Database className="h-3.5 w-3.5 text-primary" />
+            <span className="text-xs">{project.datasets} datasets</span>
+          </div>
+
+          <div className="flex items-center gap-2 text-text-secondary">
+            <FlaskConical className="h-3.5 w-3.5 text-primary" />
+            <span className="text-xs">{project.experiments} experiments</span>
+          </div>
+
+          <div className="flex items-center gap-2 text-text-secondary">
+            <Boxes className="h-3.5 w-3.5 text-primary" />
+            <span className="text-xs">{project.models} models</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Card footer */}
+      <div className="flex items-end justify-between gap-4 pt-5 mt-6 border-t border-border">
+        <div className="space-y-1.5 text-xs text-text-secondary">
+          <div className="flex items-center gap-1.5">
+            <CalendarDays className="h-3.5 w-3.5 shrink-0" />
+            <span>Created {project.createdAt}</span>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <CalendarDays className="h-3.5 w-3.5 shrink-0" />
+            <span>Updated {project.updatedAt}</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onOpen(project.id)}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary-light px-3.5 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+        >
+          Open Project
+          <ArrowRight className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    </article>
+  );
+};
+
+export default ProjectCard;
