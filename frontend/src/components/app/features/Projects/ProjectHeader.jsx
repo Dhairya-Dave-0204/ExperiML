@@ -3,7 +3,7 @@ import { ChevronRight, Plus } from "lucide-react";
 
 import { ROUTES } from "@/constants/routes";
 
-const ProjectHeader = ({ project, onCreateExperiment }) => {
+const ProjectHeader = ({ project, problemType, onCreateExperiment }) => {
   const navigate = useNavigate();
 
   return (
@@ -32,7 +32,7 @@ const ProjectHeader = ({ project, onCreateExperiment }) => {
             </h1>
 
             <span className="rounded-full bg-primary-light px-2.5 py-1 text-xs font-medium text-primary">
-              {project.problemType}
+              {formatProblemType(problemType)}
             </span>
           </div>
 
@@ -52,6 +52,17 @@ const ProjectHeader = ({ project, onCreateExperiment }) => {
       </div>
     </>
   );
+};
+
+const formatProblemType = (problemType) => {
+  if (!problemType) {
+    return "—";
+  }
+
+  return problemType
+    .toLowerCase()
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
 export default ProjectHeader;

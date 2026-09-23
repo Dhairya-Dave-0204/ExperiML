@@ -89,15 +89,17 @@ const ProjectOverview = () => {
       <div className="px-6 py-8 mx-auto max-w-7xl lg:px-8">
         <ProjectHeader
           project={overviewData.project}
+          problemType={overviewData.currentExperiment?.problemType}
           onCreateExperiment={handleCreateExperiment}
         />
 
         <ProjectNavigation projectId={projectId} />
 
-        <ProjectSummary summary={overviewData.summary}/>
+        <ProjectSummary summary={overviewData.summary} />
 
-        <ProjectInformation 
+        <ProjectInformation
           project={overviewData.project}
+          problemType={overviewData.currentExperiment?.problemType}
           projectId={projectId}
         />
       </div>

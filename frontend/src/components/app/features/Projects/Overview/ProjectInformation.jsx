@@ -1,4 +1,4 @@
-const ProjectInformation = ({ project, projectId }) => {
+const ProjectInformation = ({ project, problemType, projectId }) => {
   return (
     <section>
       <SectionHeading
@@ -8,9 +8,17 @@ const ProjectInformation = ({ project, projectId }) => {
 
       <div className="bg-white border rounded-xl border-border">
         <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+          <InfoItem
+            label="Problem type"
+            value={formatProblemType(problemType)}
+          />
+
           <InfoItem label="Created" value={formatDate(project.createdAt)} />
 
-          <InfoItem label="Last updated" value={formatDate(project.updatedAt)} />
+          <InfoItem
+            label="Last updated"
+            value={formatDate(project.updatedAt)}
+          />
 
           <InfoItem label="Project ID" value={projectId || "—"} mono />
         </div>
@@ -48,6 +56,17 @@ const InfoItem = ({ label, value, mono = false }) => {
       </p>
     </div>
   );
+};
+
+const formatProblemType = (problemType) => {
+  if (!problemType) {
+    return "—";
+  }
+
+  return problemType
+    .toLowerCase()
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
 const formatDate = (date) => {
