@@ -9,6 +9,12 @@ const projectService = {
 
     return response.data.data;
   },
+
+  async getProjects() {
+    const response = await apiClient.get(API_ENDPOINTS.projects.base);
+
+    return response.data.data;
+  },
 };
 
 export default projectService;
