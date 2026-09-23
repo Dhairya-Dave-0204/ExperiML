@@ -95,6 +95,11 @@ export { default as SettingsDangerZone } from "./app/features/Settings/SettingsD
 export { default as ChangePasswordDialog } from "./app/features/Settings/ChangePasswordDialog/ChangePasswordDialog";
 export { default as DeleteAccountDialog } from "./app/features/Settings/DeleteAccountDialog/DeleteAccountDialog";
 
+// Core application Global Project page components
+export { default as ProjectCard } from "./app/features/Projects/GlobalProject/ProjectCard";
+export { default as ProjectsGlobalHeader } from "./app/features/Projects/GlobalProject/ProjectsGlobalHeader";
+export { default as ProjectsListHeader } from "./app/features/Projects/GlobalProject/ProjectsListHeader";
+
 // Core application Project overview components
 export { default as ProjectHeader } from "./app/features/Projects/ProjectHeader";
 export { default as ProjectNavigation } from "./app/features/Projects/ProjectNavigation";
