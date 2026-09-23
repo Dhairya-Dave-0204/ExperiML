@@ -7,7 +7,7 @@ import {
   FlaskConical,
   MoreVertical,
   Plus,
-  PencilRuler
+  PencilRuler,
 } from "lucide-react";
 
 import { ROUTES } from "@/constants/routes";
