@@ -1,7 +1,6 @@
-import React from "react";
 import { Plus } from "lucide-react";
 
-function ProjectsGlobalHeader() {
+function ProjectsGlobalHeader({onCreateProject}) {
   return (
     <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
       <div>
