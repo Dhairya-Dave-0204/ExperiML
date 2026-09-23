@@ -1,29 +1,29 @@
 import { Database, FlaskConical, Boxes, Target } from "lucide-react";
 
-const SUMMARY_ITEMS = [
-  {
-    label: "Datasets",
-    value: 4,
-    icon: Database,
-  },
-  {
-    label: "Experiments",
-    value: 12,
-    icon: FlaskConical,
-  },
-  {
-    label: "Models",
-    value: 7,
-    icon: Boxes,
-  },
-  {
-    label: "Predictions",
-    value: 23,
-    icon: Target,
-  },
-];
+const ProjectSummary = ({ summary }) => {
+  const summaryItems = [
+    {
+      label: "Datasets",
+      value: summary.datasets,
+      icon: Database,
+    },
+    {
+      label: "Experiments",
+      value: summary.experiments,
+      icon: FlaskConical,
+    },
+    {
+      label: "Models",
+      value: summary.models,
+      icon: Boxes,
+    },
+    {
+      label: "Predictions",
+      value: summary.predictions,
+      icon: Target,
+    },
+  ];
 
-const ProjectSummary = () => {
   return (
     <section className="mb-8">
       <SectionHeading
@@ -32,7 +32,7 @@ const ProjectSummary = () => {
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {SUMMARY_ITEMS.map((item) => (
+        {summaryItems.map((item) => (
           <SummaryCard
             key={item.label}
             icon={item.icon}
