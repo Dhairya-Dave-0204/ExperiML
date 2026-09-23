@@ -11,15 +11,40 @@ import {
 
 import { ROUTES } from "@/constants/routes";
 
-const WORKFLOW_ICONS = {
-  [ROUTES.PROJECT_TABS.DATASETS]: Database,
-  [ROUTES.PROJECT_TABS.EXPERIMENTS]: FlaskConical,
-  [ROUTES.PROJECT_TABS.MODELS]: Boxes,
-  [ROUTES.PROJECT_TABS.PREDICTIONS]: Target,
-};
+const WORKFLOW_STEPS = [
+  {
+    id: ROUTES.PROJECT_TABS.DATASETS,
+    label: "Datasets",
+    description: "Upload and analyze your data",
+    icon: Database,
+  },
+  {
+    id: ROUTES.PROJECT_TABS.EXPERIMENTS,
+    label: "Experiments",
+    description: "Configure and run ML experiments",
+    icon: FlaskConical,
+  },
+  {
+    id: ROUTES.PROJECT_TABS.MODELS,
+    label: "Models",
+    description: "Review trained models and results",
+    icon: Boxes,
+  },
+  {
+    id: ROUTES.PROJECT_TABS.PREDICTIONS,
+    label: "Predictions",
+    description: "Generate predictions from trained models",
+    icon: Target,
+  },
+];
 
 const ProjectWorkflow = ({ projectId, workflow }) => {
   const navigate = useNavigate();
+
+  const workflowSteps = WORKFLOW_STEPS.map((step) => ({
+    ...step,
+    completed: workflow?.[step.id] ?? false,
+  }));
 
   return (
     <section className="mb-8">
@@ -30,8 +55,8 @@ const ProjectWorkflow = ({ projectId, workflow }) => {
 
       <div className="p-6 bg-white border rounded-xl border-border">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          {workflow.map((step, index) => {
-            const Icon = WORKFLOW_ICONS[step.id];
+          {workflowSteps.map((step, index) => {
+            const Icon = step.icon;
 
             return (
               <div key={step.id} className="relative">
@@ -70,7 +95,7 @@ const ProjectWorkflow = ({ projectId, workflow }) => {
                   </p>
                 </button>
 
-                {index < workflow.length - 1 && (
+                {index < workflowSteps.length - 1 && (
                   <div className="absolute -right-4.5 top-5 hidden md:block">
                     <ChevronRight className="w-4 h-4 text-border" />
                   </div>
@@ -80,7 +105,7 @@ const ProjectWorkflow = ({ projectId, workflow }) => {
           })}
         </div>
       </div>
-    </section>
+    </section>    
   );
 };
 

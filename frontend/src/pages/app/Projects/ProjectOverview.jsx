@@ -97,6 +97,16 @@ const ProjectOverview = () => {
 
         <ProjectSummary summary={overviewData.summary} />
 
+        <CurrentExperiment
+          projectId={projectId}
+          experiment={overviewData.currentExperiment}
+        />
+
+        <ProjectWorkflow
+          projectId={projectId}
+          workflow={overviewData.workflow}
+        />
+
         <ProjectInformation
           project={overviewData.project}
           problemType={overviewData.currentExperiment?.problemType}

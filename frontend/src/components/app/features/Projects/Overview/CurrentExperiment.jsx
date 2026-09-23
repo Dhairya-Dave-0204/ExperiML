@@ -6,6 +6,23 @@ import { ROUTES } from "@/constants/routes";
 const CurrentExperiment = ({ projectId, experiment }) => {
   const navigate = useNavigate();
 
+  if (!experiment) {
+    return (
+      <section className="mb-8">
+        <SectionHeading
+          title="Current experiment"
+          description="The latest experiment currently associated with this project."
+        />
+
+        <div className="p-6 bg-white border rounded-xl border-border">
+          <p className="text-sm text-text-secondary">
+            No experiments have been created for this project yet.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="mb-8">
       <SectionHeading
@@ -21,20 +38,29 @@ const CurrentExperiment = ({ projectId, experiment }) => {
                 {experiment.name}
               </h3>
 
-              <StatusBadge status={experiment.status} />
+              <StatusBadge status={experiment.experimentStatus} />
             </div>
 
             <div className="grid grid-cols-1 text-sm gap-x-8 gap-y-2 text-text-secondary sm:grid-cols-2 lg:grid-cols-4">
-              <MetadataItem label="Dataset" value={experiment.dataset} />
+              <MetadataItem
+                label="Dataset"
+                value={experiment.dataset?.name || "—"}
+              />
 
-              <MetadataItem label="Algorithm" value={experiment.algorithm} />
+              <MetadataItem
+                label="Algorithm"
+                value={formatLabel(experiment.algorithmName)}
+              />
 
               <MetadataItem
                 label="Problem type"
-                value={experiment.problemType}
+                value={formatLabel(experiment.problemType)}
               />
 
-              <MetadataItem label="Started" value={experiment.started} />
+              <MetadataItem
+                label="Started"
+                value={formatDate(experiment.startedAt)}
+              />
             </div>
           </div>
 
@@ -70,9 +96,11 @@ const SectionHeading = ({ title, description }) => {
 
 const StatusBadge = ({ status }) => {
   const statusStyles = {
+    QUEUED: "bg-surface-soft text-text-secondary",
     TRAINING: "bg-primary-light text-primary",
     COMPLETED: "bg-success/10 text-success",
     FAILED: "bg-danger/10 text-danger",
+    CANCELLED: "bg-surface-soft text-text-secondary",
   };
 
   const className =
@@ -88,7 +116,7 @@ const StatusBadge = ({ status }) => {
         <span className="h-1.5 w-1.5 rounded-full bg-current" />
       )}
 
-      {status}
+      {formatLabel(status)}
     </span>
   );
 };
@@ -101,6 +129,29 @@ const MetadataItem = ({ label, value }) => {
       <p className="text-sm font-medium truncate text-text">{value}</p>
     </div>
   );
+};
+
+const formatLabel = (value) => {
+  if (!value) {
+    return "—";
+  }
+
+  return value
+    .toLowerCase()
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+const formatDate = (date) => {
+  if (!date) {
+    return "—";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(date));
 };
 
 export default CurrentExperiment;
