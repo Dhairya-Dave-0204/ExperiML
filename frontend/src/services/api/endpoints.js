@@ -17,6 +17,7 @@ const API_ENDPOINTS = {
   // Future project-related endpoints
   projects: {
     base: "/projects",
+    overview: (projectId) => `/projects/${projectId}/overview`,
   },
 
   // Future dataset-related endpoints
