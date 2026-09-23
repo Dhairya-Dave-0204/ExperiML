@@ -22,3 +22,4 @@ export { default as Settings } from "./app/Settings/Settings";
 
 // Project related pages
 export { default as ProjectOverview } from "./app/Projects/ProjectOverview";
+export { default as Projects } from "./app/Projects/Projects";
