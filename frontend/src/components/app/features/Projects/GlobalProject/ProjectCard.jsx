@@ -9,7 +9,7 @@ import {
 
 const ProjectCard = ({ project, onOpen }) => {
   return (
-    <article className="flex min-h-[350px] flex-col rounded-2xl border border-border bg-white p-6 transition-shadow hover:shadow-sm">
+    <article className="flex min-h-87.5 flex-col rounded-2xl border border-border bg-white p-6 transition-shadow hover:shadow-sm">
       {/* Card header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-primary-light text-primary">
