@@ -14,6 +14,11 @@ const datasetService = {
     const response = await apiClient.post(
       API_ENDPOINTS.datasets.project(projectId),
       formData,
+      {
+        headers: {
+          "Content-Type": undefined,
+        },
+      },
     );
 
     return response.data.data;

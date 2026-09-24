@@ -16,6 +16,7 @@ const UploadDatasetDialog = ({ onClose }) => {
     if (!selectedFile) return;
 
     setFile(selectedFile);
+    setError(null);
     setStage("selected");
   }
 
@@ -179,6 +180,7 @@ const UploadDatasetDialog = ({ onClose }) => {
                   type="button"
                   onClick={() => {
                     setFile(null);
+                    setError(null);
                     setStage("idle");
                   }}
                   aria-label="Remove selected file"
