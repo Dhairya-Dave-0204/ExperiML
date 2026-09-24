@@ -9,6 +9,15 @@ const datasetService = {
 
     return response.data.data;
   },
+
+  async createDataset(projectId, formData) {
+    const response = await apiClient.post(
+      API_ENDPOINTS.datasets.project(projectId),
+      formData,
+    );
+
+    return response.data.data;
+  },
 };
 
 export default datasetService;

@@ -1,86 +1,123 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { Search, Upload } from "lucide-react";
+
 import {
   DatasetEmptyState,
   DatasetListItem,
   UploadDatasetDialog,
 } from "@/components/components.index";
 
-/* ------------------------------------------------------------------ */
-/* Mock data — UI preview only                                        */
-/* ------------------------------------------------------------------ */
+import datasetService from "@/services/dataset/datasetService";
 
-const DATASETS = [
-  {
-    id: "ds_churn_v2",
-    name: "customer_churn_v2",
-    version: "v2",
-    status: "READY",
-    rows: "10,000",
-    columns: 21,
-    fileType: "CSV",
-    fileSize: "2.8 MB",
-    updated: "Updated 2 hours ago",
-  },
-  {
-    id: "ds_churn_v1",
-    name: "customer_churn_v1",
-    version: "v1",
-    status: "READY",
-    rows: "8,500",
-    columns: 19,
-    fileType: "CSV",
-    fileSize: "2.4 MB",
-    updated: "Updated 5 days ago",
-  },
-  {
-    id: "ds_churn_raw",
-    name: "customer_churn_raw",
-    version: "v1",
-    status: "PROCESSING",
-    rows: "12,300",
-    columns: 24,
-    fileType: "CSV",
-    fileSize: "3.1 MB",
-    updated: "Updated 6 days ago",
-  },
-  {
-    id: "ds_sales_v3",
-    name: "sales_forecast_v3",
-    version: "v3",
-    status: "READY",
-    rows: "24,500",
-    columns: 14,
-    fileType: "XLSX",
-    fileSize: "4.2 MB",
-    updated: "Updated 1 week ago",
-  },
-  {
-    id: "ds_sales_v2",
-    name: "sales_forecast_v2",
-    version: "v2",
-    status: "FAILED",
-    rows: "—",
-    columns: "—",
-    fileType: "XLSX",
-    fileSize: "3.8 MB",
-    updated: "Updated 2 weeks ago",
-  },
-];
+/* ------------------------------------------------------------------ */
+/* Constants                                                          */
+/* ------------------------------------------------------------------ */
 
 const STATUS_FILTERS = ["All", "Ready", "Processing", "Failed"];
+
+/* ------------------------------------------------------------------ */
+/* Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+const formatFileSize = (bytes) => {
+  if (bytes === null || bytes === undefined) {
+    return "—";
+  }
+
+  const size = Number(bytes);
+
+  if (!Number.isFinite(size)) {
+    return "—";
+  }
+
+  if (size < 1024) {
+    return `${size} B`;
+  }
+
+  if (size < 1024 * 1024) {
+    return `${(size / 1024).toFixed(1)} KB`;
+  }
+
+  if (size < 1024 * 1024 * 1024) {
+    return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  return `${(size / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+};
+
+const formatUpdated = (date) => {
+  if (!date) {
+    return "Updated —";
+  }
+
+  const formattedDate = new Date(date).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+  return `Updated ${formattedDate}`;
+};
+
+const mapDatasetToUI = (dataset) => ({
+  id: dataset.id,
+  name: dataset.name,
+  version: `v${dataset.datasetVersion}`,
+  status: dataset.datasetStatus,
+  rows: dataset.rowCount?.toLocaleString() ?? "—",
+  columns: dataset.columnCount ?? "—",
+  fileType: dataset.datasetFormat ?? "—",
+  fileSize: formatFileSize(dataset.fileSize),
+  updated: formatUpdated(dataset.updatedAt),
+});
 
 /* ------------------------------------------------------------------ */
 /* Page                                                               */
 /* ------------------------------------------------------------------ */
 
 const ProjectDatasets = () => {
+  const { projectId } = useParams();
+
+  const [datasets, setDatasets] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [uploadOpen, setUploadOpen] = useState(false);
 
-  const datasets = DATASETS;
+  useEffect(() => {
+    const fetchDatasets = async () => {
+      if (!projectId) {
+        setError("Project ID is missing.");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const data = await datasetService.getProjectDatasets(projectId);
+
+        const mappedDatasets = data.map(mapDatasetToUI);
+
+        setDatasets(mappedDatasets);
+      } catch (error) {
+        console.error("Failed to fetch project datasets:", error);
+
+        setError(
+          error?.response?.data?.message || "Failed to load project datasets.",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDatasets();
+  }, [projectId]);
 
   const filteredDatasets = useMemo(() => {
     return datasets.filter((dataset) => {
@@ -103,6 +140,24 @@ const ProjectDatasets = () => {
     // UI-only for now.
     console.log("Delete requested:", dataset.id);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-full bg-surface">
+        <p className="text-sm text-text-secondary">Loading datasets...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-full bg-surface">
+        <div className="text-center">
+          <p className="text-sm font-medium text-danger">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto space-y-5 max-w-7xl">
