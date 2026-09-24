@@ -79,20 +79,6 @@ const ProjectLayout = () => {
   return (
     <div className="min-h-full bg-surface">
       <div className="px-6 py-8 mx-auto max-w-7xl lg:px-8">
-        <div className="flex items-center gap-2 mb-6 text-sm">
-          <button
-            type="button"
-            onClick={() => navigate(ROUTES.PROJECTS)}
-            className="transition-colors text-text-secondary hover:text-text"
-          >
-            Projects
-          </button>
-
-          <span className="text-text-secondary">/</span>
-
-          <span className="font-medium text-text">{project.name}</span>
-        </div>
-
         <ProjectHeader
           project={project}
           problemType={problemType}

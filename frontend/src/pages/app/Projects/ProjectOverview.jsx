@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-import { ROUTES } from "@/constants/routes";
 import projectService from "@/services/project/projectService";
 
 import {
-  ProjectHeader,
-  ProjectNavigation,
   ProjectSummary,
   CurrentExperiment,
   ProjectWorkflow,
@@ -14,7 +11,6 @@ import {
 } from "@/components/components.index";
 
 const ProjectOverview = () => {
-  const navigate = useNavigate();
   const { projectId } = useParams();
 
   const [overviewData, setOverviewData] = useState(null);
@@ -50,10 +46,6 @@ const ProjectOverview = () => {
     fetchProjectOverview();
   }, [projectId]);
 
-  const handleCreateExperiment = () => {
-    navigate(ROUTES.PROJECT_TAB(projectId, ROUTES.PROJECT_TABS.EXPERIMENTS));
-  };
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-full bg-surface">
@@ -85,34 +77,24 @@ const ProjectOverview = () => {
   }
 
   return (
-    <div className="min-h-full bg-surface">
-      <div className="px-6 py-8 mx-auto max-w-7xl lg:px-8">
-        <ProjectHeader
-          project={overviewData.project}
-          problemType={overviewData.currentExperiment?.problemType}
-          onCreateExperiment={handleCreateExperiment}
-        />
+    <div className="mt-8">
+      <ProjectSummary summary={overviewData.summary} />
 
-        <ProjectNavigation projectId={projectId} />
+      <CurrentExperiment
+        projectId={projectId}
+        experiment={overviewData.currentExperiment}
+      />
 
-        <ProjectSummary summary={overviewData.summary} />
+      <ProjectWorkflow
+        projectId={projectId}
+        workflow={overviewData.workflow}
+      />
 
-        <CurrentExperiment
-          projectId={projectId}
-          experiment={overviewData.currentExperiment}
-        />
-
-        <ProjectWorkflow
-          projectId={projectId}
-          workflow={overviewData.workflow}
-        />
-
-        <ProjectInformation
-          project={overviewData.project}
-          problemType={overviewData.currentExperiment?.problemType}
-          projectId={projectId}
-        />
-      </div>
+      <ProjectInformation
+        project={overviewData.project}
+        problemType={overviewData.currentExperiment?.problemType}
+        projectId={projectId}
+      />
     </div>
   );
 };
