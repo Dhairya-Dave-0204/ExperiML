@@ -23,6 +23,7 @@ const API_ENDPOINTS = {
   // Future dataset-related endpoints
   datasets: {
     base: "/datasets",
+    project: (projectId) => `/projects/${projectId}/datasets`,
   },
 
   // Future experiment-related endpoints
