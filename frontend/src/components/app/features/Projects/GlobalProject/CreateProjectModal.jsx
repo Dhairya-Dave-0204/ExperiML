@@ -1,6 +1,14 @@
 import { X } from "lucide-react";
 
-const CreateProjectModal = ({ isOpen, onClose, onSubmit }) => {
+const CreateProjectModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  formData,
+  onChange,
+  isSubmitting,
+  error,
+}) => {
   if (!isOpen) {
     return null;
   }
@@ -51,8 +59,11 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmit }) => {
                 id="project-name"
                 name="name"
                 type="text"
+                value={formData.name}
+                onChange={onChange}
                 placeholder="Enter project name"
-                className="mt-2 w-full rounded-lg border border-border bg-white px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/10"
+                disabled={isSubmitting}
+                className="mt-2 w-full rounded-lg border border-border bg-white px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/10 disabled:cursor-not-allowed disabled:bg-surface-soft"
               />
             </div>
 
@@ -71,26 +82,33 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmit }) => {
                 id="project-description"
                 name="description"
                 rows={4}
+                value={formData.description}
+                onChange={onChange}
                 placeholder="Describe what this project is about"
-                className="mt-2 w-full resize-none rounded-lg border border-border bg-white px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/10"
+                disabled={isSubmitting}
+                className="mt-2 w-full resize-none rounded-lg border border-border bg-white px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/10 disabled:cursor-not-allowed disabled:bg-surface-soft"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border">
+          {error && <p className="text-sm font-medium text-danger">{error}</p>}
+
+          <div className="flex items-center justify-end gap-3 px-6 py-4">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg px-4 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-surface-soft hover:text-text"
+              disabled={isSubmitting}
+              className="rounded-lg px-4 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-surface-soft hover:text-text disabled:cursor-not-allowed disabled:opacity-50"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-dark"
+              disabled={isSubmitting}
+              className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Create Project
+              {isSubmitting ? "Creating..." : "Create Project"}
             </button>
           </div>
         </form>

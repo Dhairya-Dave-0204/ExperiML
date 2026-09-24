@@ -5,6 +5,7 @@ import { ROUTES } from "@/constants/routes";
 import projectService from "@/services/project/projectService";
 
 import {
+  CreateProjectModal,
   ProjectCard,
   ProjectsGlobalHeader,
   ProjectsListHeader,
@@ -16,6 +17,16 @@ const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const [projectForm, setProjectForm] = useState({
+    name: "",
+    description: "",
+  });
+
+  const [isCreatingProject, setIsCreatingProject] = useState(false);
+  const [createProjectError, setCreateProjectError] = useState(null);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -42,8 +53,63 @@ const Projects = () => {
     navigate(ROUTES.PROJECT_TAB(projectId, ROUTES.PROJECT_TABS.OVERVIEW));
   };
 
+  const handleProjectFormChange = (event) => {
+    const { name, value } = event.target;
+
+    setProjectForm((currentForm) => ({
+      ...currentForm,
+      [name]: value,
+    }));
+
+    setCreateProjectError(null);
+  };
+
   const handleCreateProject = () => {
-    // Project creation flow will be implemented later.
+    setProjectForm({
+      name: "",
+      description: "",
+    });
+
+    setCreateProjectError(null);
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCreateProjectSubmit = async (event) => {
+    event.preventDefault();
+
+    const name = projectForm.name.trim();
+    const description = projectForm.description.trim();
+
+    if (!name) {
+      setCreateProjectError("Project name is required.");
+      return;
+    }
+
+    try {
+      setIsCreatingProject(true);
+      setCreateProjectError(null);
+
+      const createdProject = await projectService.createProject({
+        name,
+        description,
+      });
+
+      setProjects((currentProjects) => [createdProject, ...currentProjects]);
+
+      setIsCreateModalOpen(false);
+
+      navigate(
+        ROUTES.PROJECT_TAB(createdProject.id, ROUTES.PROJECT_TABS.OVERVIEW),
+      );
+    } catch (error) {
+      console.error("Failed to create project:", error);
+
+      setCreateProjectError(
+        error?.response?.data?.message || "Failed to create project.",
+      );
+    } finally {
+      setIsCreatingProject(false);
+    }
   };
 
   if (isLoading) {
@@ -89,6 +155,16 @@ const Projects = () => {
           )}
         </section>
       </div>
+
+      <CreateProjectModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreateProjectSubmit}
+        formData={projectForm}
+        onChange={handleProjectFormChange}
+        isSubmitting={isCreatingProject}
+        error={createProjectError}
+      />
     </div>
   );
 };
