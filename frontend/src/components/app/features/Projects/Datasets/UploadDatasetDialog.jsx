@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { FileSpreadsheet, Loader2, Upload, X } from "lucide-react";
 import datasetService from "@/services/dataset/datasetService";
 
-const UploadDatasetDialog = ({ onClose }) => {
+const UploadDatasetDialog = ({ onClose, onUploadSuccess }) => {
   const { projectId } = useParams();
 
   const [file, setFile] = useState(null);
@@ -45,6 +45,7 @@ const UploadDatasetDialog = ({ onClose }) => {
       await datasetService.createDataset(projectId, formData);
 
       onClose();
+      await onUploadSuccess?.();
     } catch (error) {
       console.error("Failed to upload dataset:", error);
 
