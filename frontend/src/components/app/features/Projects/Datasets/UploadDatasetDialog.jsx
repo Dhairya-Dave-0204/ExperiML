@@ -1,10 +1,16 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+
 import { FileSpreadsheet, Loader2, Upload, X } from "lucide-react";
+import datasetService from "@/services/dataset/datasetService";
 
 const UploadDatasetDialog = ({ onClose }) => {
+  const { projectId } = useParams();
+
   const [file, setFile] = useState(null);
   const [stage, setStage] = useState("idle");
   const [isDragging, setIsDragging] = useState(false);
+  const [error, setError] = useState(null);
 
   function handleFilePicked(selectedFile) {
     if (!selectedFile) return;
@@ -19,6 +25,32 @@ const UploadDatasetDialog = ({ onClose }) => {
     }
 
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  async function handleUpload() {
+    if (!file || !projectId) {
+      return;
+    }
+
+    try {
+      setError(null);
+      setStage("uploading");
+
+      const formData = new FormData();
+
+      formData.append("name", file.name.replace(/\.[^/.]+$/, ""));
+      formData.append("file", file);
+
+      await datasetService.createDataset(projectId, formData);
+
+      onClose();
+    } catch (error) {
+      console.error("Failed to upload dataset:", error);
+
+      setError(error?.response?.data?.message || "Failed to upload dataset.");
+
+      setStage("selected");
+    }
   }
 
   return (
@@ -169,12 +201,16 @@ const UploadDatasetDialog = ({ onClose }) => {
               <button
                 type="button"
                 disabled={stage !== "selected"}
-                onClick={() => setStage("uploading")}
+                onClick={handleUpload}
                 className="px-4 py-2 text-sm font-semibold text-white transition-colors duration-150 rounded-lg bg-primary hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Upload
               </button>
             </div>
+
+            {error && (
+              <p className="mt-3 text-xs font-medium text-danger">{error}</p>
+            )}
           </>
         )}
       </div>
