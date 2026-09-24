@@ -1,209 +1,611 @@
-import { useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
 import {
-  ArrowRight,
-  Boxes,
-  CalendarDays,
   Database,
-  FlaskConical,
-  MoreVertical,
-  Plus,
-  PencilRuler
+  Upload,
+  Search,
+  MoreHorizontal,
+  Eye,
+  Trash2,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  X,
+  FileSpreadsheet,
+  RotateCcw,
 } from "lucide-react";
 
-import { ROUTES } from "@/constants/routes";
+/* ------------------------------------------------------------------ */
+/* Mock data — UI preview only                                        */
+/* ------------------------------------------------------------------ */
 
-// Mock data for UI development.
-// This will be replaced with backend data during integration.
-const PROJECTS = [
+const DATASETS = [
   {
-    id: "21a5a5af-a972-436c-be40-cc1850f6a5a6",
-    name: "Customer Churn Prediction",
-    description:
-      "Predict customer churn using historical customer behavior data.",
-    datasets: 4,
-    experiments: 14,
-    models: 2,
-    createdAt: "Aug 13, 2026",
-    updatedAt: "Sep 17, 2026",
+    id: "ds_churn_v2",
+    name: "customer_churn_v2",
+    version: "v2",
+    status: "READY",
+    rows: "10,000",
+    columns: 21,
+    fileType: "CSV",
+    fileSize: "2.8 MB",
+    updated: "Updated 2 hours ago",
   },
   {
-    id: "heart-disease-project",
-    name: "Heart Disease Prediction",
-    description:
-      "Predict the likelihood of heart disease using patient data and machine learning.",
-    datasets: 3,
-    experiments: 8,
-    models: 1,
-    createdAt: "Aug 10, 2026",
-    updatedAt: "Sep 12, 2026",
+    id: "ds_churn_v1",
+    name: "customer_churn_v1",
+    version: "v1",
+    status: "READY",
+    rows: "8,500",
+    columns: 19,
+    fileType: "CSV",
+    fileSize: "2.4 MB",
+    updated: "Updated 5 days ago",
   },
   {
-    id: "ecommerce-sales-project",
-    name: "E-commerce Sales Forecasting",
-    description:
-      "Forecast future sales for an e-commerce platform using historical data.",
-    datasets: 5,
-    experiments: 12,
-    models: 3,
-    createdAt: "Aug 5, 2026",
-    updatedAt: "Sep 10, 2026",
+    id: "ds_churn_raw",
+    name: "customer_churn_raw",
+    version: "v1",
+    status: "PROCESSING",
+    rows: "12,300",
+    columns: 24,
+    fileType: "CSV",
+    fileSize: "3.1 MB",
+    updated: "Updated 6 days ago",
   },
   {
-    id: "loan-default-project",
-    name: "Loan Default Risk",
-    description:
-      "Assess loan default risk using financial and demographic data.",
-    datasets: 2,
-    experiments: 6,
-    models: 2,
-    createdAt: "Aug 1, 2026",
-    updatedAt: "Aug 28, 2026",
+    id: "ds_sales_v3",
+    name: "sales_forecast_v3",
+    version: "v3",
+    status: "READY",
+    rows: "24,500",
+    columns: 14,
+    fileType: "XLSX",
+    fileSize: "4.2 MB",
+    updated: "Updated 1 week ago",
   },
   {
-    id: "document-classification-project",
-    name: "Document Classification",
-    description:
-      "Classify documents into predefined categories using machine learning.",
-    datasets: 6,
-    experiments: 10,
-    models: 4,
-    createdAt: "Jul 28, 2026",
-    updatedAt: "Aug 25, 2026",
-  },
-  {
-    id: "customer-segmentation-project",
-    name: "Customer Segmentation",
-    description:
-      "Segment customers based on their behavior and purchase patterns.",
-    datasets: 4,
-    experiments: 9,
-    models: 3,
-    createdAt: "Jul 20, 2026",
-    updatedAt: "Aug 22, 2026",
+    id: "ds_sales_v2",
+    name: "sales_forecast_v2",
+    version: "v2",
+    status: "FAILED",
+    rows: "—",
+    columns: "—",
+    fileType: "XLSX",
+    fileSize: "3.8 MB",
+    updated: "Updated 2 weeks ago",
   },
 ];
 
-const Projects = () => {
-  const navigate = useNavigate();
+const STATUS_FILTERS = ["All", "Ready", "Processing", "Failed"];
 
-  const handleOpenProject = (projectId) => {
-    navigate(ROUTES.PROJECT_TAB(projectId, ROUTES.PROJECT_TABS.OVERVIEW));
-  };
+const STATUS_STYLES = {
+  READY: "bg-success/10 text-success",
+  PROCESSING: "bg-warning/10 text-warning",
+  FAILED: "bg-danger/10 text-danger",
+};
+
+/* ------------------------------------------------------------------ */
+/* Presentational helpers                                             */
+/* ------------------------------------------------------------------ */
+
+function StatusPill({ status }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide ${STATUS_STYLES[status]}`}
+    >
+      {status === "PROCESSING" && (
+        <Loader2 size={11} className="animate-spin" strokeWidth={2.5} />
+      )}
+
+      {status === "READY" && (
+        <CheckCircle2 size={11} strokeWidth={2.5} />
+      )}
+
+      {status === "FAILED" && (
+        <AlertCircle size={11} strokeWidth={2.5} />
+      )}
+
+      {status}
+    </span>
+  );
+}
+
+function DatasetRowActions({ dataset, onView, onDelete }) {
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-full bg-surface">
-      <div className="px-6 py-8 mx-auto max-w-7xl lg:px-8">
-        <div className="flex flex-col gap-5 mb-10 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight font-heading text-text sm:text-3xl">
-              Projects
-            </h1>
+    <div className="flex items-center gap-2 shrink-0">
+      {dataset.status === "READY" && (
+        <button
+          type="button"
+          onClick={onView}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-text transition-colors duration-150 hover:bg-surface-soft"
+        >
+          <Eye size={13} strokeWidth={1.85} />
+          View Analysis
+        </button>
+      )}
 
-            <p className="mt-2 text-sm text-text-secondary sm:text-base">
-              Manage and explore your machine learning projects.
-            </p>
+      {dataset.status === "PROCESSING" && (
+        <span className="text-xs text-text-secondary">
+          Analysis pending
+        </span>
+      )}
+
+      {dataset.status === "FAILED" && (
+        <button
+          type="button"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-text transition-colors duration-150 hover:bg-surface-soft"
+        >
+          <RotateCcw size={13} strokeWidth={1.85} />
+          Retry Upload
+        </button>
+      )}
+
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setMenuOpen((prev) => !prev)}
+          aria-label={`More actions for ${dataset.name}`}
+          aria-expanded={menuOpen}
+          className="rounded-lg p-1.5 text-text-secondary transition-colors duration-150 hover:bg-surface-soft hover:text-text"
+        >
+          <MoreHorizontal size={16} strokeWidth={1.85} />
+        </button>
+
+        {menuOpen && (
+          <>
+            <div
+              className="fixed inset-0 z-10"
+              onClick={() => setMenuOpen(false)}
+              aria-hidden="true"
+            />
+
+            <div className="absolute right-0 z-20 py-1 mt-1 border rounded-lg shadow-md top-full w-36 border-border bg-surface">
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onDelete();
+                }}
+                className="flex items-center w-full gap-2 px-3 py-2 text-xs font-medium text-left transition-colors duration-150 text-danger hover:bg-danger/10"
+              >
+                <Trash2 size={13} strokeWidth={1.85} />
+                Delete
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function DatasetListItem({ dataset, onView, onDelete }) {
+  return (
+    <li className="px-5 py-4 transition-colors duration-150 border-b border-border last:border-b-0 hover:bg-surface-soft sm:px-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+        <div className="flex items-center min-w-0 gap-3">
+          <div className="flex items-center justify-center rounded-lg h-9 w-9 shrink-0 bg-surface-soft">
+            <Database
+              size={15}
+              strokeWidth={1.75}
+              className="text-text-secondary"
+            />
           </div>
+
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-sm font-semibold truncate text-text">
+                {dataset.name}
+              </span>
+
+              <span className="shrink-0 rounded-full border border-border px-1.5 py-0.5 text-[10px] font-semibold text-text-secondary">
+                {dataset.version}
+              </span>
+            </div>
+
+            <div className="mt-0.5 hidden items-center gap-2 text-xs text-text-secondary sm:flex">
+              <span>{dataset.rows} rows</span>
+              <span aria-hidden="true">·</span>
+              <span>{dataset.columns} columns</span>
+              <span aria-hidden="true">·</span>
+              <span>{dataset.fileType}</span>
+              <span aria-hidden="true">·</span>
+              <span>{dataset.fileSize}</span>
+            </div>
+          </div>
+        </div>
+
+        <dl className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs text-text-secondary sm:hidden">
+          <div>
+            <dt className="inline text-text-secondary/70">Rows </dt>
+            <dd className="inline text-text">{dataset.rows}</dd>
+          </div>
+
+          <div>
+            <dt className="inline text-text-secondary/70">Columns </dt>
+            <dd className="inline text-text">{dataset.columns}</dd>
+          </div>
+
+          <div>
+            <dt className="inline text-text-secondary/70">Type </dt>
+            <dd className="inline text-text">{dataset.fileType}</dd>
+          </div>
+
+          <div>
+            <dt className="inline text-text-secondary/70">Size </dt>
+            <dd className="inline text-text">{dataset.fileSize}</dd>
+          </div>
+        </dl>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 sm:justify-end sm:gap-4">
+          <div className="flex items-center gap-3">
+            <StatusPill status={dataset.status} />
+
+            <span className="text-xs text-text-secondary">
+              {dataset.updated}
+            </span>
+          </div>
+
+          <DatasetRowActions
+            dataset={dataset}
+            onView={onView}
+            onDelete={onDelete}
+          />
+        </div>
+      </div>
+    </li>
+  );
+}
+
+function EmptyState({ onUpload }) {
+  return (
+    <div className="flex flex-col items-center px-6 py-16 text-center">
+      <div className="flex items-center justify-center mb-3 rounded-full h-11 w-11 bg-surface-soft">
+        <Database
+          size={19}
+          strokeWidth={1.75}
+          className="text-text-secondary"
+        />
+      </div>
+
+      <h3 className="mb-1 text-sm font-bold text-text">
+        No datasets yet
+      </h3>
+
+      <p className="max-w-xs mb-5 text-xs leading-relaxed text-text-secondary">
+        Upload a dataset to begin working with data in this project.
+      </p>
+
+      <button
+        type="button"
+        onClick={onUpload}
+        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white transition-colors duration-150 rounded-lg bg-primary hover:bg-primary-dark"
+      >
+        <Upload size={15} strokeWidth={2} />
+        Upload Dataset
+      </button>
+    </div>
+  );
+}
+
+function UploadDatasetDialog({ onClose }) {
+  const [file, setFile] = useState(null);
+  const [stage, setStage] = useState("idle");
+  const [isDragging, setIsDragging] = useState(false);
+
+  function handleFilePicked(selectedFile) {
+    if (!selectedFile) return;
+
+    setFile(selectedFile);
+    setStage("selected");
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024 * 1024) {
+      return `${(bytes / 1024).toFixed(0)} KB`;
+    }
+
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-text/30"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="upload-dialog-title"
+        className="relative w-full max-w-md p-6 border shadow-lg rounded-2xl border-border bg-surface"
+      >
+        <div className="flex items-center justify-between mb-5">
+          <h2
+            id="upload-dialog-title"
+            className="text-base font-bold font-heading text-text"
+          >
+            Upload Dataset
+          </h2>
 
           <button
             type="button"
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-dark"
+            onClick={onClose}
+            aria-label="Close"
+            className="p-1 transition-colors duration-150 rounded-lg text-text-secondary hover:bg-surface-soft hover:text-text"
           >
-            <Plus className="w-4 h-4" />
-            Create Project
+            <X size={17} strokeWidth={1.85} />
           </button>
         </div>
 
-        <div className="flex items-end justify-between gap-4 mb-5">
-          <div>
-            <h2 className="text-base font-semibold font-heading text-text">
-              Your Projects
-            </h2>
+        {stage === "uploading" ? (
+          <div className="flex flex-col items-center py-6 text-center">
+            <Loader2
+              size={22}
+              className="mb-3 animate-spin text-primary"
+              strokeWidth={2}
+            />
 
-            <p className="mt-1 text-sm text-text-secondary">
-              View and access all of your machine learning projects.
+            <div className="mb-1 text-sm font-semibold text-text">
+              Uploading dataset...
+            </div>
+
+            <p className="max-w-xs text-xs text-text-secondary">
+              Once the upload finishes, processing continues in the
+              background. You can safely close this dialog — the dataset
+              will appear as{" "}
+              <span className="font-semibold text-warning">
+                PROCESSING
+              </span>{" "}
+              until it's ready.
             </p>
           </div>
+        ) : (
+          <>
+            <p className="mb-4 text-xs text-text-secondary">
+              Supported formats: CSV, XLSX
+            </p>
 
-          <span className="text-sm shrink-0 text-text-secondary">
-            {PROJECTS.length} projects
-          </span>
-        </div>
+            {stage === "idle" && (
+              <div
+                onDragOver={(event) => {
+                  event.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  setIsDragging(false);
+                  handleFilePicked(
+                    event.dataTransfer.files?.[0] ?? null,
+                  );
+                }}
+                className={`flex flex-col items-center rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors duration-150 ${
+                  isDragging
+                    ? "border-primary bg-primary-light/30"
+                    : "border-border"
+                }`}
+              >
+                <Upload
+                  size={20}
+                  strokeWidth={1.75}
+                  className="mb-3 text-text-secondary"
+                />
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {PROJECTS.map((project) => (
-            <article
-              key={project.id}
-              className="flex flex-col p-5 transition-shadow bg-white border min-h-80 rounded-xl border-border hover:shadow-sm"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary-light text-primary">
-                  <Boxes className="w-5 h-5" />
-                </div>
-
-                <button
-                  type="button"
-                  aria-label={`More actions for ${project.name}`}
-                  className="inline-flex items-center justify-center w-8 h-8 transition-colors rounded-lg text-text-secondary hover:bg-surface-soft hover:text-text"
-                >
-                  <MoreVertical className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="flex-1 mt-5">
-                <h3 className="text-base font-semibold tracking-tight font-heading text-text">
-                  {project.name}
-                </h3>
-
-                <p className="mt-2 text-sm leading-5 text-text-secondary line-clamp-3">
-                  {project.description}
+                <p className="mb-1 text-sm font-medium text-text">
+                  Drag and drop a file here
                 </p>
 
-                <div className="flex flex-wrap pt-5 mt-5 text-xs border-t gap-x-5 gap-y-2 border-border text-text-secondary">
-                  <div className="inline-flex items-center gap-1.5">
-                    <Database className="w-3.5 h-3.5 text-primary" />
-                    <span>{project.datasets} datasets</span>
-                  </div>
+                <p className="mb-4 text-xs text-text-secondary">
+                  or
+                </p>
 
-                  <div className="inline-flex items-center gap-1.5">
-                    <FlaskConical className="w-3.5 h-3.5 text-primary" />
-                    <span>{project.experiments} experiments</span>
-                  </div>
+                <label className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-colors duration-150 border rounded-lg cursor-pointer border-border text-text hover:bg-surface-soft">
+                  Choose File
 
-                  <div className="inline-flex items-center gap-1.5">
-                    <Boxes className="w-3.5 h-3.5 text-primary" />
-                    <span>{project.models} models</span>
-                  </div>
-                </div>
+                  <input
+                    type="file"
+                    accept=".csv,.xlsx"
+                    className="sr-only"
+                    onChange={(event) =>
+                      handleFilePicked(
+                        event.target.files?.[0] ?? null,
+                      )
+                    }
+                  />
+                </label>
               </div>
+            )}
 
-              <div className="flex items-end justify-between gap-4 pt-5 mt-5 border-t border-border">
-                <div className="text-xs text-text-secondary">
-                  <div className="flex items-center gap-1.5">
-                    <CalendarDays className="w-3.5 h-3.5" />
-                    <span>Created: {project.createdAt}</span>
-                  </div>
+            {stage === "selected" && file && (
+              <div className="flex items-center justify-between gap-3 px-4 py-3 border rounded-xl border-border bg-surface-soft">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <FileSpreadsheet
+                    size={18}
+                    strokeWidth={1.75}
+                    className="shrink-0 text-text-secondary"
+                  />
 
-                  <div className="flex mt-1.5 items-center gap-1.5">
-                    <PencilRuler className="w-3.5 h-3.5" />
-                    <span>Updated: {project.updatedAt}</span>
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium truncate text-text">
+                      {file.name}
+                    </div>
+
+                    <div className="text-xs text-text-secondary">
+                      {formatSize(file.size)}
+                    </div>
                   </div>
                 </div>
 
                 <button
                   type="button"
-                  onClick={() => handleOpenProject(project.id)}
-                  className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary-light px-3 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+                  onClick={() => {
+                    setFile(null);
+                    setStage("idle");
+                  }}
+                  aria-label="Remove selected file"
+                  className="shrink-0 rounded-lg p-1.5 text-text-secondary transition-colors duration-150 hover:bg-surface hover:text-text"
                 >
-                  Open Project
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <X size={15} strokeWidth={1.85} />
                 </button>
               </div>
-            </article>
-          ))}
-        </div>
+            )}
+
+            <div className="mt-6 flex justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 text-sm font-semibold transition-colors duration-150 border rounded-lg border-border text-text hover:bg-surface-soft"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                disabled={stage !== "selected"}
+                onClick={() => setStage("uploading")}
+                className="px-4 py-2 text-sm font-semibold text-white transition-colors duration-150 rounded-lg bg-primary hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Upload
+              </button>
+            </div>
+          </>
+        )}
       </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Page                                                               */
+/* ------------------------------------------------------------------ */
+
+const ProjectDatasets = () => {
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [uploadOpen, setUploadOpen] = useState(false);
+
+  const datasets = DATASETS;
+
+  const filteredDatasets = useMemo(() => {
+    return datasets.filter((dataset) => {
+      const matchesSearch = dataset.name
+        .toLowerCase()
+        .includes(search.trim().toLowerCase());
+
+      const matchesStatus =
+        statusFilter === "All" ||
+        dataset.status === statusFilter.toUpperCase();
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [datasets, search, statusFilter]);
+
+  const handleView = () => {
+    // UI-only for now.
+  };
+
+  const handleDelete = (dataset) => {
+    // UI-only for now.
+    console.log("Delete requested:", dataset.id);
+  };
+
+  return (
+    <div className="max-w-5xl mx-auto space-y-5">
+      {/* Page header */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h2 className="mb-1 text-lg font-bold font-heading text-text">
+            Datasets
+          </h2>
+
+          <p className="text-sm text-text-secondary">
+            Upload, inspect, and manage the data used by your
+            experiments.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setUploadOpen(true)}
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white transition-colors duration-150 rounded-lg shrink-0 bg-primary hover:bg-primary-dark"
+        >
+          <Upload size={16} strokeWidth={2.25} />
+          Upload Dataset
+        </button>
+      </div>
+
+      {/* Toolbar */}
+      {datasets.length > 0 && (
+        <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative w-full sm:max-w-xs">
+            <Search
+              size={14}
+              strokeWidth={1.85}
+              className="absolute -translate-y-1/2 pointer-events-none left-3 top-1/2 text-text-secondary"
+            />
+
+            <input
+              type="text"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search datasets..."
+              className="w-full rounded-lg border border-border bg-surface py-1.5 pl-8 pr-3 text-sm text-text placeholder:text-text-secondary/70 transition-colors duration-150 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-light"
+            />
+          </div>
+
+          <div className="flex gap-1 overflow-x-auto">
+            {STATUS_FILTERS.map((label) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => setStatusFilter(label)}
+                className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors duration-150 ${
+                  statusFilter === label
+                    ? "bg-primary-light text-primary"
+                    : "text-text-secondary hover:bg-surface-soft hover:text-text"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Dataset list */}
+      <div className="border rounded-2xl border-border bg-surface">
+        {datasets.length === 0 ? (
+          <EmptyState onUpload={() => setUploadOpen(true)} />
+        ) : filteredDatasets.length === 0 ? (
+          <div className="px-6 py-12 text-sm text-center text-text-secondary">
+            No datasets match your search or filter.
+          </div>
+        ) : (
+          <ul>
+            {filteredDatasets.map((dataset) => (
+              <DatasetListItem
+                key={dataset.id}
+                dataset={dataset}
+                onView={handleView}
+                onDelete={() => handleDelete(dataset)}
+              />
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {uploadOpen && (
+        <UploadDatasetDialog
+          onClose={() => setUploadOpen(false)}
+        />
+      )}
     </div>
   );
 };
 
-export default Projects;
+export default ProjectDatasets;
