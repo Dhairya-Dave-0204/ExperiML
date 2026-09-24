@@ -55,9 +55,59 @@ const getProjects = async (userId) => {
     orderBy: {
       createdAt: "desc",
     },
+
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      createdAt: true,
+      updatedAt: true,
+
+      _count: {
+        select: {
+          datasets: {
+            where: {
+              deletedAt: null,
+            },
+          },
+          experiments: {
+            where: {
+              deletedAt: null,
+            },
+          },
+        },
+      },
+    },
   });
 
-  return projects;
+  const projectsWithStats = await Promise.all(
+    projects.map(async (project) => {
+      const modelCount = await prisma.artifact.count({
+        where: {
+          artifactType: "MODEL",
+          artifactStatus: "AVAILABLE",
+          deletedAt: null,
+          experiment: {
+            projectId: project.id,
+            deletedAt: null,
+          },
+        },
+      });
+
+      return {
+        id: project.id,
+        name: project.name,
+        description: project.description,
+        createdAt: project.createdAt,
+        updatedAt: project.updatedAt,
+        datasets: project._count.datasets,
+        experiments: project._count.experiments,
+        models: modelCount,
+      };
+    }),
+  );
+
+  return projectsWithStats;
 };
 
 /*
@@ -319,7 +369,7 @@ const getProjectOverview = async (userId, projectId) => {
   };
 };
 
-export {  
+export {
   createProject,
   getProjects,
   getProjectById,
