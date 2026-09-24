@@ -7,10 +7,17 @@ import {
   MoreVertical,
 } from "lucide-react";
 
+const formatProjectDate = (date) => {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(date));
+};
+
 const ProjectCard = ({ project, onOpen }) => {
   return (
     <article className="flex min-h-87.5 flex-col rounded-2xl border border-border bg-white p-6 transition-shadow hover:shadow-sm">
-      {/* Card header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-primary-light text-primary">
           <Boxes className="w-5 h-5" />
@@ -25,7 +32,6 @@ const ProjectCard = ({ project, onOpen }) => {
         </button>
       </div>
 
-      {/* Project information */}
       <div className="flex-1 mt-6">
         <h3 className="text-base font-semibold tracking-tight font-heading text-text">
           {project.name}
@@ -35,7 +41,6 @@ const ProjectCard = ({ project, onOpen }) => {
           {project.description}
         </p>
 
-        {/* Project statistics */}
         <div className="flex items-center justify-between pt-5 border-t mt-7 border-border">
           <div className="flex items-center gap-2 text-text-secondary">
             <Database className="h-3.5 w-3.5 text-primary" />
@@ -54,17 +59,16 @@ const ProjectCard = ({ project, onOpen }) => {
         </div>
       </div>
 
-      {/* Card footer */}
       <div className="flex items-end justify-between gap-4 pt-5 mt-6 border-t border-border">
         <div className="space-y-1.5 text-xs text-text-secondary">
           <div className="flex items-center gap-1.5">
             <CalendarDays className="h-3.5 w-3.5 shrink-0" />
-            <span>Created {project.createdAt}</span>
+            <span>Created {formatProjectDate(project.createdAt)}</span>
           </div>
 
           <div className="flex items-center gap-1.5">
             <CalendarDays className="h-3.5 w-3.5 shrink-0" />
-            <span>Updated {project.updatedAt}</span>
+            <span>Updated {formatProjectDate(project.updatedAt)}</span>
           </div>
         </div>
 
