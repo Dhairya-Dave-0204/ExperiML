@@ -89,9 +89,11 @@ const CreateProjectModal = ({
                 className="mt-2 w-full resize-none rounded-lg border border-border bg-white px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/10 disabled:cursor-not-allowed disabled:bg-surface-soft"
               />
             </div>
-          </div>
 
-          {error && <p className="text-sm font-medium text-danger">{error}</p>}
+            {error && (
+              <p className="text-sm font-medium text-danger">{error}</p>
+            )}
+          </div>
 
           <div className="flex items-center justify-end gap-3 px-6 py-4">
             <button
