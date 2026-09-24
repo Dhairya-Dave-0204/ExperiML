@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { Search, Upload } from "lucide-react";
@@ -88,36 +88,35 @@ const ProjectDatasets = () => {
   const [statusFilter, setStatusFilter] = useState("All");
   const [uploadOpen, setUploadOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchDatasets = async () => {
-      if (!projectId) {
-        setError("Project ID is missing.");
-        setIsLoading(false);
-        return;
-      }
+  const fetchDatasets = useCallback(async () => {
+    if (!projectId) {
+      setError("Project ID is missing.");
+      setIsLoading(false);
+      return;
+    }
 
-      try {
-        setIsLoading(true);
-        setError(null);
+    try {
+      setIsLoading(true);
+      setError(null);
 
-        const data = await datasetService.getProjectDatasets(projectId);
+      const data = await datasetService.getProjectDatasets(projectId);
+      const mappedDatasets = data.map(mapDatasetToUI);
 
-        const mappedDatasets = data.map(mapDatasetToUI);
+      setDatasets(mappedDatasets);
+    } catch (error) {
+      console.error("Failed to fetch project datasets:", error);
 
-        setDatasets(mappedDatasets);
-      } catch (error) {
-        console.error("Failed to fetch project datasets:", error);
-
-        setError(
-          error?.response?.data?.message || "Failed to load project datasets.",
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchDatasets();
+      setError(
+        error?.response?.data?.message || "Failed to load project datasets.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
   }, [projectId]);
+
+  useEffect(() => {
+    fetchDatasets();
+  }, [fetchDatasets]);
 
   const filteredDatasets = useMemo(() => {
     return datasets.filter((dataset) => {
@@ -242,7 +241,10 @@ const ProjectDatasets = () => {
       </div>
 
       {uploadOpen && (
-        <UploadDatasetDialog onClose={() => setUploadOpen(false)} />
+        <UploadDatasetDialog
+          onClose={() => setUploadOpen(false)}
+          onUploadSuccess={fetchDatasets}
+        />
       )}
     </div>
   );
