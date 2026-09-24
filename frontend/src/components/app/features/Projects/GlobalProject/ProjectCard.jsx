@@ -1,3 +1,5 @@
+// TODO: Make the 3 dot button working and add edit and delete options
+
 import {
   ArrowRight,
   Boxes,
@@ -8,10 +10,10 @@ import {
 } from "lucide-react";
 
 const formatProjectDate = (date) => {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
   }).format(new Date(date));
 };
 
@@ -63,12 +65,12 @@ const ProjectCard = ({ project, onOpen }) => {
         <div className="space-y-1.5 text-xs text-text-secondary">
           <div className="flex items-center gap-1.5">
             <CalendarDays className="h-3.5 w-3.5 shrink-0" />
-            <span>Created {formatProjectDate(project.createdAt)}</span>
+            <span>Created: {formatProjectDate(project.createdAt)}</span>
           </div>
 
           <div className="flex items-center gap-1.5">
             <CalendarDays className="h-3.5 w-3.5 shrink-0" />
-            <span>Updated {formatProjectDate(project.updatedAt)}</span>
+            <span>Updated: {formatProjectDate(project.updatedAt)}</span>
           </div>
         </div>
 
