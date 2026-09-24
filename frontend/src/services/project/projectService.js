@@ -15,6 +15,15 @@ const projectService = {
 
     return response.data.data;
   },
+
+  async createProject(projectData) {
+    const response = await apiClient.post(
+      API_ENDPOINTS.projects.base,
+      projectData,
+    );
+
+    return response.data.data;
+  },
 };
 
 export default projectService;
