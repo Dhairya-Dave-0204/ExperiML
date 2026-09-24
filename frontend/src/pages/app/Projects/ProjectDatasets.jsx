@@ -515,11 +515,11 @@ const ProjectDatasets = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-5">
+    <div className="mx-auto space-y-5 max-w-7xl">
       {/* Page header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h2 className="mb-1 text-lg font-bold font-heading text-text">
+          <h2 className="mb-1 font-bold font-heading text-text">
             Datasets
           </h2>
 
