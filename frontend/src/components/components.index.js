@@ -107,3 +107,4 @@ export { default as CurrentExperiment } from "./app/features/Projects/Overview/C
 export { default as ProjectInformation } from "./app/features/Projects/Overview/ProjectInformation";
 export { default as ProjectSummary } from "./app/features/Projects/Overview/ProjectSummary";
 export { default as ProjectWorkflow } from "./app/features/Projects/Overview/ProjectWorkflow";
+export { default as CreateProjectModal } from "./app/features/Projects/GlobalProject/CreateProjectModal";
