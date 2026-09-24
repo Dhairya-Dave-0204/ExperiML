@@ -114,3 +114,4 @@ export { default as ProjectLayout } from "./app/features/Projects/ProjectLayout"
 export { default as DatasetStatusPill } from "./app/features/Projects/Datasets/DatasetStatusPill";
 export { default as DatasetRowActions } from "./app/features/Projects/Datasets/DatasetRowActions";
 export { default as DatasetListItem } from "./app/features/Projects/Datasets/DatasetListItem";
+export { default as DatasetEmptyState } from "./app/features/Projects/Datasets/DatasetEmptyState";
