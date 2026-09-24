@@ -109,3 +109,6 @@ export { default as ProjectSummary } from "./app/features/Projects/Overview/Proj
 export { default as ProjectWorkflow } from "./app/features/Projects/Overview/ProjectWorkflow";
 export { default as CreateProjectModal } from "./app/features/Projects/GlobalProject/CreateProjectModal";
 export { default as ProjectLayout } from "./app/features/Projects/ProjectLayout";
+
+// Core application Project Datasets components
+export { default as DatasetStatusPill } from "./app/features/Projects/Datasets/DatasetStatusPill";
