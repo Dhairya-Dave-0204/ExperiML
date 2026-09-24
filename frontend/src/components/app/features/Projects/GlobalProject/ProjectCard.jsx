@@ -7,6 +7,7 @@ import {
   Database,
   FlaskConical,
   MoreVertical,
+  Pencil
 } from "lucide-react";
 
 const formatProjectDate = (date) => {
@@ -69,7 +70,7 @@ const ProjectCard = ({ project, onOpen }) => {
           </div>
 
           <div className="flex items-center gap-1.5">
-            <CalendarDays className="h-3.5 w-3.5 shrink-0" />
+            <Pencil className="h-3.5 w-3.5 shrink-0" />
             <span>Updated: {formatProjectDate(project.updatedAt)}</span>
           </div>
         </div>
