@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { Search, Upload } from "lucide-react";
 
@@ -78,6 +78,7 @@ const mapDatasetToUI = (dataset) => ({
 /* ------------------------------------------------------------------ */
 
 const ProjectDatasets = () => {
+  const navigate = useNavigate();
   const { projectId } = useParams();
 
   const [datasets, setDatasets] = useState([]);
@@ -131,8 +132,8 @@ const ProjectDatasets = () => {
     });
   }, [datasets, search, statusFilter]);
 
-  const handleView = () => {
-    // UI-only for now.
+  const handleView = (dataset) => {
+    navigate(`/app/projects/${projectId}/datasets/${dataset.id}`);
   };
 
   const handleDelete = (dataset) => {
@@ -232,7 +233,7 @@ const ProjectDatasets = () => {
               <DatasetListItem
                 key={dataset.id}
                 dataset={dataset}
-                onView={handleView}
+                onView={() => handleView(dataset)}
                 onDelete={() => handleDelete(dataset)}
               />
             ))}
