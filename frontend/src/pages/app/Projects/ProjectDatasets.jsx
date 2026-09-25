@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+import { ROUTES } from "@/constants/routes";
+
 import { Search, Upload } from "lucide-react";
 
 import {
@@ -133,7 +135,7 @@ const ProjectDatasets = () => {
   }, [datasets, search, statusFilter]);
 
   const handleView = (dataset) => {
-    navigate(`/app/projects/${projectId}/datasets/${dataset.id}`);
+    navigate(ROUTES.PROJECT_DATASET(projectId, dataset.id));
   };
 
   const handleDelete = (dataset) => {
