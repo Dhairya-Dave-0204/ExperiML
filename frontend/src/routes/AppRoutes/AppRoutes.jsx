@@ -2,7 +2,8 @@ import { Route } from "react-router-dom";
 
 import { AppLayout } from "@/layout/layout.index";
 import { ROUTES } from "@/constants/routes";
-import { ProjectLayout } from "@/components/components.index";
+
+import { ProjectLayout, DatasetAnalysis } from "@/components/components.index";
 
 import {
   Dashboard,

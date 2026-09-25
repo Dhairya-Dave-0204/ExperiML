@@ -116,3 +116,4 @@ export { default as DatasetRowActions } from "./app/features/Projects/Datasets/D
 export { default as DatasetListItem } from "./app/features/Projects/Datasets/DatasetListItem";
 export { default as DatasetEmptyState } from "./app/features/Projects/Datasets/DatasetEmptyState";
 export { default as UploadDatasetDialog } from "./app/features/Projects/Datasets/UploadDatasetDialog";
+export { default as DatasetAnalysis } from "./app/features/Projects/Datasets/DatasetAnalysis";
