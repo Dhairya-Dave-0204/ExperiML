@@ -22,7 +22,10 @@ const AppRoutes = (
 
     <Route path="/app/projects/:projectId" element={<ProjectLayout />}>
       <Route path="overview" element={<ProjectOverview />} />
+
       <Route path="datasets" element={<ProjectDatasets />} />
+
+      <Route path="datasets/:datasetId" element={<DatasetAnalysis />} />
     </Route>
   </Route>
 );

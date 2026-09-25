@@ -71,7 +71,7 @@ function Section({ title, description, children }) {
 function DataTable({ columns, rows }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[520px] text-left text-sm">
+      <table className="w-full text-sm text-left min-w-130">
         <thead>
           <tr className="text-xs border-b border-border text-text-secondary">
             {columns.map((column) => (
