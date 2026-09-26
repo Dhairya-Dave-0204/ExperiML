@@ -90,7 +90,10 @@ const ProjectDatasets = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [uploadOpen, setUploadOpen] = useState(false);
+
   const [deleteDataset, setDeleteDataset] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
 
   const fetchDatasets = useCallback(async () => {
     if (!projectId) {
@@ -140,7 +143,31 @@ const ProjectDatasets = () => {
   };
 
   const handleDelete = (dataset) => {
+    setDeleteError(null);
     setDeleteDataset(dataset);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteDataset || !projectId) return;
+
+    try {
+      setIsDeleting(true);
+      setDeleteError(null);
+
+      await datasetService.deleteDataset(projectId, deleteDataset.id);
+
+      setDeleteDataset(null);
+
+      await fetchDatasets();
+    } catch (error) {
+      console.error("Failed to delete dataset:", error);
+
+      setDeleteError(
+        error?.response?.data?.message || "Failed to delete dataset.",
+      );
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   if (isLoading) {
@@ -267,28 +294,33 @@ const ProjectDatasets = () => {
               </p>
             </div>
 
+            {deleteError && (
+              <p className="self-center mr-auto text-xs font-medium text-danger">
+                {deleteError}
+              </p>
+            )}
             <div className="mt-5 flex justify-end gap-2.5">
               <button
                 type="button"
                 onClick={() => setDeleteDataset(null)}
-                className="px-4 py-2 text-sm font-semibold transition-colors duration-150 border rounded-lg border-border text-text hover:border-border-hover hover:bg-surface-soft"
+                disabled={isDeleting}
+                className="px-4 py-2 text-sm font-semibold transition-colors duration-150 border rounded-lg disabled:cursor-not-allowed disabled:opacity-50 border-border text-text hover:border-border-hover hover:bg-surface-soft"
               >
                 Cancel
               </button>
 
               <button
                 type="button"
-                onClick={() => {
-                  // API integration in the next part
-                }}
-                className="px-4 py-2 text-sm font-semibold text-white transition-colors duration-150 rounded-lg bg-danger hover:bg-danger/90"
+                onClick={confirmDelete}
+                disabled={isDeleting}
+                className="px-4 py-2 text-sm font-semibold text-white transition-colors duration-150 rounded-lg bg-danger hover:bg-danger/90 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Delete
+                {isDeleting ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>
         </div>
-      )}  
+      )}
     </div>
   );
 };
