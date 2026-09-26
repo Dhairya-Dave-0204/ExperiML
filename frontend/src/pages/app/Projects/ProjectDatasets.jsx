@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { ROUTES } from "@/constants/routes"
+import { ROUTES } from "@/constants/routes";
 
 import { Search, Upload } from "lucide-react";
 
@@ -90,6 +90,7 @@ const ProjectDatasets = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [deleteDataset, setDeleteDataset] = useState(null);
 
   const fetchDatasets = useCallback(async () => {
     if (!projectId) {
@@ -139,8 +140,7 @@ const ProjectDatasets = () => {
   };
 
   const handleDelete = (dataset) => {
-    // UI-only for now.
-    console.log("Delete requested:", dataset.id);
+    setDeleteDataset(dataset);
   };
 
   if (isLoading) {
@@ -249,6 +249,46 @@ const ProjectDatasets = () => {
           onUploadSuccess={fetchDatasets}
         />
       )}
+
+      {deleteDataset && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/40">
+          <div className="w-full max-w-md p-5 border shadow-xl rounded-xl border-border bg-surface">
+            <div className="mb-2">
+              <h3 className="text-base font-bold font-heading text-text">
+                Delete Dataset?
+              </h3>
+
+              <p className="mt-1 text-sm leading-5 text-text-secondary">
+                Are you sure you want to delete{" "}
+                <span className="font-semibold text-text">
+                  {deleteDataset.name}
+                </span>
+                ? This action will remove the dataset from this project.
+              </p>
+            </div>
+
+            <div className="mt-5 flex justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={() => setDeleteDataset(null)}
+                className="px-4 py-2 text-sm font-semibold transition-colors duration-150 border rounded-lg border-border text-text hover:border-border-hover hover:bg-surface-soft"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  // API integration in the next part
+                }}
+                className="px-4 py-2 text-sm font-semibold text-white transition-colors duration-150 rounded-lg bg-danger hover:bg-danger/90"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}  
     </div>
   );
 };
