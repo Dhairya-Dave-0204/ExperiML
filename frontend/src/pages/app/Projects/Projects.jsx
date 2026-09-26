@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 import { ROUTES } from "@/constants/routes";
 import projectService from "@/services/project/projectService";
@@ -98,15 +99,19 @@ const Projects = () => {
 
       setIsCreateModalOpen(false);
 
+      toast.success("Project created successfully.");
+
       navigate(
         ROUTES.PROJECT_TAB(createdProject.id, ROUTES.PROJECT_TABS.OVERVIEW),
       );
     } catch (error) {
       console.error("Failed to create project:", error);
 
-      setCreateProjectError(
-        error?.response?.data?.message || "Failed to create project.",
-      );
+      const message =
+        error?.response?.data?.message || "Failed to create project.";
+
+      setCreateProjectError(message);
+      toast.error(message);
     } finally {
       setIsCreatingProject(false);
     }
