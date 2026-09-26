@@ -1,5 +1,6 @@
 import { useMemo, useState, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 import {
   ExperimentsHeader,
@@ -144,6 +145,11 @@ const ProjectExperiments = () => {
     setIsCreateOpen(false);
   };
 
+  const handleCreateSuccess = async () => {
+    await fetchExperiments();
+    toast.success("Experiment created successfully.");
+  };
+
   return (
     <div className="w-full px-4">
       <div className="w-full mx-auto max-w-7xl">
@@ -159,7 +165,10 @@ const ProjectExperiments = () => {
         <ExperimentList experiments={filteredExperiments} />
 
         {isCreateOpen && (
-          <CreateExperimentModal onClose={handleCloseCreateExperiment} />
+          <CreateExperimentModal
+            onClose={handleCloseCreateExperiment}
+            onCreateSuccess={handleCreateSuccess}
+          />
         )}
       </div>
     </div>
