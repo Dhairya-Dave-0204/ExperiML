@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes"
 
 import { Search, Upload } from "lucide-react";
 

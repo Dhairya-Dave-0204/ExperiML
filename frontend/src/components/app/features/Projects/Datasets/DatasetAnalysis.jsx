@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 import datasetService from "@/services/dataset/datasetService";
-import ROUTES from "@/constants/routes";
+import { ROUTES } from "@/constants/routes";
 
 const formatFileSize = (bytes) => {
   if (bytes === null || bytes === undefined) return "—";
@@ -195,7 +195,7 @@ const DatasetAnalysis = () => {
   );
 
   return (
-    <div className="max-w-5xl px-4 py-6 mx-auto space-y-6 sm:px-6 lg:px-8">
+    <div className="px-4 py-4 mx-auto space-y-6 max-w-7xl sm:px-6 lg:px-8">
       {/* Back navigation */}
       <button
         type="button"
