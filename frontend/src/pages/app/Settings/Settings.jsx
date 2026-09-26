@@ -2,7 +2,7 @@ import { SettingsAccount, SettingsSecurity, SettingsDangerZone } from "@/compone
 
 function Settings() {
   return (
-    <main className="w-full max-w-5xl px-4 py-8 mx-auto sm:px-6 lg:px-8">
+    <main className="w-full px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
       {/* Header */}
       <header className="mb-8">
         <h1 className="text-3xl font-extrabold tracking-tight font-heading text-text">

@@ -87,7 +87,7 @@ function Dashboard() {
       <DashboardHeader />
 
       <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto space-y-6">
+        <div className="mx-auto space-y-6 max-w-7xl">
           {hasWorkspace ? (
             <>
               <div>
