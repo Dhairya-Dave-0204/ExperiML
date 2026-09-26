@@ -31,6 +31,9 @@ const API_ENDPOINTS = {
   // Future experiment-related endpoints
   experiments: {
     base: "/experiments",
+    project: (projectId) => `/projects/${projectId}/experiments`,
+    detail: (projectId, experimentId) =>
+      `/projects/${projectId}/experiments/${experimentId}`,
   },
 
   // Future model-related endpoints
