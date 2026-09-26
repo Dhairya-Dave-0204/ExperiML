@@ -1,9 +1,4 @@
-import {
-  Clock3,
-  Cpu,
-  Database,
-  Ellipsis,
-} from "lucide-react";
+import { Clock3, Cpu, Database, Ellipsis } from "lucide-react";
 
 import ExperimentStatusPill from "./ExperimentStatusPill";
 
@@ -11,13 +6,9 @@ const ExperimentListItem = ({ experiment, onClick }) => {
   return (
     <>
       {/* Desktop / Tablet */}
-      <tr className="transition-colors group hover:bg-muted/30">
+      <tr className="hidden transition-colors group hover:bg-muted/30 md:table-row">
         <td className="px-4 py-3.5">
-          <button
-            type="button"
-            onClick={onClick}
-            className="text-left"
-          >
+          <button type="button" onClick={onClick} className="text-left">
             <p className="max-w-[230px] truncate text-sm font-medium text-foreground transition-colors group-hover:text-primary">
               {experiment.name}
             </p>
@@ -72,11 +63,11 @@ const ExperimentListItem = ({ experiment, onClick }) => {
       </tr>
 
       {/* Mobile */}
-      <div className="w-full p-4 text-left transition-colors border rounded-lg group border-border bg-card hover:bg-muted/30">
+      <div className="block p-4 transition-colors border rounded-lg border-border bg-card hover:bg-muted/30 md:hidden">
         <button
           type="button"
           onClick={onClick}
-          className="w-full text-left focus:outline-none"
+          className="w-full text-left group focus:outline-none"
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
@@ -96,25 +87,19 @@ const ExperimentListItem = ({ experiment, onClick }) => {
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Database className="h-3.5 w-3.5 shrink-0" />
 
-              <span className="truncate">
-                {experiment.dataset}
-              </span>
+              <span className="truncate">{experiment.dataset}</span>
             </div>
 
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Cpu className="h-3.5 w-3.5 shrink-0" />
 
-              <span className="truncate">
-                {experiment.algorithm}
-              </span>
+              <span className="truncate">{experiment.algorithm}</span>
             </div>
 
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Clock3 className="h-3.5 w-3.5 shrink-0" />
 
-              <span>
-                Updated {experiment.updatedAt}
-              </span>
+              <span>Updated {experiment.updatedAt}</span>
             </div>
           </div>
         </button>
