@@ -18,6 +18,14 @@ const datasetService = {
     return response.data.data;
   },
 
+  async deleteDataset(projectId, datasetId) {
+    const response = await apiClient.delete(
+      API_ENDPOINTS.datasets.detail(projectId, datasetId),
+    );
+
+    return response.data.data;
+  },
+
   async createDataset(projectId, formData) {
     const response = await apiClient.post(
       API_ENDPOINTS.datasets.project(projectId),
