@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
 
-import ExperimentsHeader from "./ExperimentsHeader";
-import ExperimentsToolbar from "./ExperimentsToolbar";
-import ExperimentList from "./ExperimentList";
-import CreateExperimentModal from "./CreateExperimentModal";
+import {
+  ExperimentsHeader,
+  ExperimentsToolbar,
+  ExperimentList,
+  CreateExperimentModal,
+} from "@/components/components.index";
 
 const MOCK_EXPERIMENTS = [
   {
