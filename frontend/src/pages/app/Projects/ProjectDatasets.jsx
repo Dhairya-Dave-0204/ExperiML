@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 import { ROUTES } from "@/constants/routes";
 
@@ -159,6 +160,7 @@ const ProjectDatasets = () => {
       setDeleteDataset(null);
 
       await fetchDatasets();
+      toast.success("Dataset deleted successfully.");
     } catch (error) {
       console.error("Failed to delete dataset:", error);
 
@@ -168,6 +170,11 @@ const ProjectDatasets = () => {
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const handleUploadSuccess = async () => {
+    await fetchDatasets();
+    toast.success("Dataset uploaded successfully.");
   };
 
   if (isLoading) {
@@ -273,7 +280,7 @@ const ProjectDatasets = () => {
       {uploadOpen && (
         <UploadDatasetDialog
           onClose={() => setUploadOpen(false)}
-          onUploadSuccess={fetchDatasets}
+          onUploadSuccess={handleUploadSuccess}
         />
       )}
 
