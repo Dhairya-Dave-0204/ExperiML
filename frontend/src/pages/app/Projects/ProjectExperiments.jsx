@@ -9,62 +9,67 @@ import {
 } from "@/components/components.index";
 
 import experimentService from "@/services/experiment/experimentService";
+import datasetService from "@/services/dataset/datasetService";
 
-const MOCK_EXPERIMENTS = [
-  {
-    id: "exp-001",
-    name: "Customer Churn Baseline",
-    description:
-      "Baseline classification experiment for customer churn prediction.",
-    status: "Completed",
-    dataset: "Customer Churn Dataset",
-    algorithm: "Random Forest",
-    createdAt: "26/09/2026",
-    updatedAt: "26/09/2026",
-  },
-  {
-    id: "exp-002",
-    name: "Loan Default Prediction",
-    description:
-      "Classification experiment for identifying potential loan defaults.",
-    status: "Running",
-    dataset: "Loan Applications",
-    algorithm: "XGBoost",
-    createdAt: "25/09/2026",
-    updatedAt: "26/09/2026",
-  },
-  {
-    id: "exp-003",
-    name: "House Price Regression",
-    description:
-      "Regression experiment using housing attributes to predict prices.",
-    status: "Queued",
-    dataset: "House Prices",
-    algorithm: "Linear Regression",
-    createdAt: "24/09/2026",
-    updatedAt: "24/09/2026",
-  },
-  {
-    id: "exp-004",
-    name: "Customer Segmentation",
-    description: "Unsupervised experiment for discovering customer segments.",
-    status: "Draft",
-    dataset: "Customer Behaviour",
-    algorithm: "K-Means",
-    createdAt: "22/09/2026",
-    updatedAt: "22/09/2026",
-  },
-  {
-    id: "exp-005",
-    name: "Sales Forecasting",
-    description: "Time-series experiment for forecasting future sales trends.",
-    status: "Failed",
-    dataset: "Sales History",
-    algorithm: "Random Forest",
-    createdAt: "20/09/2026",
-    updatedAt: "21/09/2026",
-  },
-];
+/* ------------------------------------------------------------------ */
+/* Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+const STATUS_LABELS = {
+  CREATED: "Draft",
+  QUEUED: "Queued",
+  TRAINING: "Running",
+  COMPLETED: "Completed",
+  FAILED: "Failed",
+  CANCELLED: "Cancelled",
+};
+
+const formatExperimentDate = (date) => {
+  if (!date) {
+    return "—";
+  }
+
+  const parsedDate = new Date(date);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "—";
+  }
+
+  return parsedDate.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+};
+
+const mapExperimentToUI = (experiment, datasetMap) => {
+  return {
+    id: experiment.id,
+    name: experiment.name,
+
+    datasetId: experiment.datasetId,
+    dataset: datasetMap[experiment.datasetId] ?? "Unknown dataset",
+
+    status:
+      STATUS_LABELS[experiment.experimentStatus] ?? experiment.experimentStatus,
+
+    algorithm: experiment.algorithmName,
+    problemType: experiment.problemType,
+
+    started: experiment.startedAt
+      ? formatExperimentDate(experiment.startedAt)
+      : "Not started",
+
+    createdAt: formatExperimentDate(experiment.createdAt),
+    updatedAt: formatExperimentDate(experiment.updatedAt),
+
+    metrics: experiment.metrics,
+  };
+};
+
+/* ------------------------------------------------------------------ */
+/* Page                                                               */
+/* ------------------------------------------------------------------ */
 
 const ProjectExperiments = () => {
   const { projectId } = useParams();
@@ -78,15 +83,29 @@ const ProjectExperiments = () => {
   const [error, setError] = useState(null);
 
   const fetchExperiments = useCallback(async () => {
-    if (!projectId) return;
+    if (!projectId) {
+      return;
+    }
 
     try {
       setIsLoading(true);
       setError(null);
 
-      const data = await experimentService.getProjectExperiments(projectId);
+      const [experimentData, datasetData] = await Promise.all([
+        experimentService.getProjectExperiments(projectId),
+        datasetService.getProjectDatasets(projectId),
+      ]);
 
-      setExperiments(data);
+      const datasetMap = datasetData.reduce((map, dataset) => {
+        map[dataset.id] = dataset.name;
+        return map;
+      }, {});
+
+      const mappedExperiments = experimentData.map((experiment) =>
+        mapExperimentToUI(experiment, datasetMap),
+      );
+
+      setExperiments(mappedExperiments);
     } catch (error) {
       console.error("Failed to fetch experiments:", error);
 
@@ -96,10 +115,14 @@ const ProjectExperiments = () => {
     }
   }, [projectId]);
 
+  useEffect(() => {
+    fetchExperiments();
+  }, [fetchExperiments]);
+
   const filteredExperiments = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
 
-    return MOCK_EXPERIMENTS.filter((experiment) => {
+    return experiments.filter((experiment) => {
       const matchesSearch =
         !normalizedSearch ||
         experiment.name.toLowerCase().includes(normalizedSearch) ||
@@ -111,11 +134,7 @@ const ProjectExperiments = () => {
 
       return matchesSearch && matchesStatus;
     });
-  }, [search, statusFilter]);
-
-  useEffect(() => {
-    fetchExperiments();
-  }, [fetchExperiments]);
+  }, [experiments, search, statusFilter]);
 
   const handleCreateExperiment = () => {
     setIsCreateOpen(true);
