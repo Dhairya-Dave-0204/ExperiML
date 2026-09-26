@@ -49,9 +49,7 @@ const ExperimentsToolbar = ({
         <div className="relative w-full sm:w-44">
           <select
             value={statusFilter}
-            onChange={(event) =>
-              onStatusFilterChange(event.target.value)
-            }
+            onChange={(event) => onStatusFilterChange(event.target.value)}
             className="w-full h-10 px-3 text-sm transition-colors border rounded-md outline-none appearance-none border-input bg-background pr-9 text-foreground focus:border-ring focus:ring-2 focus:ring-ring/20"
           >
             {STATUS_OPTIONS.map((status) => (

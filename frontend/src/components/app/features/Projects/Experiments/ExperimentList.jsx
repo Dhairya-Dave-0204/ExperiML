@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 
-import ExperimentListItem from "./ExperimentListItem";
+import { ExperimentListItem } from "@/components/components.index";
 
 const ExperimentList = ({ experiments, onExperimentClick }) => {
   return (
@@ -8,9 +8,7 @@ const ExperimentList = ({ experiments, onExperimentClick }) => {
       {/* Results Count */}
       <div className="flex items-center justify-between mt-6">
         <div>
-          <h2 className="text-sm font-medium text-foreground">
-            Experiments
-          </h2>
+          <h2 className="text-sm font-medium text-foreground">Experiments</h2>
 
           <p className="mt-0.5 text-xs text-muted-foreground">
             {experiments.length}{" "}
@@ -23,7 +21,7 @@ const ExperimentList = ({ experiments, onExperimentClick }) => {
       {experiments.length > 0 && (
         <div className="hidden mt-3 overflow-hidden border rounded-lg border-border bg-card md:block">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px]">
+            <table className="w-full min-w-190">
               <thead>
                 <tr className="border-b border-border bg-muted/30">
                   <th className="px-4 py-3 text-xs font-medium text-left text-muted-foreground">
@@ -80,7 +78,7 @@ const ExperimentList = ({ experiments, onExperimentClick }) => {
 
       {/* No Results */}
       {experiments.length === 0 && (
-        <div className="mt-3 flex min-h-[260px] flex-col items-center justify-center rounded-lg border border-dashed border-border bg-card px-6 py-10 text-center">
+        <div className="flex flex-col items-center justify-center px-6 py-10 mt-3 text-center border border-dashed rounded-lg min-h-65 border-border bg-card">
           <div className="flex items-center justify-center rounded-full h-11 w-11 bg-muted">
             <Search className="w-5 h-5 text-muted-foreground" />
           </div>

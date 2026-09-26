@@ -117,3 +117,11 @@ export { default as DatasetListItem } from "./app/features/Projects/Datasets/Dat
 export { default as DatasetEmptyState } from "./app/features/Projects/Datasets/DatasetEmptyState";
 export { default as UploadDatasetDialog } from "./app/features/Projects/Datasets/UploadDatasetDialog";
 export { default as DatasetAnalysis } from "./app/features/Projects/Datasets/DatasetAnalysis";
+
+// Core application Project Experient components
+export { default as CreateExperimentModal } from "./app/features/Projects/Experiments/CreateExperimentModal";
+export { default as ExperimentList } from "./app/features/Projects/Experiments/ExperimentList";
+export { default as ExperimentListItem } from "./app/features/Projects/Experiments/ExperimentListItem";
+export { default as ExperimentStatusPill } from "./app/features/Projects/Experiments/ExperimentStatusPill";
+export { default as ExperimentsHeader } from "./app/features/Projects/Experiments/ExperimentsHeader";
+export { default as ExperimentsToolbar } from "./app/features/Projects/Experiments/ExperimentsToolbar";

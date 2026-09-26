@@ -1,6 +1,6 @@
 import { Clock3, Cpu, Database, Ellipsis } from "lucide-react";
 
-import ExperimentStatusPill from "./ExperimentStatusPill";
+import { ExperimentStatusPill } from "@/components/components.index";
 
 const ExperimentListItem = ({ experiment, onClick }) => {
   return (
@@ -9,11 +9,11 @@ const ExperimentListItem = ({ experiment, onClick }) => {
       <tr className="hidden transition-colors group hover:bg-muted/30 md:table-row">
         <td className="px-4 py-3.5">
           <button type="button" onClick={onClick} className="text-left">
-            <p className="max-w-[230px] truncate text-sm font-medium text-foreground transition-colors group-hover:text-primary">
+            <p className="max-w-57.5 truncate text-sm font-medium text-foreground transition-colors group-hover:text-primary">
               {experiment.name}
             </p>
 
-            <p className="mt-0.5 max-w-[280px] truncate text-xs text-muted-foreground">
+            <p className="mt-0.5 max-w-70 truncate text-xs text-muted-foreground">
               {experiment.description}
             </p>
           </button>
@@ -27,7 +27,7 @@ const ExperimentListItem = ({ experiment, onClick }) => {
           <div className="flex items-center min-w-0 gap-2">
             <Database className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
 
-            <span className="max-w-[150px] truncate text-sm text-foreground">
+            <span className="max-w-37.5 truncate text-sm text-foreground">
               {experiment.dataset}
             </span>
           </div>
@@ -37,7 +37,7 @@ const ExperimentListItem = ({ experiment, onClick }) => {
           <div className="flex items-center min-w-0 gap-2">
             <Cpu className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
 
-            <span className="max-w-[130px] truncate text-sm text-foreground">
+            <span className="max-w-32.5 truncate text-sm text-foreground">
               {experiment.algorithm}
             </span>
           </div>
