@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 import {
   ExperimentsHeader,
@@ -6,6 +7,8 @@ import {
   ExperimentList,
   CreateExperimentModal,
 } from "@/components/components.index";
+
+import experimentService from "@/services/experiment/experimentService";
 
 const MOCK_EXPERIMENTS = [
   {
@@ -64,9 +67,34 @@ const MOCK_EXPERIMENTS = [
 ];
 
 const ProjectExperiments = () => {
+  const { projectId } = useParams();
+
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  const [experiments, setExperiments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchExperiments = useCallback(async () => {
+    if (!projectId) return;
+
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const data = await experimentService.getProjectExperiments(projectId);
+
+      setExperiments(data);
+    } catch (error) {
+      console.error("Failed to fetch experiments:", error);
+
+      setError(error?.response?.data?.message || "Failed to load experiments.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [projectId]);
 
   const filteredExperiments = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -84,6 +112,10 @@ const ProjectExperiments = () => {
       return matchesSearch && matchesStatus;
     });
   }, [search, statusFilter]);
+
+  useEffect(() => {
+    fetchExperiments();
+  }, [fetchExperiments]);
 
   const handleCreateExperiment = () => {
     setIsCreateOpen(true);
