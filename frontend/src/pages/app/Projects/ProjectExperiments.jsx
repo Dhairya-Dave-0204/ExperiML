@@ -13,7 +13,7 @@ import experimentService from "@/services/experiment/experimentService";
 import datasetService from "@/services/dataset/datasetService";
 
 /* ------------------------------------------------------------------ */
-/* Helpers                                                            */
+/* Constants                                                          */
 /* ------------------------------------------------------------------ */
 
 const STATUS_LABELS = {
@@ -24,6 +24,14 @@ const STATUS_LABELS = {
   FAILED: "Failed",
   CANCELLED: "Cancelled",
 };
+
+const ACTIVE_STATUSES = new Set(["QUEUED", "TRAINING"]);
+
+const POLLING_INTERVAL = 3000;
+
+/* ------------------------------------------------------------------ */
+/* Helpers                                                            */
+/* ------------------------------------------------------------------ */
 
 const formatExperimentDate = (date) => {
   if (!date) {
@@ -83,42 +91,89 @@ const ProjectExperiments = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchExperiments = useCallback(async () => {
-    if (!projectId) {
-      return;
-    }
+  /* -------------------------------------------------------------- */
+  /* Fetch experiments                                               */
+  /* -------------------------------------------------------------- */
 
-    try {
-      setIsLoading(true);
-      setError(null);
+  const fetchExperiments = useCallback(
+    async ({ silent = false } = {}) => {
+      if (!projectId) {
+        return;
+      }
 
-      const [experimentData, datasetData] = await Promise.all([
-        experimentService.getProjectExperiments(projectId),
-        datasetService.getProjectDatasets(projectId),
-      ]);
+      try {
+        if (!silent) {
+          setIsLoading(true);
+        }
 
-      const datasetMap = datasetData.reduce((map, dataset) => {
-        map[dataset.id] = dataset.name;
-        return map;
-      }, {});
+        setError(null);
 
-      const mappedExperiments = experimentData.map((experiment) =>
-        mapExperimentToUI(experiment, datasetMap),
-      );
+        const [experimentData, datasetData] = await Promise.all([
+          experimentService.getProjectExperiments(projectId),
+          datasetService.getProjectDatasets(projectId),
+        ]);
 
-      setExperiments(mappedExperiments);
-    } catch (error) {
-      console.error("Failed to fetch experiments:", error);
+        const datasetMap = datasetData.reduce((map, dataset) => {
+          map[dataset.id] = dataset.name;
+          return map;
+        }, {});
 
-      setError(error?.response?.data?.message || "Failed to load experiments.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [projectId]);
+        const mappedExperiments = experimentData.map((experiment) =>
+          mapExperimentToUI(experiment, datasetMap),
+        );
+
+        setExperiments(mappedExperiments);
+      } catch (error) {
+        console.error("Failed to fetch experiments:", error);
+
+        setError(
+          error?.response?.data?.message || "Failed to load experiments.",
+        );
+      } finally {
+        if (!silent) {
+          setIsLoading(false);
+        }
+      }
+    },
+    [projectId],
+  );
+
+  /* -------------------------------------------------------------- */
+  /* Initial fetch                                                   */
+  /* -------------------------------------------------------------- */
 
   useEffect(() => {
     fetchExperiments();
   }, [fetchExperiments]);
+
+  /* -------------------------------------------------------------- */
+  /* Automatic polling                                               */
+  /* -------------------------------------------------------------- */
+
+  useEffect(() => {
+    const hasActiveExperiments = experiments.some((experiment) => {
+      return (
+        experiment.status === STATUS_LABELS.QUEUED ||
+        experiment.status === STATUS_LABELS.TRAINING
+      );
+    });
+
+    if (!hasActiveExperiments) {
+      return undefined;
+    }
+
+    const intervalId = setInterval(() => {
+      fetchExperiments({ silent: true });
+    }, POLLING_INTERVAL);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [experiments, fetchExperiments]);
+
+  /* -------------------------------------------------------------- */
+  /* Filtering                                                       */
+  /* -------------------------------------------------------------- */
 
   const filteredExperiments = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -137,6 +192,10 @@ const ProjectExperiments = () => {
     });
   }, [experiments, search, statusFilter]);
 
+  /* -------------------------------------------------------------- */
+  /* Create Experiment                                               */
+  /* -------------------------------------------------------------- */
+
   const handleCreateExperiment = () => {
     setIsCreateOpen(true);
   };
@@ -146,9 +205,16 @@ const ProjectExperiments = () => {
   };
 
   const handleCreateSuccess = async () => {
-    await fetchExperiments();
+    // Immediately fetch the newly created experiment.
+    // No page refresh or navigation is required.
+    await fetchExperiments({ silent: true });
+
     toast.success("Experiment created successfully.");
   };
+
+  /* -------------------------------------------------------------- */
+  /* Render                                                          */
+  /* -------------------------------------------------------------- */
 
   return (
     <div className="w-full px-4">
