@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, Plus } from "lucide-react";
+import { ChevronRight, ArrowBigRight } from "lucide-react";
 
 import { ROUTES } from "@/constants/routes";
 
@@ -46,8 +46,8 @@ const ProjectHeader = ({ project, problemType, onCreateExperiment }) => {
           onClick={onCreateExperiment}
           className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-dark"
         >
-          <Plus className="w-4 h-4" />
           Create Experiment
+          <ArrowBigRight className="w-5 h-5" />
         </button>
       </div>
     </>
