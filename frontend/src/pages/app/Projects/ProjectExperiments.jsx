@@ -59,6 +59,9 @@ const mapExperimentToUI = (experiment, datasetMap) => {
     datasetId: experiment.datasetId,
     dataset: datasetMap[experiment.datasetId] ?? "Unknown dataset",
 
+    // Keep the backend status for polling logic.
+    experimentStatus: experiment.experimentStatus,
+
     status:
       STATUS_LABELS[experiment.experimentStatus] ?? experiment.experimentStatus,
 
@@ -88,6 +91,8 @@ const ProjectExperiments = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const [experiments, setExperiments] = useState([]);
+  const [datasetMap, setDatasetMap] = useState({});
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -108,15 +113,8 @@ const ProjectExperiments = () => {
 
         setError(null);
 
-        const [experimentData, datasetData] = await Promise.all([
-          experimentService.getProjectExperiments(projectId),
-          datasetService.getProjectDatasets(projectId),
-        ]);
-
-        const datasetMap = datasetData.reduce((map, dataset) => {
-          map[dataset.id] = dataset.name;
-          return map;
-        }, {});
+        const experimentData =
+          await experimentService.getProjectExperiments(projectId);
 
         const mappedExperiments = experimentData.map((experiment) =>
           mapExperimentToUI(experiment, datasetMap),
@@ -135,28 +133,62 @@ const ProjectExperiments = () => {
         }
       }
     },
-    [projectId],
+    [projectId, datasetMap],
   );
 
   /* -------------------------------------------------------------- */
-  /* Initial fetch                                                   */
+  /* Initial page load                                               */
   /* -------------------------------------------------------------- */
 
   useEffect(() => {
-    fetchExperiments();
-  }, [fetchExperiments]);
+    const loadInitialData = async () => {
+      if (!projectId) {
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const [datasetData, experimentData] = await Promise.all([
+          datasetService.getProjectDatasets(projectId),
+          experimentService.getProjectExperiments(projectId),
+        ]);
+
+        const map = datasetData.reduce((accumulator, dataset) => {
+          accumulator[dataset.id] = dataset.name;
+          return accumulator;
+        }, {});
+
+        setDatasetMap(map);
+
+        const mappedExperiments = experimentData.map((experiment) =>
+          mapExperimentToUI(experiment, map),
+        );
+
+        setExperiments(mappedExperiments);
+      } catch (error) {
+        console.error("Failed to load experiments:", error);
+
+        setError(
+          error?.response?.data?.message || "Failed to load experiments.",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadInitialData();
+  }, [projectId]);
 
   /* -------------------------------------------------------------- */
   /* Automatic polling                                               */
   /* -------------------------------------------------------------- */
 
   useEffect(() => {
-    const hasActiveExperiments = experiments.some((experiment) => {
-      return (
-        experiment.status === STATUS_LABELS.QUEUED ||
-        experiment.status === STATUS_LABELS.TRAINING
-      );
-    });
+    const hasActiveExperiments = experiments.some((experiment) =>
+      ACTIVE_STATUSES.has(experiment.experimentStatus),
+    );
 
     if (!hasActiveExperiments) {
       return undefined;
@@ -205,8 +237,8 @@ const ProjectExperiments = () => {
   };
 
   const handleCreateSuccess = async () => {
-    // Immediately fetch the newly created experiment.
-    // No page refresh or navigation is required.
+    // Fetch only the experiments endpoint.
+    // The existing dataset map is reused.
     await fetchExperiments({ silent: true });
 
     toast.success("Experiment created successfully.");
