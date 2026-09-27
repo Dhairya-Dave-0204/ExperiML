@@ -1,23 +1,97 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
 import { useParams } from "react-router-dom";
+
 import { Beaker, ChevronDown, Loader2, Plus, Sparkles, X } from "lucide-react";
 
 import datasetService from "@/services/dataset/datasetService";
 import experimentService from "@/services/experiment/experimentService";
 
 const PROBLEM_TYPES = [
-  { value: "CLASSIFICATION", label: "Classification" },
-  { value: "REGRESSION", label: "Regression" },
-  { value: "CLUSTERING", label: "Clustering" },
-  { value: "TIME_SERIES", label: "Time Series" },
-  { value: "ANOMALY_DETECTION", label: "Anomaly Detection" },
+  {
+    value: "CLASSIFICATION",
+    label: "Classification",
+  },
+  {
+    value: "REGRESSION",
+    label: "Regression",
+  },
 ];
+
+const ALGORITHMS_BY_PROBLEM_TYPE = {
+  CLASSIFICATION: [
+    {
+      value: "logistic_regression",
+      label: "Logistic Regression",
+    },
+    {
+      value: "decision_tree_classifier",
+      label: "Decision Tree",
+    },
+    {
+      value: "random_forest_classifier",
+      label: "Random Forest",
+    },
+    {
+      value: "knn_classifier",
+      label: "K-Nearest Neighbors",
+    },
+    {
+      value: "svm_classifier",
+      label: "Support Vector Machine",
+    },
+    {
+      value: "naive_bayes",
+      label: "Naive Bayes",
+    },
+    {
+      value: "xgboost_classifier",
+      label: "XGBoost",
+    },
+  ],
+
+  REGRESSION: [
+    {
+      value: "linear_regression",
+      label: "Linear Regression",
+    },
+    {
+      value: "ridge",
+      label: "Ridge Regression",
+    },
+    {
+      value: "lasso",
+      label: "Lasso Regression",
+    },
+    {
+      value: "decision_tree_regressor",
+      label: "Decision Tree",
+    },
+    {
+      value: "random_forest_regressor",
+      label: "Random Forest",
+    },
+    {
+      value: "knn_regressor",
+      label: "K-Nearest Neighbors",
+    },
+    {
+      value: "svr",
+      label: "Support Vector Regression",
+    },
+    {
+      value: "xgboost_regressor",
+      label: "XGBoost",
+    },
+  ],
+};
 
 const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
   const { projectId } = useParams();
 
   const [experimentName, setExperimentName] = useState("");
   const [dataset, setDataset] = useState("");
+  const [targetColumn, setTargetColumn] = useState("");
   const [problemType, setProblemType] = useState("");
   const [algorithm, setAlgorithm] = useState("");
 
@@ -57,6 +131,39 @@ const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
     fetchDatasets();
   }, [projectId]);
 
+  const selectedDataset = useMemo(() => {
+    return datasets.find((item) => item.id === dataset) ?? null;
+  }, [datasets, dataset]);
+
+  const targetColumns = useMemo(() => {
+    return selectedDataset?.metadata?.columns ?? [];
+  }, [selectedDataset]);
+
+  const availableAlgorithms = ALGORITHMS_BY_PROBLEM_TYPE[problemType] ?? [];
+
+  const handleDatasetChange = (event) => {
+    const value = event.target.value;
+
+    setDataset(value);
+
+    // Target column belongs to the selected dataset,
+    // so reset it whenever the dataset changes.
+    setTargetColumn("");
+
+    setError(null);
+  };
+
+  const handleProblemTypeChange = (event) => {
+    const value = event.target.value;
+
+    setProblemType(value);
+
+    // Reset algorithm whenever the problem type changes.
+    setAlgorithm("");
+
+    setError(null);
+  };
+
   const handleCreate = async () => {
     if (!projectId) return;
 
@@ -69,6 +176,11 @@ const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
 
     if (!dataset) {
       setError("Please select a dataset.");
+      return;
+    }
+
+    if (!targetColumn) {
+      setError("Please select a target column.");
       return;
     }
 
@@ -93,7 +205,9 @@ const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
           datasetId: dataset,
           problemType,
           algorithmName: algorithm,
-          configuration: {},
+          configuration: {
+            targetColumn,
+          },
           hyperparameters: {},
         },
       );
@@ -102,6 +216,7 @@ const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
       onClose();
     } catch (error) {
       console.error("Failed to create experiment:", error);
+      console.error("FastAPI error response:", error.response?.data);
 
       setError(
         error?.response?.data?.message || "Failed to create experiment.",
@@ -123,18 +238,18 @@ const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
         <div className="flex items-start justify-between gap-4 px-5 py-4 border-b border-border sm:px-6">
           <div className="flex items-start min-w-0 gap-3">
             <div className="flex items-center justify-center rounded-lg h-9 w-9 shrink-0 bg-muted">
-              <Beaker className="h-4.5 w-4.5 text-foreground" />
+              <Beaker className="w-6 h-6" />
             </div>
 
             <div className="min-w-0">
               <h2
                 id="create-experiment-title"
-                className="text-sm font-semibold text-foreground"
+                className="text-sm font-semibold"
               >
                 Create Experiment
               </h2>
 
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              <p className="mt-1 text-xs leading-5">
                 Configure a new machine learning experiment for this project.
               </p>
             </div>
@@ -172,7 +287,7 @@ const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
               }}
               placeholder="e.g. Customer Churn Baseline"
               disabled={isCreating}
-              className="w-full h-10 px-3 text-sm transition-colors border rounded-md outline-none border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full h-10 px-3 text-sm transition-colors border rounded-md outline-none border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
             />
           </div>
 
@@ -189,12 +304,9 @@ const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
               <select
                 id="experiment-dataset"
                 value={dataset}
-                onChange={(event) => {
-                  setDataset(event.target.value);
-                  setError(null);
-                }}
+                onChange={handleDatasetChange}
                 disabled={isLoadingDatasets || isCreating}
-                className="w-full h-10 px-3 text-sm transition-colors border rounded-md outline-none appearance-none border-input bg-background pr-9 text-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full h-10 px-3 text-sm transition-colors border rounded-md outline-none appearance-none border-input bg-background pr-9 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <option value="" disabled>
                   {isLoadingDatasets
@@ -204,7 +316,7 @@ const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
 
                 {datasets.map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.name}
+                    {item.name} · v{item.datasetVersion}
                   </option>
                 ))}
               </select>
@@ -223,6 +335,51 @@ const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
             )}
           </div>
 
+          {/* Target Column */}
+          <div>
+            <label
+              htmlFor="experiment-target-column"
+              className="mb-1.5 block text-xs font-medium text-foreground"
+            >
+              Target Column
+            </label>
+
+            <div className="relative">
+              <select
+                id="experiment-target-column"
+                value={targetColumn}
+                onChange={(event) => {
+                  setTargetColumn(event.target.value);
+                  setError(null);
+                }}
+                disabled={!dataset || targetColumns.length === 0 || isCreating}
+                className="w-full h-10 px-3 text-sm transition-colors border rounded-md outline-none appearance-none border-input bg-background pr-9 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <option value="" disabled>
+                  {!dataset
+                    ? "Select a dataset first"
+                    : targetColumns.length === 0
+                      ? "No columns available"
+                      : "Select a target column"}
+                </option>
+
+                {targetColumns.map((column) => (
+                  <option key={column.name} value={column.name}>
+                    {column.name}
+                  </option>
+                ))}
+              </select>
+
+              <ChevronDown className="absolute w-4 h-4 -translate-y-1/2 pointer-events-none right-3 top-1/2 text-muted-foreground" />
+            </div>
+
+            {dataset && targetColumns.length === 0 && (
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                No column metadata is available for this dataset.
+              </p>
+            )}
+          </div>
+
           {/* Problem Type */}
           <div>
             <label
@@ -236,12 +393,9 @@ const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
               <select
                 id="experiment-problem-type"
                 value={problemType}
-                onChange={(event) => {
-                  setProblemType(event.target.value);
-                  setError(null);
-                }}
+                onChange={handleProblemTypeChange}
                 disabled={isCreating}
-                className="w-full h-10 px-3 text-sm transition-colors border rounded-md outline-none appearance-none border-input bg-background pr-9 text-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full h-10 px-3 text-sm transition-colors border rounded-md outline-none appearance-none border-input bg-background pr-9 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <option value="" disabled>
                   Select a problem type
@@ -275,18 +429,20 @@ const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
                   setAlgorithm(event.target.value);
                   setError(null);
                 }}
-                disabled={isCreating}
-                className="w-full h-10 px-3 text-sm transition-colors border rounded-md outline-none appearance-none border-input bg-background pr-9 text-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={!problemType || isCreating}
+                className="w-full h-10 px-3 text-sm transition-colors border rounded-md outline-none appearance-none border-input bg-background pr-9 text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <option value="" disabled>
-                  Select an algorithm
+                  {!problemType
+                    ? "Select a problem type first"
+                    : "Select an algorithm"}
                 </option>
 
-                <option value="random-forest">Random Forest</option>
-                <option value="linear-regression">Linear Regression</option>
-                <option value="logistic-regression">Logistic Regression</option>
-                <option value="xgboost">XGBoost</option>
-                <option value="k-means">K-Means</option>
+                {availableAlgorithms.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
               </select>
 
               <ChevronDown className="absolute w-4 h-4 -translate-y-1/2 pointer-events-none right-3 top-1/2 text-muted-foreground" />
@@ -326,7 +482,7 @@ const CreateExperimentModal = ({ onClose, onCreateSuccess }) => {
             type="button"
             onClick={handleCreate}
             disabled={isCreating || isLoadingDatasets || datasets.length === 0}
-            className="inline-flex items-center justify-center gap-2 px-4 text-sm font-medium rounded-md h-9 bg-primary text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 px-4 text-sm font-medium rounded-md h-9 bg-primary text-surface hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isCreating ? (
               <>
