@@ -6,6 +6,7 @@ import {
   getArtifactById,
   downloadArtifact,
   deleteArtifact,
+  getModelDetails,
 } from "#artifact/artifact.controller";
 
 import {
@@ -101,6 +102,19 @@ router.delete(
   authenticate,
   validate(artifactParamsSchema, "params"),
   deleteArtifact,
+);
+
+router.get(
+  "/:projectId/models/:modelId",
+  authenticate,
+  validate(
+    artifactParamsSchema.pick({
+      projectId: true,
+      artifactId: true,
+    }),
+    "params",
+  ),
+  getModelDetails,
 );
 
 export default router;
