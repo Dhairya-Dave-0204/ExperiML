@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import {
+  getProjectModels,
   getArtifacts,
   getArtifactById,
   downloadArtifact,
@@ -16,6 +17,23 @@ import { validate } from "#middleware/validate.middleware";
 import { authenticate } from "#middleware/auth.middleware";
 
 const router = Router();
+
+/*
+ * ============================================================
+ * GET PROJECT MODELS
+ * ============================================================
+ * GET
+ * /api/v1/projects/:projectId/models
+ *
+ * Retrieves all non-deleted model artifacts belonging to a project.
+ */
+
+router.get(
+  "/:projectId/models",
+  authenticate,
+  validate(artifactParentParamsSchema.pick({ projectId: true }), "params"),
+  getProjectModels,
+);
 
 /*
  * ============================================================
