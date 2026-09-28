@@ -14,13 +14,13 @@ const API_ENDPOINTS = {
     base: "/dashboard",
   },
 
-  // Future project-related endpoints
+  // Project-related endpoints
   projects: {
     base: "/projects",
     overview: (projectId) => `/projects/${projectId}/overview`,
   },
 
-  // Future dataset-related endpoints
+  // Dataset-related endpoints
   datasets: {
     base: "/datasets",
     project: (projectId) => `/projects/${projectId}/datasets`,
@@ -28,7 +28,7 @@ const API_ENDPOINTS = {
       `/projects/${projectId}/datasets/${datasetId}`,
   },
 
-  // Future experiment-related endpoints
+  // Experiment-related endpoints
   experiments: {
     base: "/experiments",
     project: (projectId) => `/projects/${projectId}/experiments`,
@@ -36,17 +36,18 @@ const API_ENDPOINTS = {
       `/projects/${projectId}/experiments/${experimentId}`,
   },
 
-  // Future model-related endpoints
+  // Model-related endpoints
   models: {
     base: "/models",
+    project: (projectId) => `/projects/${projectId}/models`,
   },
 
-  // Future prediction-related endpoints
+  // Prediction-related endpoints
   predictions: {
     base: "/predictions",
   },
 
-  // Future artifact-related endpoints
+  // Artifact-related endpoints
   artifacts: {
     base: "/artifacts",
   },

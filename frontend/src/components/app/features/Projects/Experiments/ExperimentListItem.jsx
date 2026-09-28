@@ -112,7 +112,7 @@ const ExperimentListItem = ({ experiment, onClick, onDelete }) => {
 
           <button
             type="button"
-            className="flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+            className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
             aria-label={`Delete ${experiment.name}`}
             onClick={handleDeleteClick}
           >
