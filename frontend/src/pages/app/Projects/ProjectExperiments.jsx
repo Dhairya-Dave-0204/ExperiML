@@ -97,6 +97,10 @@ const ProjectExperiments = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [experimentToDelete, setExperimentToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
+
   /* -------------------------------------------------------------- */
   /* Fetch experiments                                               */
   /* -------------------------------------------------------------- */
@@ -245,8 +249,50 @@ const ProjectExperiments = () => {
     toast.success("Experiment created successfully.");
   };
 
+  /* -------------------------------------------------------------- */
+  /* Experiment Actions                                              */
+  /* -------------------------------------------------------------- */
+
   const handleExperimentClick = (experiment) => {
     navigate(`/app/projects/${projectId}/experiments/${experiment.id}`);
+  };
+
+  const handleDeleteExperiment = (experiment) => {
+    setDeleteError(null);
+    setExperimentToDelete(experiment);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!experimentToDelete || !projectId) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      setDeleteError(null);
+
+      await experimentService.deleteExperiment(
+        projectId,
+        experimentToDelete.id,
+      );
+
+      setExperimentToDelete(null);
+
+      await fetchExperiments({ silent: true });
+
+      toast.success("Experiment deleted successfully.");
+    } catch (error) {
+      console.error("Failed to delete experiment:", error);
+
+      const message =
+        error?.response?.data?.message || "Failed to delete experiment.";
+
+      setDeleteError(message);
+
+      toast.error(message);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   /* -------------------------------------------------------------- */
@@ -268,6 +314,7 @@ const ProjectExperiments = () => {
         <ExperimentList
           experiments={filteredExperiments}
           onExperimentClick={handleExperimentClick}
+          onDelete={handleDeleteExperiment}
         />
 
         {isCreateOpen && (
@@ -275,6 +322,51 @@ const ProjectExperiments = () => {
             onClose={handleCloseCreateExperiment}
             onCreateSuccess={handleCreateSuccess}
           />
+        )}
+
+        {experimentToDelete && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+            <div className="w-full max-w-md p-6 border rounded-lg shadow-lg bg-surface border-border">
+              <h2 className="text-base font-semibold text-foreground">
+                Delete experiment?
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Are you sure you want to delete{" "}
+                <span className="font-medium text-foreground">
+                  {experimentToDelete.name}
+                </span>
+                ? This action cannot be undone.
+              </p>
+
+              {deleteError && (
+                <p className="mt-3 text-sm text-destructive">{deleteError}</p>
+              )}
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  onClick={() => {
+                    setExperimentToDelete(null);
+                    setDeleteError(null);
+                  }}
+                  className="px-4 py-2 text-sm font-medium border rounded-md border-border text-foreground hover:bg-surface-soft disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  onClick={handleConfirmDelete}
+                  className="px-4 py-2 text-sm font-medium bg-red-400 rounded-md text-surface hover:bg-red-600 disabled:opacity-50"
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

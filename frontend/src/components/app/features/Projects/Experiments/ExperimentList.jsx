@@ -2,7 +2,7 @@ import { Search } from "lucide-react";
 
 import { ExperimentListItem } from "@/components/components.index";
 
-const ExperimentList = ({ experiments, onExperimentClick }) => {
+const ExperimentList = ({ experiments, onExperimentClick, onDelete }) => {
   return (
     <>
       {/* Results Count */}
@@ -54,6 +54,7 @@ const ExperimentList = ({ experiments, onExperimentClick }) => {
                     key={experiment.id}
                     experiment={experiment}
                     onClick={() => onExperimentClick?.(experiment)}
+                    onDelete={onDelete}
                   />
                 ))}
               </tbody>
@@ -70,6 +71,7 @@ const ExperimentList = ({ experiments, onExperimentClick }) => {
               <ExperimentListItem
                 experiment={experiment}
                 onClick={() => onExperimentClick?.(experiment)}
+                onDelete={onDelete}
               />
             </div>
           ))}
