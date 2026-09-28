@@ -14,6 +14,7 @@ import {
   ProjectExperiments,
   ExperimentDetails,
   ProjectModels,
+  ModelDetails
 } from "@/pages/page.index";
 
 const AppRoutes = (
@@ -36,6 +37,8 @@ const AppRoutes = (
       <Route path="experiments/:experimentId" element={<ExperimentDetails />} />
 
       <Route path="models" element={<ProjectModels />} />
+
+      <Route path="models/:modelId" element={<ModelDetails />} />
     </Route>
   </Route>
 );
