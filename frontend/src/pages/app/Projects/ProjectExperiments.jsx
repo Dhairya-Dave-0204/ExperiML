@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 import {
@@ -85,6 +85,7 @@ const mapExperimentToUI = (experiment, datasetMap) => {
 
 const ProjectExperiments = () => {
   const { projectId } = useParams();
+  const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -244,6 +245,10 @@ const ProjectExperiments = () => {
     toast.success("Experiment created successfully.");
   };
 
+  const handleExperimentClick = (experiment) => {
+    navigate(`/app/projects/${projectId}/experiments/${experiment.id}`);
+  };
+
   /* -------------------------------------------------------------- */
   /* Render                                                          */
   /* -------------------------------------------------------------- */
@@ -260,7 +265,10 @@ const ProjectExperiments = () => {
           onStatusFilterChange={setStatusFilter}
         />
 
-        <ExperimentList experiments={filteredExperiments} />
+        <ExperimentList
+          experiments={filteredExperiments}
+          onExperimentClick={handleExperimentClick}
+        />
 
         {isCreateOpen && (
           <CreateExperimentModal
