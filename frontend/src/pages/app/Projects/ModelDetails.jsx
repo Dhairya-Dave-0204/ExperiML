@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import modelService from "@/services/model/modelService";
+import artifactService from "@/services/artifact/artifactService";
 
 const formatDate = (date) => {
   if (!date) return "—";
@@ -66,6 +67,8 @@ const ModelDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [downloadingArtifactId, setDownloadingArtifactId] = useState(null);
+
   const fetchModelDetails = useCallback(async () => {
     if (!projectId || !modelId) return;
 
@@ -86,6 +89,41 @@ const ModelDetails = () => {
       setIsLoading(false);
     }
   }, [projectId, modelId]);
+
+  const handleDownloadArtifact = async (artifact) => {
+    if (!artifact || !experiment?.id) return;
+
+    try {
+      setDownloadingArtifactId(artifact.id);
+
+      const response = await artifactService.downloadArtifact(
+        projectId,
+        experiment.id,
+        artifact.id,
+      );
+
+      const blob = new Blob([response.data], {
+        type: artifact.mimeType || "application/octet-stream",
+      });
+
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download =
+        artifact.originalFileName || artifact.artifactName || "artifact";
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error("Failed to download artifact:", error);
+    } finally {
+      setDownloadingArtifactId(null);
+    }
+  };
 
   useEffect(() => {
     fetchModelDetails();
