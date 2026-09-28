@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import modelService from "@/services/model/modelService";
 
@@ -39,6 +39,7 @@ const formatAlgorithm = (algorithmName) => {
 
 const ProjectModels = () => {
   const { projectId } = useParams();
+  const navigate = useNavigate();
 
   const [models, setModels] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -101,7 +102,7 @@ const ProjectModels = () => {
 
   return (
     <div className="w-full px-4">
-      <div className="w-full py-6 mx-auto max-w-7xl">
+      <div className="w-full mx-auto max-w-7xl">
         <div className="flex flex-col gap-2 mb-6">
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -131,7 +132,17 @@ const ProjectModels = () => {
             {models.map((model) => (
               <div
                 key={model.id}
-                className="p-5 border rounded-lg border-border bg-card"
+                onClick={() =>
+                  navigate(`/app/projects/${projectId}/models/${model.id}`)
+                }
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    navigate(`/app/projects/${projectId}/models/${model.id}`);
+                  }
+                }}
+                className="p-5 transition-colors border rounded-lg cursor-pointer border-border bg-card hover:bg-muted/40"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
