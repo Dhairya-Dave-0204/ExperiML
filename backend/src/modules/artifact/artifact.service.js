@@ -134,6 +134,84 @@ class ArtifactService {
   }
 
   /**
+   * Get a single trained model and its related artifacts.
+   *
+   * The model is represented by a MODEL artifact.
+   * Its preprocessing pipeline is resolved through the same experiment.
+   */
+  async getModelDetails({ userId, projectId, modelId }) {
+    const model = await prisma.artifact.findFirst({
+      where: {
+        id: modelId,
+        artifactType: "MODEL",
+        deletedAt: null,
+
+        experiment: {
+          deletedAt: null,
+
+          project: {
+            id: projectId,
+            userId,
+            deletedAt: null,
+          },
+        },
+      },
+
+      include: {
+        experiment: {
+          select: {
+            id: true,
+            name: true,
+            problemType: true,
+            algorithmName: true,
+            experimentStatus: true,
+            metrics: true,
+            completedAt: true,
+            createdAt: true,
+
+            artifacts: {
+              where: {
+                artifactType: "PREPROCESSING_PIPELINE",
+                deletedAt: null,
+              },
+              select: {
+                id: true,
+                artifactName: true,
+                artifactType: true,
+                fileFormat: true,
+                originalFileName: true,
+                fileSize: true,
+                mimeType: true,
+                artifactStatus: true,
+                createdAt: true,
+                updatedAt: true,
+              },
+              orderBy: {
+                createdAt: "desc",
+              },
+              take: 1,
+            },
+          },
+        },
+      },
+    });
+
+    if (!model) {
+      throw new ApiError(404, "Model not found");
+    }
+
+    const preprocessingPipeline = model.experiment.artifacts[0] ?? null;
+
+    const { artifacts, ...experiment } = model.experiment;
+
+    return {
+      model,
+      preprocessingPipeline,
+      experiment,
+    };
+  }
+
+  /**
    * Get a single artifact metadata. Does not return the physical file.
    */
   async getArtifact({ userId, projectId, experimentId, artifactId }) {
