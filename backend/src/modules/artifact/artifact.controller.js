@@ -122,10 +122,31 @@ const deleteArtifact = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Artifact deleted successfully."));
 });
 
+const getModelDetails = asyncHandler(async (req, res) => {
+  const { projectId, modelId } = req.params;
+
+  const modelDetails = await artifactService.getModelDetails({
+    projectId,
+    modelId,
+    userId: req.user.id,
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        modelDetails,
+        "Model details fetched successfully.",
+      ),
+    );
+});
+
 export {
   getProjectModels,
   getArtifacts,
   getArtifactById,
   downloadArtifact,
   deleteArtifact,
+  getModelDetails
 };
