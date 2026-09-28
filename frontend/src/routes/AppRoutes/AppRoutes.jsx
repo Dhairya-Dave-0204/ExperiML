@@ -12,6 +12,7 @@ import {
   ProjectOverview,
   ProjectDatasets,
   ProjectExperiments,
+  ExperimentDetails,
 } from "@/pages/page.index";
 
 const AppRoutes = (
@@ -30,6 +31,8 @@ const AppRoutes = (
       <Route path="datasets/:datasetId" element={<DatasetAnalysis />} />
 
       <Route path="experiments" element={<ProjectExperiments />} />
+
+      <Route path="experiments/:experimentId" element={<ExperimentDetails />} />
     </Route>
   </Route>
 );
