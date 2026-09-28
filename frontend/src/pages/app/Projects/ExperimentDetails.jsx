@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { ExperimentStatusPill } from "@/components/components.index";
+
 import experimentService from "@/services/experiment/experimentService";
+import datasetService from "@/services/dataset/datasetService";
 
 const STATUS_LABELS = {
   CREATED: "Draft",
@@ -12,6 +15,10 @@ const STATUS_LABELS = {
   FAILED: "Failed",
   CANCELLED: "Cancelled",
 };
+
+/* ------------------------------------------------------------------ */
+/* Helpers                                                            */
+/* ------------------------------------------------------------------ */
 
 const formatDateTime = (date) => {
   if (!date) {
@@ -33,16 +40,43 @@ const formatDateTime = (date) => {
   });
 };
 
+const formatLabel = (key) => {
+  return key
+    .replace(/([A-Z])/g, " $1")
+    .replace(/[_-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+};
+
+const formatMetricValue = (value) => {
+  if (typeof value !== "number") {
+    return String(value ?? "—");
+  }
+
+  return value.toFixed(4);
+};
+
+/* ------------------------------------------------------------------ */
+/* Page                                                               */
+/* ------------------------------------------------------------------ */
+
 const ExperimentDetails = () => {
   const { projectId, experimentId } = useParams();
   const navigate = useNavigate();
 
   const [experiment, setExperiment] = useState(null);
+  const [datasetName, setDatasetName] = useState("Unknown dataset");
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  /* -------------------------------------------------------------- */
+  /* Fetch experiment + dataset                                     */
+  /* -------------------------------------------------------------- */
+
   useEffect(() => {
-    const fetchExperiment = async () => {
+    const fetchExperimentDetails = async () => {
       if (!projectId || !experimentId) {
         return;
       }
@@ -51,14 +85,20 @@ const ExperimentDetails = () => {
         setIsLoading(true);
         setError(null);
 
-        const data = await experimentService.getExperimentById(
-          projectId,
-          experimentId,
+        const [experimentData, datasetData] = await Promise.all([
+          experimentService.getExperimentById(projectId, experimentId),
+          datasetService.getProjectDatasets(projectId),
+        ]);
+
+        setExperiment(experimentData);
+
+        const selectedDataset = datasetData.find(
+          (dataset) => dataset.id === experimentData.datasetId,
         );
 
-        setExperiment(data);
+        setDatasetName(selectedDataset?.name ?? "Unknown dataset");
       } catch (error) {
-        console.error("Failed to fetch experiment:", error);
+        console.error("Failed to fetch experiment details:", error);
 
         setError(
           error?.response?.data?.message || "Failed to load experiment.",
@@ -68,12 +108,20 @@ const ExperimentDetails = () => {
       }
     };
 
-    fetchExperiment();
+    fetchExperimentDetails();
   }, [projectId, experimentId]);
+
+  /* -------------------------------------------------------------- */
+  /* Navigation                                                      */
+  /* -------------------------------------------------------------- */
 
   const handleBack = () => {
     navigate(`/app/projects/${projectId}/experiments`);
   };
+
+  /* -------------------------------------------------------------- */
+  /* Loading                                                         */
+  /* -------------------------------------------------------------- */
 
   if (isLoading) {
     return (
@@ -82,6 +130,10 @@ const ExperimentDetails = () => {
       </div>
     );
   }
+
+  /* -------------------------------------------------------------- */
+  /* Error                                                           */
+  /* -------------------------------------------------------------- */
 
   if (error) {
     return (
@@ -114,11 +166,24 @@ const ExperimentDetails = () => {
 
   const configuration = experiment.configuration ?? {};
   const hyperparameters = experiment.hyperparameters ?? {};
+  const metrics = experiment.metrics ?? {};
+
+  const statusLabel =
+    STATUS_LABELS[experiment.experimentStatus] ?? experiment.experimentStatus;
+
+  const hasConfiguration = Object.keys(configuration).length > 0;
+
+  const hasHyperparameters = Object.keys(hyperparameters).length > 0;
+
+  const hasMetrics = Object.keys(metrics).length > 0;
 
   return (
     <div className="w-full px-4">
-      <div className="w-full py-6 mx-auto max-w-7xl">
-        {/* Back */}
+      <div className="w-full py-2 mx-auto max-w-7xl">
+        {/* -------------------------------------------------------- */}
+        {/* Back                                                       */}
+        {/* -------------------------------------------------------- */}
+
         <button
           type="button"
           onClick={handleBack}
@@ -128,10 +193,13 @@ const ExperimentDetails = () => {
           Back to Experiments
         </button>
 
-        {/* Header */}
+        {/* -------------------------------------------------------- */}
+        {/* Header                                                     */}
+        {/* -------------------------------------------------------- */}
+
         <div className="mt-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div>
+            <div className="min-w-0">
               <h1 className="text-xl font-semibold text-foreground">
                 {experiment.name}
               </h1>
@@ -141,14 +209,14 @@ const ExperimentDetails = () => {
               </p>
             </div>
 
-            <div className="inline-flex items-center px-3 py-1.5 text-sm font-medium border rounded-full border-border bg-muted/40 w-fit">
-              {STATUS_LABELS[experiment.experimentStatus] ??
-                experiment.experimentStatus}
-            </div>
+            <ExperimentStatusPill status={statusLabel} />
           </div>
         </div>
 
-        {/* Experiment Information */}
+        {/* -------------------------------------------------------- */}
+        {/* Experiment Information                                    */}
+        {/* -------------------------------------------------------- */}
+
         <section className="mt-6 border rounded-lg border-border bg-card">
           <div className="px-5 py-4 border-b border-border">
             <h2 className="text-sm font-medium text-foreground">
@@ -159,6 +227,7 @@ const ExperimentDetails = () => {
           <div className="grid grid-cols-1 gap-5 p-5 sm:grid-cols-2 lg:grid-cols-3">
             <div>
               <p className="text-xs text-muted-foreground">Problem Type</p>
+
               <p className="mt-1 text-sm font-medium text-foreground">
                 {experiment.problemType}
               </p>
@@ -166,20 +235,23 @@ const ExperimentDetails = () => {
 
             <div>
               <p className="text-xs text-muted-foreground">Algorithm</p>
+
               <p className="mt-1 text-sm font-medium text-foreground">
                 {experiment.algorithmName}
               </p>
             </div>
 
             <div>
-              <p className="text-xs text-muted-foreground">Dataset ID</p>
-              <p className="mt-1 text-sm font-medium break-all text-foreground">
-                {experiment.datasetId}
+              <p className="text-xs text-muted-foreground">Dataset</p>
+
+              <p className="mt-1 text-sm font-medium text-foreground">
+                {datasetName}
               </p>
             </div>
 
             <div>
               <p className="text-xs text-muted-foreground">Target Column</p>
+
               <p className="mt-1 text-sm font-medium text-foreground">
                 {configuration.targetColumn || "—"}
               </p>
@@ -187,6 +259,7 @@ const ExperimentDetails = () => {
 
             <div>
               <p className="text-xs text-muted-foreground">Created</p>
+
               <p className="mt-1 text-sm font-medium text-foreground">
                 {formatDateTime(experiment.createdAt)}
               </p>
@@ -194,6 +267,7 @@ const ExperimentDetails = () => {
 
             <div>
               <p className="text-xs text-muted-foreground">Updated</p>
+
               <p className="mt-1 text-sm font-medium text-foreground">
                 {formatDateTime(experiment.updatedAt)}
               </p>
@@ -201,6 +275,7 @@ const ExperimentDetails = () => {
 
             <div>
               <p className="text-xs text-muted-foreground">Started</p>
+
               <p className="mt-1 text-sm font-medium text-foreground">
                 {formatDateTime(experiment.startedAt)}
               </p>
@@ -208,6 +283,7 @@ const ExperimentDetails = () => {
 
             <div>
               <p className="text-xs text-muted-foreground">Completed</p>
+
               <p className="mt-1 text-sm font-medium text-foreground">
                 {formatDateTime(experiment.completedAt)}
               </p>
@@ -215,6 +291,7 @@ const ExperimentDetails = () => {
 
             <div>
               <p className="text-xs text-muted-foreground">Execution ID</p>
+
               <p className="mt-1 text-sm font-medium break-all text-foreground">
                 {experiment.executionId || "—"}
               </p>
@@ -222,7 +299,10 @@ const ExperimentDetails = () => {
           </div>
         </section>
 
-        {/* Configuration */}
+        {/* -------------------------------------------------------- */}
+        {/* Configuration                                             */}
+        {/* -------------------------------------------------------- */}
+
         <section className="mt-6 border rounded-lg border-border bg-card">
           <div className="px-5 py-4 border-b border-border">
             <h2 className="text-sm font-medium text-foreground">
@@ -231,19 +311,37 @@ const ExperimentDetails = () => {
           </div>
 
           <div className="p-5">
-            {Object.keys(configuration).length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                No additional configuration.
-              </p>
+            {hasConfiguration ? (
+              <div className="border divide-y rounded-md border-border">
+                {Object.entries(configuration).map(([key, value]) => (
+                  <div
+                    key={key}
+                    className="grid grid-cols-1 gap-2 px-4 py-3 sm:grid-cols-3"
+                  >
+                    <p className="text-sm font-medium text-foreground">
+                      {formatLabel(key)}
+                    </p>
+
+                    <p className="text-sm break-words text-muted-foreground sm:col-span-2">
+                      {typeof value === "object"
+                        ? JSON.stringify(value)
+                        : String(value)}
+                    </p>
+                  </div>
+                ))}
+              </div>
             ) : (
-              <pre className="p-4 overflow-x-auto text-xs rounded-md bg-muted/40">
-                {JSON.stringify(configuration, null, 2)}
-              </pre>
+              <p className="text-sm text-muted-foreground">
+                No configuration provided.
+              </p>
             )}
           </div>
         </section>
 
-        {/* Hyperparameters */}
+        {/* -------------------------------------------------------- */}
+        {/* Hyperparameters                                          */}
+        {/* -------------------------------------------------------- */}
+
         <section className="mt-6 border rounded-lg border-border bg-card">
           <div className="px-5 py-4 border-b border-border">
             <h2 className="text-sm font-medium text-foreground">
@@ -252,29 +350,60 @@ const ExperimentDetails = () => {
           </div>
 
           <div className="p-5">
-            {Object.keys(hyperparameters).length === 0 ? (
+            {hasHyperparameters ? (
+              <div className="border divide-y rounded-md border-border">
+                {Object.entries(hyperparameters).map(([key, value]) => (
+                  <div
+                    key={key}
+                    className="grid grid-cols-1 gap-2 px-4 py-3 sm:grid-cols-3"
+                  >
+                    <p className="text-sm font-medium text-foreground">
+                      {formatLabel(key)}
+                    </p>
+
+                    <p className="text-sm break-words text-muted-foreground sm:col-span-2">
+                      {typeof value === "object"
+                        ? JSON.stringify(value)
+                        : String(value)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
               <p className="text-sm text-muted-foreground">
                 No hyperparameters configured.
               </p>
-            ) : (
-              <pre className="p-4 overflow-x-auto text-xs rounded-md bg-muted/40">
-                {JSON.stringify(hyperparameters, null, 2)}
-              </pre>
             )}
           </div>
         </section>
 
-        {/* Metrics */}
+        {/* -------------------------------------------------------- */}
+        {/* Metrics                                                    */}
+        {/* -------------------------------------------------------- */}
+
         <section className="mt-6 border rounded-lg border-border bg-card">
           <div className="px-5 py-4 border-b border-border">
             <h2 className="text-sm font-medium text-foreground">Metrics</h2>
           </div>
 
           <div className="p-5">
-            {experiment.metrics ? (
-              <pre className="p-4 overflow-x-auto text-xs rounded-md bg-muted/40">
-                {JSON.stringify(experiment.metrics, null, 2)}
-              </pre>
+            {hasMetrics ? (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {Object.entries(metrics).map(([key, value]) => (
+                  <div
+                    key={key}
+                    className="px-4 py-4 border rounded-lg border-border bg-muted/20"
+                  >
+                    <p className="font-medium  text-muted-foreground">
+                      {formatLabel(key)}
+                    </p>
+
+                    <p className="mt-2 text-lg font-semibold text-foreground">
+                      {formatMetricValue(value)}
+                    </p>
+                  </div>
+                ))}
+              </div>
             ) : (
               <p className="text-sm text-muted-foreground">
                 Metrics are not available yet.
