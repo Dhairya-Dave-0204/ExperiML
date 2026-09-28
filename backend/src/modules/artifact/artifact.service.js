@@ -83,6 +83,57 @@ class ArtifactService {
   }
 
   /**
+   * Get all model artifacts belonging to a project.
+   *
+   * Only MODEL artifacts from non-deleted experiments
+   * belonging to the authenticated user's project are returned.
+   */
+  async getProjectModels({ userId, projectId }) {
+    const project = await prisma.project.findFirst({
+      where: {
+        id: projectId,
+        userId,
+        deletedAt: null,
+      },
+    });
+
+    if (!project) {
+      throw new ApiError(404, "Project not found");
+    }
+
+    return prisma.artifact.findMany({
+      where: {
+        artifactType: "MODEL",
+        deletedAt: null,
+
+        experiment: {
+          projectId,
+          deletedAt: null,
+        },
+      },
+
+      include: {
+        experiment: {
+          select: {
+            id: true,
+            name: true,
+            problemType: true,
+            algorithmName: true,
+            experimentStatus: true,
+            metrics: true,
+            completedAt: true,
+            createdAt: true,
+          },
+        },
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }
+
+  /**
    * Get a single artifact metadata. Does not return the physical file.
    */
   async getArtifact({ userId, projectId, experimentId, artifactId }) {
@@ -165,7 +216,7 @@ class ArtifactService {
   }
 
   /**
-   * Soft delete artifact. Physical deletion is intentionally deferred. 
+   * Soft delete artifact. Physical deletion is intentionally deferred.
    */
   async deleteArtifact({ userId, projectId, experimentId, artifactId }) {
     const artifact = await this.getArtifact({
