@@ -9,6 +9,14 @@ const modelService = {
 
     return response.data.data;
   },
+
+  async getModelDetails(projectId, modelId) {
+    const response = await apiClient.get(
+      `${API_ENDPOINTS.models.project(projectId)}/${modelId}`,
+    );
+
+    return response.data.data;
+  },
 };
 
 export default modelService;
