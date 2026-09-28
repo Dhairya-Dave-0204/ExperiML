@@ -5,6 +5,26 @@ import artifactService from "#artifact/artifact.service";
 
 /*
  * ============================================================
+ * GET PROJECT MODELS
+ * ============================================================
+ * GET /api/v1/projects/:projectId/models
+ */
+
+const getProjectModels = asyncHandler(async (req, res) => {
+  const { projectId } = req.params;
+
+  const models = await artifactService.getProjectModels({
+    projectId,
+    userId: req.user.id,
+  });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, models, "Models fetched successfully."));
+});
+
+/*
+ * ============================================================
  * GET PROJECT EXPERIMENT ARTIFACTS
  * ============================================================
  * GET /api/v1/projects/:projectId/experiments/:experimentId/artifacts
@@ -102,4 +122,10 @@ const deleteArtifact = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Artifact deleted successfully."));
 });
 
-export { getArtifacts, getArtifactById, downloadArtifact, deleteArtifact };
+export {
+  getProjectModels,
+  getArtifacts,
+  getArtifactById,
+  downloadArtifact,
+  deleteArtifact,
+};
