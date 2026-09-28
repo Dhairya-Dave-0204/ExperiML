@@ -12,6 +12,7 @@ import {
 import {
   artifactParentParamsSchema,
   artifactParamsSchema,
+  modelParamsSchema,
 } from "#artifact/artifact.validation";
 
 import { validate } from "#middleware/validate.middleware";
@@ -107,13 +108,7 @@ router.delete(
 router.get(
   "/:projectId/models/:modelId",
   authenticate,
-  validate(
-    artifactParamsSchema.pick({
-      projectId: true,
-      artifactId: true,
-    }),
-    "params",
-  ),
+  validate(modelParamsSchema, "params"),
   getModelDetails,
 );
 

@@ -20,3 +20,14 @@ export const artifactParentParamsSchema = z.object({
 export const artifactParamsSchema = artifactParentParamsSchema.extend({
   artifactId: z.string().uuid("Invalid artifact ID format."),
 });
+
+/**
+ * Validate project and model route parameters.
+ *
+ * Used for:
+ * GET /projects/:projectId/models/:modelId
+ */
+export const modelParamsSchema = z.object({
+  projectId: z.string().uuid("Invalid project ID format."),
+  modelId: z.string().uuid("Invalid model ID format."),
+});
