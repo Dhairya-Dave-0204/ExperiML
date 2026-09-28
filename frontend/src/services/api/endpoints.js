@@ -50,6 +50,8 @@ const API_ENDPOINTS = {
   // Artifact-related endpoints
   artifacts: {
     base: "/artifacts",
+    download: (projectId, experimentId, artifactId) =>
+      `/projects/${projectId}/experiments/${experimentId}/artifacts/${artifactId}/download`,
   },
 };
 
