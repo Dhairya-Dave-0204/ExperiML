@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
 import { ArrowLeft, Loader2 } from "lucide-react";
+
 import { useNavigate, useParams } from "react-router-dom";
 
 import { ExperimentStatusPill } from "@/components/components.index";
 
 import experimentService from "@/services/experiment/experimentService";
 import datasetService from "@/services/dataset/datasetService";
+
+/* ------------------------------------------------------------------ */
+/* Constants                                                          */
+/* ------------------------------------------------------------------ */
 
 const STATUS_LABELS = {
   CREATED: "Draft",
@@ -15,6 +21,10 @@ const STATUS_LABELS = {
   FAILED: "Failed",
   CANCELLED: "Cancelled",
 };
+
+const ACTIVE_STATUSES = new Set(["QUEUED", "TRAINING"]);
+
+const POLLING_INTERVAL = 3000;
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                            */
@@ -72,11 +82,49 @@ const ExperimentDetails = () => {
   const [error, setError] = useState(null);
 
   /* -------------------------------------------------------------- */
-  /* Fetch experiment + dataset                                     */
+  /* Fetch experiment                                                */
+  /* -------------------------------------------------------------- */
+
+  const fetchExperiment = useCallback(
+    async ({ silent = false } = {}) => {
+      if (!projectId || !experimentId) {
+        return;
+      }
+
+      try {
+        if (!silent) {
+          setIsLoading(true);
+        }
+
+        setError(null);
+
+        const data = await experimentService.getExperimentById(
+          projectId,
+          experimentId,
+        );
+
+        setExperiment(data);
+      } catch (error) {
+        console.error("Failed to fetch experiment:", error);
+
+        setError(
+          error?.response?.data?.message || "Failed to load experiment.",
+        );
+      } finally {
+        if (!silent) {
+          setIsLoading(false);
+        }
+      }
+    },
+    [projectId, experimentId],
+  );
+
+  /* -------------------------------------------------------------- */
+  /* Initial fetch                                                   */
   /* -------------------------------------------------------------- */
 
   useEffect(() => {
-    const fetchExperimentDetails = async () => {
+    const loadInitialData = async () => {
       if (!projectId || !experimentId) {
         return;
       }
@@ -108,8 +156,32 @@ const ExperimentDetails = () => {
       }
     };
 
-    fetchExperimentDetails();
+    loadInitialData();
   }, [projectId, experimentId]);
+
+  /* -------------------------------------------------------------- */
+  /* Automatic polling                                               */
+  /* -------------------------------------------------------------- */
+
+  useEffect(() => {
+    if (!experiment) {
+      return undefined;
+    }
+
+    const isActive = ACTIVE_STATUSES.has(experiment.experimentStatus);
+
+    if (!isActive) {
+      return undefined;
+    }
+
+    const intervalId = setInterval(() => {
+      fetchExperiment({ silent: true });
+    }, POLLING_INTERVAL);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [experiment, fetchExperiment]);
 
   /* -------------------------------------------------------------- */
   /* Navigation                                                      */
@@ -138,7 +210,7 @@ const ExperimentDetails = () => {
   if (error) {
     return (
       <div className="w-full px-4">
-        <div className="py-8 mx-auto max-w-7xl">
+        <div className="py-4 mx-auto max-w-7xl">
           <button
             type="button"
             onClick={handleBack}
@@ -322,7 +394,7 @@ const ExperimentDetails = () => {
                       {formatLabel(key)}
                     </p>
 
-                    <p className="text-sm break-words text-muted-foreground sm:col-span-2">
+                    <p className="text-sm wrap-break-word text-muted-foreground sm:col-span-2">
                       {typeof value === "object"
                         ? JSON.stringify(value)
                         : String(value)}
@@ -361,7 +433,7 @@ const ExperimentDetails = () => {
                       {formatLabel(key)}
                     </p>
 
-                    <p className="text-sm break-words text-muted-foreground sm:col-span-2">
+                    <p className="text-sm wrap-break-word text-muted-foreground sm:col-span-2">
                       {typeof value === "object"
                         ? JSON.stringify(value)
                         : String(value)}
@@ -394,7 +466,7 @@ const ExperimentDetails = () => {
                     key={key}
                     className="px-4 py-4 border rounded-lg border-border bg-muted/20"
                   >
-                    <p className="font-medium  text-muted-foreground">
+                    <p className="font-medium text-muted-foreground">
                       {formatLabel(key)}
                     </p>
 
