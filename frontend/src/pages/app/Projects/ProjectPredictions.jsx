@@ -125,7 +125,7 @@ const ProjectPredictions = () => {
 
   return (
     <div className="w-full px-4">
-      <div className="w-full py-2 mx-auto max-w-7xl">
+      <div className="w-full mx-auto max-w-7xl">
         <button
           type="button"
           onClick={handleBack}
@@ -148,7 +148,7 @@ const ProjectPredictions = () => {
 
           <button
             type="button"
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-surface hover:bg-primary/90"
           >
             <Plus className="w-4 h-4" />
             Create Prediction
