@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 import predictionService from "@/services/prediction/predictionService";
-
 import { CreatePredictionModal } from "@/components/components.index";
 
 const STATUS_LABELS = {
@@ -22,6 +21,8 @@ const STATUS_CLASSES = {
   FAILED: "bg-destructive/10 text-destructive",
   CANCELLED: "bg-yellow-500/10 text-yellow-600",
 };
+
+const ACTIVE_PREDICTION_STATUSES = ["CREATED", "RUNNING"];
 
 const formatDateTime = (date) => {
   if (!date) {
@@ -116,6 +117,24 @@ const ProjectPredictions = () => {
   useEffect(() => {
     fetchPredictions();
   }, [fetchPredictions]);
+
+  useEffect(() => {
+    const hasActivePrediction = predictions.some((prediction) =>
+      ACTIVE_PREDICTION_STATUSES.includes(prediction.predictionStatus),
+    );
+
+    if (!hasActivePrediction) {
+      return;
+    }
+
+    const intervalId = setInterval(() => {
+      fetchPredictions({ silent: true });
+    }, 3000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [predictions, fetchPredictions]);
 
   const handleBack = () => {
     navigate(`/app/projects/${projectId}/experiments/${experimentId}`);
@@ -231,6 +250,7 @@ const ProjectPredictions = () => {
                             <p className="text-xs text-muted-foreground">
                               Type
                             </p>
+
                             <p className="mt-1 text-foreground">
                               {prediction.predictionType || "—"}
                             </p>
@@ -240,6 +260,7 @@ const ProjectPredictions = () => {
                             <p className="text-xs text-muted-foreground">
                               Input File
                             </p>
+
                             <p
                               className="mt-1 truncate text-foreground"
                               title={prediction.inputFileName || ""}
@@ -252,6 +273,7 @@ const ProjectPredictions = () => {
                             <p className="text-xs text-muted-foreground">
                               Rows Processed
                             </p>
+
                             <p className="mt-1 text-foreground">
                               {prediction.rowsProcessed ?? "—"}
                             </p>
@@ -261,6 +283,7 @@ const ProjectPredictions = () => {
                             <p className="text-xs text-muted-foreground">
                               Created
                             </p>
+
                             <p className="mt-1 text-foreground">
                               {formatDateTime(prediction.createdAt)}
                             </p>
