@@ -20,10 +20,6 @@ const ProjectNavigation = ({ projectId }) => {
       label: "Models",
       value: ROUTES.PROJECT_TABS.MODELS,
     },
-    {
-      label: "Predictions",
-      value: ROUTES.PROJECT_TABS.PREDICTIONS,
-    },
   ];
 
   return (
