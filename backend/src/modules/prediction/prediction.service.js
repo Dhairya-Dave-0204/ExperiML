@@ -416,10 +416,25 @@ const getPredictionById = async ({
   const prediction = await prisma.prediction.findFirst({
     where: {
       id: predictionId,
-
       experimentId,
-
       deletedAt: null,
+    },
+
+    include: {
+      outputArtifact: {
+        select: {
+          id: true,
+          artifactName: true,
+          artifactType: true,
+          fileFormat: true,
+          originalFileName: true,
+          fileSize: true,
+          mimeType: true,
+          metadata: true,
+          artifactStatus: true,
+          createdAt: true,
+        },
+      },
     },
   });
 
