@@ -55,6 +55,7 @@ const ExperimentList = ({ experiments, onExperimentClick, onDelete }) => {
                     experiment={experiment}
                     onClick={() => onExperimentClick?.(experiment)}
                     onDelete={onDelete}
+                    variant="desktop"
                   />
                 ))}
               </tbody>
@@ -67,13 +68,13 @@ const ExperimentList = ({ experiments, onExperimentClick, onDelete }) => {
       {experiments.length > 0 && (
         <div className="mt-3 space-y-3 md:hidden">
           {experiments.map((experiment) => (
-            <div key={experiment.id}>
-              <ExperimentListItem
-                experiment={experiment}
-                onClick={() => onExperimentClick?.(experiment)}
-                onDelete={onDelete}
-              />
-            </div>
+            <ExperimentListItem
+              key={experiment.id}
+              experiment={experiment}
+              onClick={() => onExperimentClick?.(experiment)}
+              onDelete={onDelete}
+              variant="mobile"
+            />
           ))}
         </div>
       )}

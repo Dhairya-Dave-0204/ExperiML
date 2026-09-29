@@ -2,73 +2,20 @@ import { Clock3, Cpu, Database, Trash2 } from "lucide-react";
 
 import { ExperimentStatusPill } from "@/components/components.index";
 
-const ExperimentListItem = ({ experiment, onClick, onDelete }) => {
+const ExperimentListItem = ({
+  experiment,
+  onClick,
+  onDelete,
+  variant = "desktop",
+}) => {
   const handleDeleteClick = (event) => {
     event.stopPropagation();
     onDelete?.(experiment);
   };
 
-  return (
-    <>
-      {/* Desktop / Tablet */}
-      <tr className="hidden transition-colors group hover:bg-muted/30 md:table-row">
-        <td className="px-4 py-3.5">
-          <button type="button" onClick={onClick} className="text-left">
-            <p className="max-w-57.5 truncate text-sm font-medium text-foreground transition-colors group-hover:text-primary">
-              {experiment.name}
-            </p>
-
-            <p className="mt-0.5 max-w-70 truncate text-xs text-muted-foreground">
-              {experiment.description}
-            </p>
-          </button>
-        </td>
-
-        <td className="px-4 py-3.5">
-          <ExperimentStatusPill status={experiment.status} />
-        </td>
-
-        <td className="px-4 py-3.5">
-          <div className="flex items-center min-w-0 gap-2">
-            <Database className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-
-            <span className="max-w-37.5 truncate text-sm text-foreground">
-              {experiment.dataset}
-            </span>
-          </div>
-        </td>
-
-        <td className="px-4 py-3.5">
-          <div className="flex items-center min-w-0 gap-2">
-            <Cpu className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-
-            <span className="max-w-32.5 truncate text-sm text-foreground">
-              {experiment.algorithm}
-            </span>
-          </div>
-        </td>
-
-        <td className="px-4 py-3.5">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Clock3 className="h-3.5 w-3.5" />
-            {experiment.updatedAt}
-          </div>
-        </td>
-
-        <td className="px-3 py-3.5">
-          <button
-            type="button"
-            className="flex items-center justify-center w-8 h-8 transition-all rounded-md opacity-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100 focus:opacity-100"
-            aria-label={`Delete ${experiment.name}`}
-            onClick={handleDeleteClick}
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </td>
-      </tr>
-
-      {/* Mobile */}
-      <div className="block p-4 transition-colors border rounded-lg border-border bg-card hover:bg-muted/30 md:hidden">
+  if (variant === "mobile") {
+    return (
+      <div className="block p-4 transition-colors border rounded-lg border-border bg-card hover:bg-muted/30">
         <div className="flex items-start gap-3">
           <button
             type="button"
@@ -91,19 +38,19 @@ const ExperimentListItem = ({ experiment, onClick, onDelete }) => {
 
             <div className="mt-4 grid grid-cols-1 gap-2.5 border-t border-border pt-3">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Database className="h-3.5 w-3.5 shrink-0" />
+                <Database className="w-3.5 h-3.5 shrink-0" />
 
                 <span className="truncate">{experiment.dataset}</span>
               </div>
 
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Cpu className="h-3.5 w-3.5 shrink-0" />
+                <Cpu className="w-3.5 h-3.5 shrink-0" />
 
                 <span className="truncate">{experiment.algorithm}</span>
               </div>
 
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Clock3 className="h-3.5 w-3.5 shrink-0" />
+                <Clock3 className="w-3.5 h-3.5 shrink-0" />
 
                 <span>Updated {experiment.updatedAt}</span>
               </div>
@@ -120,7 +67,65 @@ const ExperimentListItem = ({ experiment, onClick, onDelete }) => {
           </button>
         </div>
       </div>
-    </>
+    );
+  }
+
+  return (
+    <tr className="transition-colors group hover:bg-muted/30">
+      <td className="px-4 py-3.5">
+        <button type="button" onClick={onClick} className="text-left">
+          <p className="max-w-57.5 truncate text-sm font-medium text-foreground transition-colors group-hover:text-primary">
+            {experiment.name}
+          </p>
+
+          <p className="mt-0.5 max-w-70 truncate text-xs text-muted-foreground">
+            {experiment.description}
+          </p>
+        </button>
+      </td>
+
+      <td className="px-4 py-3.5">
+        <ExperimentStatusPill status={experiment.status} />
+      </td>
+
+      <td className="px-4 py-3.5">
+        <div className="flex items-center min-w-0 gap-2">
+          <Database className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+
+          <span className="max-w-37.5 truncate text-sm text-foreground">
+            {experiment.dataset}
+          </span>
+        </div>
+      </td>
+
+      <td className="px-4 py-3.5">
+        <div className="flex items-center min-w-0 gap-2">
+          <Cpu className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+
+          <span className="max-w-32.5 truncate text-sm text-foreground">
+            {experiment.algorithm}
+          </span>
+        </div>
+      </td>
+
+      <td className="px-4 py-3.5">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Clock3 className="h-3.5 w-3.5" />
+          {experiment.updatedAt}
+        </div>
+      </td>
+
+      <td className="px-3 py-3.5">
+        <button
+          type="button"
+          className="flex items-center justify-center w-8 h-8 transition-all rounded-md opacity-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100 focus:opacity-100"
+          aria-label={`Delete ${experiment.name}`}
+          onClick={handleDeleteClick}
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </td>
+    </tr>
   );
 };
 
