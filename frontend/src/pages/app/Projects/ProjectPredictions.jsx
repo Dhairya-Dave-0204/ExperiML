@@ -56,6 +56,10 @@ const ProjectPredictions = () => {
 
   const [isCreating, setIsCreating] = useState(false);
 
+  const hasActivePrediction = predictions.some((prediction) =>
+    ACTIVE_PREDICTION_STATUSES.includes(prediction.predictionStatus),
+  );
+
   const fetchPredictions = useCallback(
     async ({ silent = false } = {}) => {
       if (!projectId || !experimentId) {
@@ -199,10 +203,11 @@ const ProjectPredictions = () => {
           <button
             type="button"
             onClick={() => setIsCreateModalOpen(true)}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-surface hover:bg-primary/90"
+            disabled={hasActivePrediction || isCreating}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-surface hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Plus className="w-4 h-4" />
-            Create Prediction
+            {hasActivePrediction ? "Prediction Running" : "Create Prediction"}
           </button>
         </div>
 
