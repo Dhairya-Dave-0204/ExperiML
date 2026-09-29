@@ -483,6 +483,32 @@ const ExperimentDetails = () => {
             )}
           </div>
         </section>
+
+        <section className="mt-6 mb-6 border rounded-lg border-border bg-card">
+          <div className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-sm font-medium text-foreground">
+                Predictions
+              </h2>
+
+              <p className="mt-1 text-sm text-muted-foreground">
+                Run predictions using this experiment's trained model.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() =>
+                navigate(
+                  `/app/projects/${projectId}/experiments/${experimentId}/predictions`,
+                )
+              }
+              className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              View Predictions
+            </button>
+          </div>
+        </section>
       </div>
     </div>
   );
