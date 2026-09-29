@@ -125,3 +125,6 @@ export { default as ExperimentListItem } from "./app/features/Projects/Experimen
 export { default as ExperimentStatusPill } from "./app/features/Projects/Experiments/ExperimentStatusPill";
 export { default as ExperimentsHeader } from "./app/features/Projects/Experiments/ExperimentsHeader";
 export { default as ExperimentsToolbar } from "./app/features/Projects/Experiments/ExperimentsToolbar";
+
+// Core application Project Experient components
+export { default as ExperimentList } from "./app/features/Projects/Experiments/ExperimentList";
