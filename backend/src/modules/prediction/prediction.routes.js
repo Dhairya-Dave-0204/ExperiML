@@ -32,7 +32,7 @@ const router = Router();
  * Create Prediction
  *
  * POST
- * /projects/:projectId/experiments/:experimentId/predictions
+ * "/:projectId/experiments/:experimentId/predictions"
  *
  * multipart/form-data
  * Fields:
@@ -43,7 +43,7 @@ const router = Router();
  * file
  */
 router.post(
-  "/projects/:projectId/experiments/:experimentId/predictions",
+  "/:projectId/experiments/:experimentId/predictions",
 
   authenticate,
 
@@ -63,7 +63,7 @@ router.post(
  * /projects/:projectId/experiments/:experimentId/predictions
  */
 router.get(
-  "/projects/:projectId/experiments/:experimentId/predictions",
+  "/:projectId/experiments/:experimentId/predictions",
 
   authenticate,
 
@@ -76,10 +76,10 @@ router.get(
  * Get Prediction
  *
  * GET
- * /projects/:projectId/experiments/:experimentId/predictions/:predictionId
+ * "/:projectId/experiments/:experimentId/predictions/:predictionId"
  */
 router.get(
-  "/projects/:projectId/experiments/:experimentId/predictions/:predictionId",
+  "/:projectId/experiments/:experimentId/predictions/:predictionId",
 
   authenticate,
 
@@ -92,10 +92,10 @@ router.get(
  * Delete Prediction
  *
  * DELETE
- * /projects/:projectId/experiments/:experimentId/predictions/:predictionId
+ * /:projectId/experiments/:experimentId/predictions/:predictionId
  */
 router.delete(
-  "/projects/:projectId/experiments/:experimentId/predictions/:predictionId",
+  "/:projectId/experiments/:experimentId/predictions/:predictionId",
 
   authenticate,
 
