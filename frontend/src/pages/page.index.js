@@ -29,3 +29,4 @@ export { default as ExperimentDetails } from "./app/Projects/ExperimentDetails";
 export { default as ProjectModels } from "./app/Projects/ProjectModels";
 export { default as ModelDetails } from "./app/Projects/ModelDetails";
 export { default as ProjectPredictions } from "./app/Projects/ProjectPredictions";
+export { default as PredictionDetails } from "./app/Projects/PredictionDetails";
