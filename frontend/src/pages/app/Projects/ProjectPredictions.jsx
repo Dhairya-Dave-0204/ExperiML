@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, Loader2, Plus } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 import predictionService from "@/services/prediction/predictionService";
 
-import { CreatePredictionModal } from "@/components/components.index"
+import { CreatePredictionModal } from "@/components/components.index";
 
 const STATUS_LABELS = {
   CREATED: "Created",
@@ -50,6 +51,10 @@ const ProjectPredictions = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const [isCreating, setIsCreating] = useState(false);
+
   const fetchPredictions = useCallback(
     async ({ silent = false } = {}) => {
       if (!projectId || !experimentId) {
@@ -83,6 +88,30 @@ const ProjectPredictions = () => {
     },
     [projectId, experimentId],
   );
+
+  const handleCreatePrediction = async (predictionData) => {
+    try {
+      setIsCreating(true);
+
+      await predictionService.createPrediction(
+        projectId,
+        experimentId,
+        predictionData,
+      );
+
+      setIsCreateModalOpen(false);
+
+      await fetchPredictions({ silent: true });
+
+      toast.success("Prediction created successfully.");
+    } catch (error) {
+      console.error("Failed to create prediction:", error);
+
+      throw error;
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
   useEffect(() => {
     fetchPredictions();
@@ -150,6 +179,7 @@ const ProjectPredictions = () => {
 
           <button
             type="button"
+            onClick={() => setIsCreateModalOpen(true)}
             className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-surface hover:bg-primary/90"
           >
             <Plus className="w-4 h-4" />
@@ -182,7 +212,7 @@ const ProjectPredictions = () => {
 
                 return (
                   <div key={prediction.id} className="px-5 py-4">
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-x-8">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-sm font-medium text-foreground">
@@ -196,23 +226,24 @@ const ProjectPredictions = () => {
                           </span>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-3 mt-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
-                          <div>
+                        <div className="grid grid-cols-1 gap-x-8 gap-y-3 mt-3 text-sm sm:grid-cols-2 lg:grid-cols-[0.8fr_1.5fr_0.8fr_1.3fr]">
+                          <div className="min-w-0">
                             <p className="text-xs text-muted-foreground">
                               Type
                             </p>
-
                             <p className="mt-1 text-foreground">
                               {prediction.predictionType || "—"}
                             </p>
                           </div>
 
-                          <div>
+                          <div className="min-w-0">
                             <p className="text-xs text-muted-foreground">
                               Input File
                             </p>
-
-                            <p className="mt-1 truncate text-foreground">
+                            <p
+                              className="mt-1 truncate text-foreground"
+                              title={prediction.inputFileName || ""}
+                            >
                               {prediction.inputFileName || "—"}
                             </p>
                           </div>
@@ -221,7 +252,6 @@ const ProjectPredictions = () => {
                             <p className="text-xs text-muted-foreground">
                               Rows Processed
                             </p>
-
                             <p className="mt-1 text-foreground">
                               {prediction.rowsProcessed ?? "—"}
                             </p>
@@ -231,7 +261,6 @@ const ProjectPredictions = () => {
                             <p className="text-xs text-muted-foreground">
                               Created
                             </p>
-
                             <p className="mt-1 text-foreground">
                               {formatDateTime(prediction.createdAt)}
                             </p>
@@ -246,7 +275,7 @@ const ProjectPredictions = () => {
                             `/app/projects/${projectId}/experiments/${experimentId}/predictions/${prediction.id}`,
                           )
                         }
-                        className="self-start px-3 py-2 text-sm font-medium rounded-md text-primary hover:bg-primary/10"
+                        className="self-start px-3 py-2 text-sm font-medium rounded-md lg:self-center text-primary hover:bg-primary/10"
                       >
                         View
                       </button>
@@ -258,6 +287,13 @@ const ProjectPredictions = () => {
           )}
         </section>
       </div>
+
+      <CreatePredictionModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreatePrediction}
+        isSubmitting={isCreating}
+      />
     </div>
   );
 };

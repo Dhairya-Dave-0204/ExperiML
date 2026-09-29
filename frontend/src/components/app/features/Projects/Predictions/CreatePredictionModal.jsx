@@ -62,7 +62,7 @@ const CreatePredictionModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
         onClick={isSubmitting ? undefined : onClose}
       />
 
-      <div className="relative z-10 w-full max-w-lg overflow-hidden border shadow-xl rounded-xl border-border bg-card">
+      <div className="relative z-10 w-full max-w-lg overflow-hidden border shadow-xl rounded-xl border-border bg-surface">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <div>
             <h2 className="text-base font-semibold text-foreground">
@@ -105,7 +105,7 @@ const CreatePredictionModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
                 placeholder="e.g. Customer Prediction"
                 maxLength={100}
                 disabled={isSubmitting}
-                className="w-full px-3 py-2 mt-2 text-sm border rounded-md outline-none border-border bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-60"
+                className="w-full px-3 py-2 mt-2 text-sm border rounded-md outline-none border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-60"
               />
             </div>
 
@@ -174,7 +174,7 @@ const CreatePredictionModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="px-4 py-2 text-sm font-medium rounded-md text-foreground hover:bg-muted disabled:opacity-50"
+              className="px-4 py-2 text-sm font-medium rounded-md text-surface bg-text-secondary/50 hover:bg-text-secondary/70 disabled:opacity-50"
             >
               Cancel
             </button>
@@ -182,7 +182,7 @@ const CreatePredictionModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-surface hover:bg-primary/90 disabled:opacity-60"
             >
               {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
 
