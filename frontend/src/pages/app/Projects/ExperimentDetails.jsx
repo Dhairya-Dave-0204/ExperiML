@@ -503,7 +503,7 @@ const ExperimentDetails = () => {
                   `/app/projects/${projectId}/experiments/${experimentId}/predictions`,
                 )
               }
-              className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
+              className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md bg-primary text-surface hover:bg-primary/90"
             >
               View Predictions
             </button>
