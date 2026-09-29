@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
+
 import { ArrowLeft, Download, Loader2 } from "lucide-react";
+
 import { useNavigate, useParams } from "react-router-dom";
+
+import { toast } from "react-hot-toast";
+
+import artifactService from "@/services/artifact/artifactService";
 
 import predictionService from "@/services/prediction/predictionService";
 
@@ -73,6 +79,7 @@ const PredictionDetails = () => {
   const [prediction, setPrediction] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const fetchPrediction = useCallback(async () => {
     if (!projectId || !experimentId || !predictionId) {
@@ -94,8 +101,7 @@ const PredictionDetails = () => {
       console.error("Failed to fetch prediction:", error);
 
       setError(
-        error?.response?.data?.message ||
-          "Failed to load prediction details.",
+        error?.response?.data?.message || "Failed to load prediction details.",
       );
     } finally {
       setIsLoading(false);
@@ -138,9 +144,7 @@ const PredictionDetails = () => {
               Unable to load prediction
             </h2>
 
-            <p className="mt-1 text-sm text-muted-foreground">
-              {error}
-            </p>
+            <p className="mt-1 text-sm text-muted-foreground">{error}</p>
           </div>
         </div>
       </div>
@@ -156,10 +160,56 @@ const PredictionDetails = () => {
   const statusLabel = STATUS_LABELS[status] ?? status;
 
   const statusClass =
-    STATUS_CLASSES[status] ??
-    "bg-muted text-muted-foreground";
+    STATUS_CLASSES[status] ?? "bg-muted text-muted-foreground";
 
   const outputArtifact = prediction.outputArtifact;
+
+  const handleDownloadOutput = async () => {
+    if (!outputArtifact?.id) {
+      toast.error("Prediction output is not available.");
+      return;
+    }
+
+    try {
+      setIsDownloading(true);
+
+      const response = await artifactService.downloadArtifact(
+        projectId,
+        experimentId,
+        outputArtifact.id,
+      );
+
+      const blob = response.data;
+
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = downloadUrl;
+
+      link.download =
+        outputArtifact.originalFileName || "prediction-output.csv";
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      window.URL.revokeObjectURL(downloadUrl);
+
+      toast.success("Prediction output downloaded.");
+    } catch (error) {
+      console.error("Failed to download prediction output:", error);
+
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to download prediction output.",
+      );
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
     <div className="w-full px-4">
@@ -203,36 +253,32 @@ const PredictionDetails = () => {
 
           <div className="grid grid-cols-1 gap-5 px-5 py-5 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-              <p className="text-xs text-muted-foreground">
-                Prediction Type
-              </p>
+              <p className="text-xs text-muted-foreground">Prediction Type</p>
+
               <p className="mt-1 text-sm text-foreground">
                 {prediction.predictionType || "—"}
               </p>
             </div>
 
             <div>
-              <p className="text-xs text-muted-foreground">
-                Rows Processed
-              </p>
+              <p className="text-xs text-muted-foreground">Rows Processed</p>
+
               <p className="mt-1 text-sm text-foreground">
                 {prediction.rowsProcessed ?? "—"}
               </p>
             </div>
 
             <div>
-              <p className="text-xs text-muted-foreground">
-                Created
-              </p>
+              <p className="text-xs text-muted-foreground">Created</p>
+
               <p className="mt-1 text-sm text-foreground">
                 {formatDateTime(prediction.createdAt)}
               </p>
             </div>
 
             <div>
-              <p className="text-xs text-muted-foreground">
-                Completed
-              </p>
+              <p className="text-xs text-muted-foreground">Completed</p>
+
               <p className="mt-1 text-sm text-foreground">
                 {formatDateTime(prediction.completedAt)}
               </p>
@@ -243,16 +289,12 @@ const PredictionDetails = () => {
         {/* Input File */}
         <section className="mt-6 border rounded-lg border-border bg-card">
           <div className="px-5 py-4 border-b border-border">
-            <h2 className="text-sm font-medium text-foreground">
-              Input File
-            </h2>
+            <h2 className="text-sm font-medium text-foreground">Input File</h2>
           </div>
 
           <div className="grid grid-cols-1 gap-5 px-5 py-5 sm:grid-cols-2 lg:grid-cols-4">
             <div className="min-w-0">
-              <p className="text-xs text-muted-foreground">
-                File Name
-              </p>
+              <p className="text-xs text-muted-foreground">File Name</p>
 
               <p
                 className="mt-1 text-sm truncate text-foreground"
@@ -263,9 +305,7 @@ const PredictionDetails = () => {
             </div>
 
             <div>
-              <p className="text-xs text-muted-foreground">
-                Format
-              </p>
+              <p className="text-xs text-muted-foreground">Format</p>
 
               <p className="mt-1 text-sm text-foreground">
                 {prediction.inputFormat || "—"}
@@ -273,9 +313,7 @@ const PredictionDetails = () => {
             </div>
 
             <div>
-              <p className="text-xs text-muted-foreground">
-                File Size
-              </p>
+              <p className="text-xs text-muted-foreground">File Size</p>
 
               <p className="mt-1 text-sm text-foreground">
                 {formatFileSize(prediction.fileSize)}
@@ -283,9 +321,7 @@ const PredictionDetails = () => {
             </div>
 
             <div>
-              <p className="text-xs text-muted-foreground">
-                MIME Type
-              </p>
+              <p className="text-xs text-muted-foreground">MIME Type</p>
 
               <p className="mt-1 text-sm truncate text-foreground">
                 {prediction.mimeType || "—"}
@@ -297,16 +333,12 @@ const PredictionDetails = () => {
         {/* Execution */}
         <section className="mt-6 border rounded-lg border-border bg-card">
           <div className="px-5 py-4 border-b border-border">
-            <h2 className="text-sm font-medium text-foreground">
-              Execution
-            </h2>
+            <h2 className="text-sm font-medium text-foreground">Execution</h2>
           </div>
 
           <div className="grid grid-cols-1 gap-5 px-5 py-5 sm:grid-cols-2">
             <div className="min-w-0">
-              <p className="text-xs text-muted-foreground">
-                Prediction ID
-              </p>
+              <p className="text-xs text-muted-foreground">Prediction ID</p>
 
               <p className="mt-1 font-mono text-xs break-all text-foreground">
                 {prediction.id}
@@ -314,9 +346,7 @@ const PredictionDetails = () => {
             </div>
 
             <div className="min-w-0">
-              <p className="text-xs text-muted-foreground">
-                Execution ID
-              </p>
+              <p className="text-xs text-muted-foreground">Execution ID</p>
 
               <p className="mt-1 font-mono text-xs break-all text-foreground">
                 {prediction.executionId || "—"}
@@ -324,9 +354,7 @@ const PredictionDetails = () => {
             </div>
 
             <div>
-              <p className="text-xs text-muted-foreground">
-                Started
-              </p>
+              <p className="text-xs text-muted-foreground">Started</p>
 
               <p className="mt-1 text-sm text-foreground">
                 {formatDateTime(prediction.startedAt)}
@@ -334,9 +362,7 @@ const PredictionDetails = () => {
             </div>
 
             <div>
-              <p className="text-xs text-muted-foreground">
-                Completed
-              </p>
+              <p className="text-xs text-muted-foreground">Completed</p>
 
               <p className="mt-1 text-sm text-foreground">
                 {formatDateTime(prediction.completedAt)}
@@ -356,9 +382,7 @@ const PredictionDetails = () => {
           {outputArtifact ? (
             <div className="grid grid-cols-1 gap-5 px-5 py-5 sm:grid-cols-2 lg:grid-cols-4">
               <div className="min-w-0">
-                <p className="text-xs text-muted-foreground">
-                  File Name
-                </p>
+                <p className="text-xs text-muted-foreground">File Name</p>
 
                 <p
                   className="mt-1 text-sm truncate text-foreground"
@@ -369,9 +393,7 @@ const PredictionDetails = () => {
               </div>
 
               <div>
-                <p className="text-xs text-muted-foreground">
-                  Format
-                </p>
+                <p className="text-xs text-muted-foreground">Format</p>
 
                 <p className="mt-1 text-sm text-foreground">
                   {outputArtifact.fileFormat || "—"}
@@ -379,9 +401,7 @@ const PredictionDetails = () => {
               </div>
 
               <div>
-                <p className="text-xs text-muted-foreground">
-                  File Size
-                </p>
+                <p className="text-xs text-muted-foreground">File Size</p>
 
                 <p className="mt-1 text-sm text-foreground">
                   {formatFileSize(outputArtifact.fileSize)}
@@ -389,9 +409,7 @@ const PredictionDetails = () => {
               </div>
 
               <div>
-                <p className="text-xs text-muted-foreground">
-                  Status
-                </p>
+                <p className="text-xs text-muted-foreground">Status</p>
 
                 <p className="mt-1 text-sm text-foreground">
                   {outputArtifact.artifactStatus || "—"}
@@ -399,9 +417,7 @@ const PredictionDetails = () => {
               </div>
 
               <div className="sm:col-span-2 lg:col-span-4">
-                <p className="text-xs text-muted-foreground">
-                  Artifact
-                </p>
+                <p className="text-xs text-muted-foreground">Artifact</p>
 
                 <div className="flex flex-col gap-3 mt-2 sm:flex-row sm:items-center sm:justify-between">
                   <div className="min-w-0">
@@ -410,18 +426,23 @@ const PredictionDetails = () => {
                     </p>
 
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Created{" "}
-                      {formatDateTime(outputArtifact.createdAt)}
+                      Created {formatDateTime(outputArtifact.createdAt)}
                     </p>
                   </div>
 
                   <button
                     type="button"
-                    disabled
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md opacity-50 cursor-not-allowed bg-primary text-surface"
+                    onClick={handleDownloadOutput}
+                    disabled={isDownloading}
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-surface hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    <Download className="w-4 h-4" />
-                    Download Output
+                    {isDownloading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Download className="w-4 h-4" />
+                    )}
+
+                    {isDownloading ? "Downloading..." : "Download Output"}
                   </button>
                 </div>
               </div>
