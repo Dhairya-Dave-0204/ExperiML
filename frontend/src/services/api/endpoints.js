@@ -45,6 +45,10 @@ const API_ENDPOINTS = {
   // Prediction-related endpoints
   predictions: {
     base: "/predictions",
+    experiment: (projectId, experimentId) =>
+      `/projects/${projectId}/experiments/${experimentId}/predictions`,
+    detail: (projectId, experimentId, predictionId) =>
+      `/projects/${projectId}/experiments/${experimentId}/predictions/${predictionId}`,
   },
 
   // Artifact-related endpoints
