@@ -127,4 +127,4 @@ export { default as ExperimentsHeader } from "./app/features/Projects/Experiment
 export { default as ExperimentsToolbar } from "./app/features/Projects/Experiments/ExperimentsToolbar";
 
 // Core application Project Experient components
-export { default as ExperimentList } from "./app/features/Projects/Experiments/ExperimentList";
+export { default as CreatePredictionModal } from "./app/features/Projects/Predictions/CreatePredictionModal";

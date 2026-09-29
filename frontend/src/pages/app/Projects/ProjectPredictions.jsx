@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import predictionService from "@/services/prediction/predictionService";
 
+import { CreatePredictionModal } from "@/components/components.index"
+
 const STATUS_LABELS = {
   CREATED: "Created",
   RUNNING: "Running",
