@@ -1,4 +1,5 @@
 import { ArrowRight, Clock, Database } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function StatusPill({ status }) {
   const styles = {
@@ -45,8 +46,25 @@ function formatUpdatedAt(updatedAt) {
 }
 
 function ContinueWorkingPanel({ data }) {
+  const navigate = useNavigate();
 
   const { project, experiment, dataset, updatedAt } = data;
+
+  const handleOpenProject = () => {
+    if (!project?.id) {
+      return;
+    }
+
+    navigate(`/app/projects/${project.id}/overview`);
+  };
+
+  const handleViewExperiment = () => {
+    if (!project?.id || !experiment?.id) {
+      return;
+    }
+
+    navigate(`/app/projects/${project.id}/experiments/${experiment.id}`);
+  };
 
   return (
     <div className="p-6 border shadow-sm rounded-xl border-border bg-surface sm:p-8">
@@ -120,7 +138,9 @@ function ContinueWorkingPanel({ data }) {
       <div className="flex flex-wrap gap-2.5">
         <button
           type="button"
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white transition-colors duration-150 rounded-lg bg-primary hover:bg-primary-dark"
+          onClick={handleOpenProject}
+          disabled={!project?.id}
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white transition-colors duration-150 rounded-lg bg-primary hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
         >
           Open Project
           <ArrowRight size={15} />
@@ -128,7 +148,9 @@ function ContinueWorkingPanel({ data }) {
 
         <button
           type="button"
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-colors duration-150 border rounded-lg border-border text-text hover:border-border-hover hover:bg-surface-soft"
+          onClick={handleViewExperiment}
+          disabled={!project?.id || !experiment?.id}
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-colors duration-150 border rounded-lg border-border text-text hover:border-border-hover hover:bg-surface-soft disabled:cursor-not-allowed disabled:opacity-50"
         >
           View Experiment
         </button>
