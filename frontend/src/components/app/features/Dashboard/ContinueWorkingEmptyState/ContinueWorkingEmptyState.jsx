@@ -1,6 +1,13 @@
 import { ArrowRight, FlaskConical } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function ContinueWorkingEmptyState() {
+  const navigate = useNavigate();
+
+  const handleCreateExperiment = () => {
+    navigate("/app/projects");
+  };
+
   return (
     <div className="p-6 border shadow-sm rounded-xl border-border bg-surface sm:p-8">
       <div className="mb-5 text-xs font-semibold tracking-wider uppercase text-text-secondary">
@@ -23,6 +30,7 @@ function ContinueWorkingEmptyState() {
 
         <button
           type="button"
+          onClick={handleCreateExperiment}
           className="inline-flex items-center gap-2 px-4 py-2 mt-5 text-sm font-semibold text-white transition-colors duration-150 rounded-lg bg-primary hover:bg-primary-dark"
         >
           Create Experiment
