@@ -1,18 +1,15 @@
 import "./App.css";
 
+import { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import {
-  AppRoutes,
-  ProtectedRoute,
-  GuestRoutes
-} from "@/routes/routes.index";
+import { AppRoutes, ProtectedRoute, GuestRoutes } from "@/routes/routes.index";
 
 import { ScrollToTop } from "@/components/components.index";
 
-import { NotFound } from "@/pages/page.index";
-
 import Test from "@/Test";
+
+const NotFound = lazy(() => import("@/pages/public/NotFound/NotFound"));
 
 function App() {
   return (
@@ -33,4 +30,3 @@ function App() {
 }
 
 export default App;
-// TODO: Create the Documentation page
