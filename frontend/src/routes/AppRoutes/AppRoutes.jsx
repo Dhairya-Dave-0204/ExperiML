@@ -4,7 +4,7 @@ import { Route } from "react-router-dom";
 import { AppLayout } from "@/layout/layout.index";
 import { ROUTES } from "@/constants/routes";
 
-import { ProjectLayout } from "@/components/app/features/Projects/ProjectLayout";
+import ProjectLayout from "@/components/app/features/Projects/ProjectLayout";
 
 const Dashboard = lazy(() => import("@/pages/app/Dashboard/Dashboard"));
 

@@ -6,7 +6,7 @@ import { Routes, Route } from "react-router-dom";
 
 import { AppRoutes, ProtectedRoute, GuestRoutes } from "@/routes/routes.index";
 
-import { ScrollToTop } from "@/components/common/ScrollToTop/ScrollToTop";
+import ScrollToTop from "@/components/common/ScrollToTop/ScrollToTop";
 
 const NotFound = lazy(() => import("@/pages/public/NotFound/NotFound"));
 
