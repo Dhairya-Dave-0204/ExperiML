@@ -1,6 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, FolderPlus, Workflow } from "lucide-react";
+import { ROUTES } from "@/constants/routes";
 
 function DashboardOnboarding() {
+  const navigate = useNavigate()
+
+  const handleCreateProject = () => {
+    navigate(ROUTES.PROJECTS)
+  }
+  
   return (
     <div className="space-y-8">
       {/* Welcome */}
@@ -32,6 +40,7 @@ function DashboardOnboarding() {
           </p>
 
           <button
+          onClick={handleCreateProject}
             type="button"
             className="
               mt-6
