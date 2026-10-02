@@ -1,10 +1,20 @@
+import { lazy } from "react";
 import { Route } from "react-router-dom";
 
 import { AuthLayout } from "@/layout/layout.index";
+import { ROUTES } from "@/constants/routes";
 
-import { SignIn, SignUp, ForgotPassword, ResetPassword } from "@/pages/page.index";
+const SignIn = lazy(() => import("@/pages/auth/SignIn/SignIn"));
 
-import { ROUTES } from "@/constants/routes" 
+const SignUp = lazy(() => import("@/pages/auth/SignUp/SignUp"));
+
+const ForgotPassword = lazy(
+  () => import("@/pages/auth/ForgotPassword/ForgotPassword"),
+);
+
+const ResetPassword = lazy(
+  () => import("@/pages/auth/ResetPassword/ResetPassword"),
+);
 
 const AuthRoutes = (
   <Route element={<AuthLayout />}>
@@ -13,7 +23,7 @@ const AuthRoutes = (
     <Route path={ROUTES.SIGN_UP} element={<SignUp />} />
 
     <Route path={ROUTES.FORGOT_PASS} element={<ForgotPassword />} />
-    
+
     <Route path={ROUTES.RESET_PASS} element={<ResetPassword />} />
   </Route>
 );
