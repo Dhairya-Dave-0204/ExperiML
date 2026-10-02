@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 import { useAuth } from "@/context/AuthContext";
 import { ROUTES } from "@/constants/routes";
-import { AuthLoadingScreen } from "@/components/components.index";
+import AuthLoadingScreen from "@/components/common/AuthLoader/AuthLoadingScreen";
 
 
 function GuestOnlyRoute() {
