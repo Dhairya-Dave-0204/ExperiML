@@ -1,23 +1,48 @@
+import { lazy } from "react";
 import { Route } from "react-router-dom";
 
 import { AppLayout } from "@/layout/layout.index";
 import { ROUTES } from "@/constants/routes";
 
-import { ProjectLayout, DatasetAnalysis } from "@/components/components.index";
+import { ProjectLayout } from "@/components/components.index";
 
-import {
-  Dashboard,
-  Projects,
-  Settings,
-  ProjectOverview,
-  ProjectDatasets,
-  ProjectExperiments,
-  ExperimentDetails,
-  ProjectModels,
-  ModelDetails,
-  ProjectPredictions,
-  PredictionDetails,
-} from "@/pages/page.index";
+const Dashboard = lazy(() => import("@/pages/app/Dashboard/Dashboard"));
+
+const Projects = lazy(() => import("@/pages/app/Projects/Projects"));
+
+const Settings = lazy(() => import("@/pages/app/Settings/Settings"));
+
+const ProjectOverview = lazy(
+  () => import("@/pages/app/Projects/ProjectOverview"),
+);
+
+const ProjectDatasets = lazy(
+  () => import("@/pages/app/Projects/ProjectDatasets"),
+);
+
+const DatasetAnalysis = lazy(
+  () => import("@/components/app/features/Projects/Datasets/DatasetAnalysis"),
+);
+
+const ProjectExperiments = lazy(
+  () => import("@/pages/app/Projects/ProjectExperiments"),
+);
+
+const ExperimentDetails = lazy(
+  () => import("@/pages/app/Projects/ExperimentDetails"),
+);
+
+const ProjectModels = lazy(() => import("@/pages/app/Projects/ProjectModels"));
+
+const ModelDetails = lazy(() => import("@/pages/app/Projects/ModelDetails"));
+
+const ProjectPredictions = lazy(
+  () => import("@/pages/app/Projects/ProjectPredictions"),
+);
+
+const PredictionDetails = lazy(
+  () => import("@/pages/app/Projects/PredictionDetails"),
+);
 
 const AppRoutes = (
   <Route element={<AppLayout />}>
