@@ -1,11 +1,12 @@
 import { ArrowRight, FlaskConical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 function ContinueWorkingEmptyState() {
   const navigate = useNavigate();
 
-  const handleCreateExperiment = () => {
-    navigate("/app/projects");
+  const handleCreateProject = () => {
+    navigate(ROUTES.PROJECTS);
   };
 
   return (
@@ -24,16 +25,16 @@ function ContinueWorkingEmptyState() {
         </h2>
 
         <p className="max-w-sm mt-2 text-sm leading-relaxed text-text-secondary">
-          Start an experiment to begin building your machine learning workflow.
+          Start a project to begin building your machine learning workflow.
           Your recent work will appear here when you have something to continue.
         </p>
 
         <button
           type="button"
-          onClick={handleCreateExperiment}
+          onClick={handleCreateProject}
           className="inline-flex items-center gap-2 px-4 py-2 mt-5 text-sm font-semibold text-white transition-colors duration-150 rounded-lg bg-primary hover:bg-primary-dark"
         >
-          Create Experiment
+          Create Project
           <ArrowRight size={15} />
         </button>
       </div>
