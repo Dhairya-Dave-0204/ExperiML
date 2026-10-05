@@ -1,6 +1,8 @@
 import { Route } from "react-router-dom";
 
-import { PublicRoutes, AuthRoutes, GuestOnlyRoute } from "./routes.index";
+import PublicRoutes from "@/routes/PublicRoutes/PublicRoutes"
+import AuthRoutes from "@/routes/AuthRoutes/AuthRoutes"
+import GuestOnlyRoute from "@/routes/GuestOnlyRoute/GuestOnlyRoute"
 
 const GuestRoutes = (
   <>

@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { Route } from "react-router-dom";
 
-import { AppLayout } from "@/layout/layout.index";
+import AppLayout from "@/layout/AppLayout/AppLayout";
 import { ROUTES } from "@/constants/routes";
 
 const ProjectLayout = lazy(

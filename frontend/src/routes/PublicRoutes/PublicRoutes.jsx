@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { Route } from "react-router-dom";
 
-import { PublicLayout } from "@/layout/layout.index";
+import PublicLayout from "@/layout/PublicLayout/PublicLayout";
 
 const Home = lazy(() => import("@/pages/public/Home/Home"));
 
