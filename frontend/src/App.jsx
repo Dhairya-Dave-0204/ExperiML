@@ -4,7 +4,9 @@ import { lazy, Suspense } from "react";
 
 import { Routes, Route } from "react-router-dom";
 
-import { AppRoutes, ProtectedRoute, GuestRoutes } from "@/routes/routes.index";
+import AppRoutes from "@/routes/AppRoutes/AppRoutes";
+import ProtectedRoute from "@/routes/ProtectedRoute/ProtectedRoute";
+import GuestRoutes from "@/routes/GuestRoutes";
 
 import ScrollToTop from "@/components/common/ScrollToTop/ScrollToTop";
 
